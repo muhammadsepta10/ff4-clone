@@ -1,0 +1,36 @@
+{
+ "type": "object",
+ "properties": {
+  "achievements": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "stat": {
+      "type": "string",
+      "minLength": 1
+     },
+     "gte": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "required": [
+     "id",
+     "stat",
+     "gte"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 0
+  }
+ },
+ "required": [
+  "achievements"
+ ],
+ "additionalProperties": false
+}

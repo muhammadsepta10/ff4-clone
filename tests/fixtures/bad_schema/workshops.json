@@ -1,0 +1,14 @@
+{
+  "workshops": [
+    {"id": "bakery",     "build_price": 300, "sell_price": 150, "inputs": {"egg": 2},                  "output": "pastry", "duration_ticks": 100,
+     "upgrades": [{"price": 200, "duration_pct": 75}, {"price": 400, "duration_pct": 50}]},
+    {"id": "dairy",      "build_price": 600, "sell_price": 300, "inputs": {"milk": 1},                 "output": "butter", "duration_ticks": 120,
+     "upgrades": [{"price": 300, "duration_pct": 75}, {"price": 600, "duration_pct": 50}]},
+    {"id": "loom",       "build_price": 500, "sell_price": 250, "inputs": {"wool": 1},                 "output": "cloth",  "duration_ticks": 120,
+     "upgrades": [{"price": 250, "duration_pct": 75}, {"price": 500, "duration_pct": 50}]},
+    {"id": "patisserie", "build_price": 900, "sell_price": 450, "inputs": {"pastry": 1, "butter": 1},  "output": "cake",   "duration_ticks": 150,
+     "upgrades": [{"price": 450, "duration_pct": 75}, {"price": 900, "duration_pct": 50}]},
+    {"id": "tailor",     "build_price": 800, "sell_price": 400, "inputs": {"cloth": 2},                "output": "coat",   "duration_ticks": 150,
+     "upgrades": [{"price": 400, "duration_pct": 75}, {"price": 800, "duration_pct": 50}]}
+  ]
+}

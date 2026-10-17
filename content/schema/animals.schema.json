@@ -1,0 +1,118 @@
+{
+ "type": "object",
+ "properties": {
+  "animals": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "price": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "sell_price": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "product": {
+      "type": "string",
+      "minLength": 1
+     },
+     "produce_ticks": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "food_max": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "hungry_below": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "bite_food": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "starve_ticks": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "speed": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "buyable": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "id",
+     "price",
+     "sell_price",
+     "product",
+     "produce_ticks",
+     "food_max",
+     "hungry_below",
+     "bite_food",
+     "starve_ticks",
+     "speed",
+     "buyable"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 1
+  },
+  "hybrids": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "parents": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "result": {
+      "type": "string",
+      "minLength": 1
+     },
+     "range": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "breed_ticks": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "cooldown_ticks": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "required": [
+     "parents",
+     "result",
+     "range",
+     "breed_ticks",
+     "cooldown_ticks"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 0
+  }
+ },
+ "required": [
+  "animals",
+  "hybrids"
+ ],
+ "additionalProperties": false
+}

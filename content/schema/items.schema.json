@@ -1,0 +1,105 @@
+{
+ "type": "object",
+ "properties": {
+  "items": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 1
+  },
+  "trophy_rewards": {
+   "type": "object",
+   "properties": {
+    "gold": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "silver": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "bronze": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 1
+     }
+    }
+   },
+   "required": [
+    "gold",
+    "silver",
+    "bronze"
+   ],
+   "additionalProperties": false
+  },
+  "boosts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "cost": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "integer",
+       "minimum": 1
+      }
+     },
+     "effect": {
+      "type": "string",
+      "enum": [
+       "start_money",
+       "fast_production",
+       "fast_workshops",
+       "big_warehouse"
+      ]
+     },
+     "value": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "duration_ticks": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "required": [
+     "id",
+     "cost",
+     "effect",
+     "value",
+     "duration_ticks"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 0
+  }
+ },
+ "required": [
+  "items",
+  "trophy_rewards",
+  "boosts"
+ ],
+ "additionalProperties": false
+}

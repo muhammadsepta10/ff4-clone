@@ -1,0 +1,7 @@
+{
+  "slots": [
+    {"id": "hat",   "options": [{"id": "straw", "unlock": ""}, {"id": "cap", "unlock": ""}, {"id": "bandana", "unlock": "ach_gold_5"}, {"id": "crown", "unlock": "ach_gold_all_w1"}]},
+    {"id": "shirt", "options": [{"id": "plaid", "unlock": ""}, {"id": "overall", "unlock": ""}, {"id": "apron", "unlock": "ach_craft_50"}]},
+    {"id": "color", "options": [{"id": "red", "unlock": ""}, {"id": "blue", "unlock": ""}, {"id": "green", "unlock": ""}, {"id": "gold", "unlock": "ach_money_20000"}]}
+  ]
+}

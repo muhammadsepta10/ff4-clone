@@ -1,0 +1,11 @@
+{
+  "animals": [
+    {"id": "chicken",  "price": 100,  "sell_price": 50,  "product": "egg",       "produce_ticks": 150, "food_max": 300, "hungry_below": 150, "bite_food": 150, "starve_ticks": 200, "speed": 6, "buyable": true},
+    {"id": "sheep",    "price": 400,  "sell_price": 200, "product": "wool",      "produce_ticks": 200, "food_max": 300, "hungry_below": 150, "bite_food": 120, "starve_ticks": 200, "speed": 5, "buyable": true},
+    {"id": "cow",      "price": 800,  "sell_price": 400, "product": "milk",      "produce_ticks": 250, "food_max": 300, "hungry_below": 150, "bite_food": 100, "starve_ticks": 200, "speed": 4, "buyable": true},
+    {"id": "fluffhen", "price": 0,    "sell_price": 300, "product": "fluff_egg", "produce_ticks": 200, "food_max": 300, "hungry_below": 150, "bite_food": 150, "starve_ticks": 200, "speed": 6, "buyable": false}
+  ],
+  "hybrids": [
+    {"parents": ["chicken", "sheep"], "result": "fluffhen", "range": 160, "breed_ticks": 30, "cooldown_ticks": 300}
+  ]
+}

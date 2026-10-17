@@ -1,0 +1,74 @@
+{
+  "levels": [
+    {
+      "id": "w1_l1", "world": "w1", "story_key": "story_w1_l1",
+      "start_money": 200,
+      "start_animals": [{"type": "chicken", "count": 2}],
+      "available_animals": ["chicken"],
+      "available_workshops": [],
+      "workshop_slots": 0,
+      "allow_hybrids": false,
+      "goals": [{"type": "collect", "product": "egg", "count": 15}],
+      "predators": [],
+      "hidden_items": [{"id": "h1", "x": 150, "y": 820}, {"id": "h2", "x": 1450, "y": 120}],
+      "tutorials": ["plant_grass", "collect", "well", "click_meter"],
+      "trophy": {"gold_ticks": 750, "silver_ticks": 1040}
+    },
+    {
+      "id": "w1_l2", "world": "w1", "story_key": "story_w1_l2",
+      "start_money": 300,
+      "start_animals": [{"type": "chicken", "count": 2}],
+      "available_animals": ["chicken"],
+      "available_workshops": [],
+      "workshop_slots": 0,
+      "allow_hybrids": false,
+      "goals": [{"type": "animal", "animal": "chicken", "count": 5}, {"type": "money", "amount": 600}],
+      "predators": [],
+      "hidden_items": [{"id": "h1", "x": 820, "y": 60}, {"id": "h2", "x": 60, "y": 450}, {"id": "h3", "x": 1540, "y": 860}],
+      "tutorials": ["buy_animal", "warehouse", "truck"],
+      "trophy": {"gold_ticks": 620, "silver_ticks": 850}
+    },
+    {
+      "id": "w1_l3", "world": "w1", "story_key": "story_w1_l3",
+      "start_money": 500,
+      "start_animals": [{"type": "chicken", "count": 3}],
+      "available_animals": ["chicken"],
+      "available_workshops": ["bakery"],
+      "workshop_slots": 1,
+      "allow_hybrids": false,
+      "goals": [{"type": "collect", "product": "pastry", "count": 6}],
+      "predators": [{"type": "mole", "tick": 400}],
+      "hidden_items": [{"id": "h1", "x": 1300, "y": 400}, {"id": "h2", "x": 300, "y": 120}],
+      "tutorials": ["workshop", "mole"],
+      "trophy": {"gold_ticks": 1010, "silver_ticks": 1400}
+    },
+    {
+      "id": "w1_l4", "world": "w1", "story_key": "story_w1_l4",
+      "start_money": 1200,
+      "start_animals": [{"type": "chicken", "count": 2}],
+      "available_animals": ["chicken", "cow"],
+      "available_workshops": ["bakery", "dairy"],
+      "workshop_slots": 2,
+      "allow_hybrids": false,
+      "goals": [{"type": "collect", "product": "butter", "count": 5}, {"type": "collect", "product": "pastry", "count": 5}],
+      "predators": [{"type": "bear", "tick": 500}, {"type": "mole", "tick": 900}],
+      "hidden_items": [{"id": "h1", "x": 700, "y": 850}, {"id": "h2", "x": 1500, "y": 500}, {"id": "h3", "x": 100, "y": 100}],
+      "tutorials": ["bear", "city"],
+      "trophy": {"gold_ticks": 2160, "silver_ticks": 2980}
+    },
+    {
+      "id": "w1_l5", "world": "w1", "story_key": "story_w1_l5",
+      "start_money": 1500,
+      "start_animals": [{"type": "chicken", "count": 2}, {"type": "sheep", "count": 1}],
+      "available_animals": ["chicken", "sheep"],
+      "available_workshops": ["bakery", "loom", "tailor"],
+      "workshop_slots": 3,
+      "allow_hybrids": true,
+      "goals": [{"type": "collect", "product": "fluff_egg", "count": 3}, {"type": "collect", "product": "coat", "count": 2}],
+      "predators": [{"type": "bear", "tick": 700}],
+      "hidden_items": [{"id": "h1", "x": 1000, "y": 100}, {"id": "h2", "x": 400, "y": 800}],
+      "tutorials": ["hybrid"],
+      "trophy": {"gold_ticks": 1240, "silver_ticks": 1710}
+    }
+  ]
+}

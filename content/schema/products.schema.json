@@ -1,0 +1,54 @@
+{
+ "type": "object",
+ "properties": {
+  "products": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "raw",
+       "crafted"
+      ]
+     },
+     "size": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "sell_price": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "buy_price": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "ground_ticks": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "required": [
+     "id",
+     "kind",
+     "size",
+     "sell_price",
+     "buy_price",
+     "ground_ticks"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 1
+  }
+ },
+ "required": [
+  "products"
+ ],
+ "additionalProperties": false
+}

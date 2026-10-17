@@ -1,0 +1,45 @@
+{
+ "type": "object",
+ "properties": {
+  "worlds": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "name_key": {
+      "type": "string",
+      "minLength": 1
+     },
+     "story_key": {
+      "type": "string",
+      "minLength": 1
+     },
+     "music": {
+      "type": "string",
+      "minLength": 1
+     },
+     "levels_file": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "name_key",
+     "story_key",
+     "music",
+     "levels_file"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 1
+  }
+ },
+ "required": [
+  "worlds"
+ ],
+ "additionalProperties": false
+}

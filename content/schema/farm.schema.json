@@ -1,0 +1,279 @@
+{
+ "type": "object",
+ "properties": {
+  "field": {
+   "type": "object",
+   "properties": {
+    "cols": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "rows": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "cell": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "required": [
+    "cols",
+    "rows",
+    "cell"
+   ],
+   "additionalProperties": false
+  },
+  "grass": {
+   "type": "object",
+   "properties": {
+    "max": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "required": [
+    "max"
+   ],
+   "additionalProperties": false
+  },
+  "well": {
+   "type": "object",
+   "properties": {
+    "capacity": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "refill_ticks": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "refill_price": {
+     "type": "integer",
+     "minimum": 0
+    }
+   },
+   "required": [
+    "capacity",
+    "refill_ticks",
+    "refill_price"
+   ],
+   "additionalProperties": false
+  },
+  "warehouse": {
+   "type": "object",
+   "properties": {
+    "levels": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "capacity": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "price": {
+        "type": "integer",
+        "minimum": 0
+       }
+      },
+      "required": [
+       "capacity",
+       "price"
+      ],
+      "additionalProperties": false
+     },
+     "minItems": 1
+    }
+   },
+   "required": [
+    "levels"
+   ],
+   "additionalProperties": false
+  },
+  "truck": {
+   "type": "object",
+   "properties": {
+    "levels": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "capacity": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "trip_ticks": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "price": {
+        "type": "integer",
+        "minimum": 0
+       }
+      },
+      "required": [
+       "capacity",
+       "trip_ticks",
+       "price"
+      ],
+      "additionalProperties": false
+     },
+     "minItems": 1
+    }
+   },
+   "required": [
+    "levels"
+   ],
+   "additionalProperties": false
+  },
+  "city": {
+   "type": "object",
+   "properties": {
+    "delivery_ticks": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "required": [
+    "delivery_ticks"
+   ],
+   "additionalProperties": false
+  },
+  "click_meter": {
+   "type": "object",
+   "properties": {
+    "max": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "per_tap": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "per_tap_per_hidden_item": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "reward": {
+     "type": "integer",
+     "minimum": 0
+    }
+   },
+   "required": [
+    "max",
+    "per_tap",
+    "per_tap_per_hidden_item",
+    "reward"
+   ],
+   "additionalProperties": false
+  },
+  "predator_warning_ticks": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "predators": {
+   "type": "object",
+   "properties": {
+    "bear": {
+     "type": "object",
+     "properties": {
+      "hits": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "hit_decay_ticks": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "life_ticks": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "attack_ticks": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "attack_range": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "speed": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "cage_product": {
+       "type": "string",
+       "minLength": 1
+      }
+     },
+     "required": [
+      "hits",
+      "hit_decay_ticks",
+      "life_ticks",
+      "attack_ticks",
+      "attack_range",
+      "speed",
+      "cage_product"
+     ],
+     "additionalProperties": false
+    },
+    "mole": {
+     "type": "object",
+     "properties": {
+      "hits": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "hit_decay_ticks": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "life_ticks": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "eat_every_ticks": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "eat_range": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "speed": {
+       "type": "integer",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "hits",
+      "hit_decay_ticks",
+      "life_ticks",
+      "eat_every_ticks",
+      "eat_range",
+      "speed"
+     ],
+     "additionalProperties": false
+    }
+   },
+   "required": [
+    "bear",
+    "mole"
+   ],
+   "additionalProperties": false
+  }
+ },
+ "required": [
+  "field",
+  "grass",
+  "well",
+  "warehouse",
+  "truck",
+  "city",
+  "click_meter",
+  "predator_warning_ticks",
+  "predators"
+ ],
+ "additionalProperties": false
+}

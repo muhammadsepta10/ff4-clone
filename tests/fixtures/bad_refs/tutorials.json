@@ -1,0 +1,16 @@
+{
+  "tutorials": [
+    {"id": "plant_grass", "text_key": "tut_plant_grass"},
+    {"id": "collect",     "text_key": "tut_collect"},
+    {"id": "well",        "text_key": "tut_well"},
+    {"id": "warehouse",   "text_key": "tut_warehouse"},
+    {"id": "truck",       "text_key": "tut_truck"},
+    {"id": "workshop",    "text_key": "tut_workshop"},
+    {"id": "buy_animal",  "text_key": "tut_buy_animal"},
+    {"id": "click_meter", "text_key": "tut_click_meter"},
+    {"id": "mole",        "text_key": "tut_mole"},
+    {"id": "bear",        "text_key": "tut_bear"},
+    {"id": "hybrid",      "text_key": "tut_hybrid"},
+    {"id": "city",        "text_key": "tut_city"}
+  ]
+}

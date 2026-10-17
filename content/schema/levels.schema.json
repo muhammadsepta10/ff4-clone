@@ -1,0 +1,210 @@
+{
+ "type": "object",
+ "properties": {
+  "levels": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1
+     },
+     "world": {
+      "type": "string",
+      "minLength": 1
+     },
+     "story_key": {
+      "type": "string",
+      "minLength": 1
+     },
+     "start_money": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "start_animals": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "type": {
+         "type": "string",
+         "minLength": 1
+        },
+        "count": {
+         "type": "integer",
+         "minimum": 1
+        }
+       },
+       "required": [
+        "type",
+        "count"
+       ],
+       "additionalProperties": false
+      },
+      "minItems": 0
+     },
+     "available_animals": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "minItems": 0
+     },
+     "available_workshops": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "minItems": 0
+     },
+     "workshop_slots": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 6
+     },
+     "allow_hybrids": {
+      "type": "boolean"
+     },
+     "goals": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "type": {
+         "type": "string",
+         "enum": [
+          "collect",
+          "money",
+          "animal"
+         ]
+        },
+        "product": {
+         "type": "string",
+         "minLength": 1
+        },
+        "animal": {
+         "type": "string",
+         "minLength": 1
+        },
+        "count": {
+         "type": "integer",
+         "minimum": 1
+        },
+        "amount": {
+         "type": "integer",
+         "minimum": 1
+        }
+       },
+       "required": [
+        "type"
+       ],
+       "additionalProperties": false
+      },
+      "minItems": 1
+     },
+     "predators": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "type": {
+         "type": "string",
+         "enum": [
+          "bear",
+          "mole"
+         ]
+        },
+        "tick": {
+         "type": "integer",
+         "minimum": 0
+        }
+       },
+       "required": [
+        "type",
+        "tick"
+       ],
+       "additionalProperties": false
+      },
+      "minItems": 0
+     },
+     "hidden_items": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string",
+         "minLength": 1
+        },
+        "x": {
+         "type": "integer",
+         "minimum": 0
+        },
+        "y": {
+         "type": "integer",
+         "minimum": 0
+        }
+       },
+       "required": [
+        "id",
+        "x",
+        "y"
+       ],
+       "additionalProperties": false
+      },
+      "minItems": 0
+     },
+     "tutorials": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      },
+      "minItems": 0
+     },
+     "trophy": {
+      "type": "object",
+      "properties": {
+       "gold_ticks": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "silver_ticks": {
+        "type": "integer",
+        "minimum": 1
+       }
+      },
+      "required": [
+       "gold_ticks",
+       "silver_ticks"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "required": [
+     "id",
+     "world",
+     "start_money",
+     "start_animals",
+     "available_animals",
+     "available_workshops",
+     "workshop_slots",
+     "allow_hybrids",
+     "goals",
+     "predators",
+     "hidden_items",
+     "trophy"
+    ],
+    "additionalProperties": false
+   },
+   "minItems": 0
+  }
+ },
+ "required": [
+  "levels"
+ ],
+ "additionalProperties": false
+}
