@@ -1,0 +1,247 @@
+## Autoload "App": owns GameCore + Campaign, settings, local saves, audio buses and
+## the theme. The only place that touches the file system.
+extends Node
+
+signal app_paused
+signal language_changed
+
+const CAMPAIGN_PATH := "user://campaign.save"
+const SESSION_PATH := "user://session.save"
+const SETTINGS_PATH := "user://settings.cfg"
+
+var core: GameCore
+var campaign: Campaign
+var settings := {"language": "id", "music": 0.8, "sfx": 0.8}
+var theme: Theme
+
+
+func _ready() -> void:
+	core = GameCore.from_content_dir("res://content")
+	assert(core.content_errors().is_empty(), str(core.content_errors()))
+	_load_translations()
+	_load_settings()
+	campaign = core.new_campaign()
+	if FileAccess.file_exists(CAMPAIGN_PATH):
+		var data = str_to_var(FileAccess.get_file_as_string(CAMPAIGN_PATH))
+		if data is Dictionary:
+			campaign = core.load_campaign(data)
+	_setup_audio()
+	theme = _build_theme()
+	get_tree().root.theme = theme
+
+
+func _notification(what: int) -> void:
+	var leaving := what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_WM_CLOSE_REQUEST]
+	# On phones losing focus (call, notification shade) also stops the timer (US 22).
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and OS.has_feature("mobile"):
+		leaving = true
+	if leaving:
+		app_paused.emit()
+		save_campaign()
+
+
+# ---------------------------------------------------------------- saves
+
+func save_campaign() -> void:
+	if campaign == null:
+		return
+	_write(CAMPAIGN_PATH, var_to_str(campaign.to_dict()))
+
+
+func save_session(session: LevelSession) -> void:
+	_write(SESSION_PATH, var_to_str({"slot": campaign.active_slot(), "snapshot": session.snapshot()}))
+
+
+func clear_session() -> void:
+	if FileAccess.file_exists(SESSION_PATH):
+		DirAccess.remove_absolute(SESSION_PATH)
+
+
+## Snapshot of an interrupted level for the active profile, or {}.
+func pending_session() -> Dictionary:
+	if not FileAccess.file_exists(SESSION_PATH):
+		return {}
+	var data = str_to_var(FileAccess.get_file_as_string(SESSION_PATH))
+	if data is Dictionary and data.get("slot", -1) == campaign.active_slot():
+		return data.snapshot
+	return {}
+
+
+func _write(path: String, text: String) -> void:
+	var tmp := path + ".tmp"
+	var f := FileAccess.open(tmp, FileAccess.WRITE)
+	if f == null:
+		push_error("cannot write %s" % path)
+		return
+	f.store_string(text)
+	f.close()
+	DirAccess.rename_absolute(tmp, path)
+
+
+# ---------------------------------------------------------------- settings
+
+func _load_settings() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(SETTINGS_PATH) == OK:
+		for k in settings:
+			settings[k] = cfg.get_value("settings", k, settings[k])
+	TranslationServer.set_locale(settings.language)
+
+
+func save_settings() -> void:
+	var cfg := ConfigFile.new()
+	for k in settings:
+		cfg.set_value("settings", k, settings[k])
+	cfg.save(SETTINGS_PATH)
+
+
+func set_language(lang: String) -> void:
+	settings.language = lang
+	TranslationServer.set_locale(lang)
+	save_settings()
+	language_changed.emit()
+
+
+func set_volume(bus: String, value: float) -> void:
+	settings[bus] = value
+	_apply_volume(bus)
+	save_settings()
+
+
+# ---------------------------------------------------------------- i18n
+
+func _load_translations() -> void:
+	for lang in ["id", "en"]:
+		var t := Translation.new()
+		t.locale = lang
+		var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://i18n/%s.json" % lang))
+		for k in data:
+			t.add_message(k, data[k])
+		TranslationServer.add_translation(t)
+
+
+## tr() with {placeholder} substitution.
+func t(key: String, args := {}) -> String:
+	return tr(key).format(args)
+
+
+func goal_text(g: Dictionary) -> String:
+	match g.type:
+		"collect": return t("goal_collect", {"n": g.target, "product": tr(g.product)})
+		"animal": return t("goal_animal", {"n": g.target, "animal": tr(g.animal)})
+		_: return t("goal_money", {"n": g.target})
+
+
+static func format_time(ticks: int) -> String:
+	var s := ticks / LevelSession.TICKS_PER_SECOND
+	return "%d:%02d" % [s / 60, s % 60]
+
+
+# ---------------------------------------------------------------- audio
+
+var _music := AudioStreamPlayer.new()
+var _sfx: Array[AudioStreamPlayer] = []
+
+
+func _setup_audio() -> void:
+	for bus in ["Music", "SFX"]:
+		if AudioServer.get_bus_index(bus) < 0:
+			AudioServer.add_bus()
+			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus)
+	_apply_volume("music")
+	_apply_volume("sfx")
+	_music.bus = "Music"
+	add_child(_music)
+	for i in 6:
+		var p := AudioStreamPlayer.new()
+		p.bus = "SFX"
+		add_child(p)
+		_sfx.append(p)
+
+
+func _apply_volume(key: String) -> void:
+	var idx := AudioServer.get_bus_index("Music" if key == "music" else "SFX")
+	if idx >= 0:
+		AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(settings[key], 0.0001)))
+
+
+## Music per world and menu. Files are optional until audio assets are approved (see CREDITS.md).
+func play_music(id: String) -> void:
+	var path := "res://audio/music/%s.ogg" % id
+	if not ResourceLoader.exists(path):
+		_music.stop()
+		return
+	var s: AudioStream = load(path)
+	if _music.stream != s:
+		_music.stream = s
+		_music.play()
+
+
+func play_sfx(id: String) -> void:
+	var path := "res://audio/sfx/%s.ogg" % id
+	if not ResourceLoader.exists(path):
+		return
+	for p in _sfx:
+		if not p.playing:
+			p.stream = load(path)
+			p.play()
+			return
+
+
+# ---------------------------------------------------------------- theme
+
+const COLOR_BG := Color("#f6eedc")
+const COLOR_PANEL := Color("#fffaf0")
+const COLOR_INK := Color("#3b2a1a")
+const COLOR_ACCENT := Color("#6aa84f")
+const COLOR_ACCENT_DARK := Color("#38761d")
+const COLOR_WARN := Color("#cc4125")
+
+
+func _build_theme() -> Theme:
+	var th := Theme.new()
+	th.default_font_size = 36
+	var btn := StyleBoxFlat.new()
+	btn.bg_color = COLOR_ACCENT
+	btn.set_corner_radius_all(22)
+	btn.set_content_margin_all(18)
+	btn.shadow_color = Color(0, 0, 0, 0.25)
+	btn.shadow_offset = Vector2(0, 5)
+	btn.shadow_size = 2
+	var hover := btn.duplicate()
+	hover.bg_color = COLOR_ACCENT.lightened(0.1)
+	var pressed := btn.duplicate()
+	pressed.bg_color = COLOR_ACCENT_DARK
+	pressed.shadow_offset = Vector2(0, 1)
+	var disabled := btn.duplicate()
+	disabled.bg_color = Color("#b7b7b7")
+	th.set_stylebox("normal", "Button", btn)
+	th.set_stylebox("hover", "Button", hover)
+	th.set_stylebox("pressed", "Button", pressed)
+	th.set_stylebox("disabled", "Button", disabled)
+	th.set_stylebox("focus", "Button", StyleBoxEmpty.new())
+	th.set_color("font_color", "Button", Color.WHITE)
+	th.set_color("font_hover_color", "Button", Color.WHITE)
+	th.set_color("font_pressed_color", "Button", Color.WHITE)
+	th.set_color("font_disabled_color", "Button", Color("#efefef"))
+	th.set_color("font_color", "Label", COLOR_INK)
+	var panel := StyleBoxFlat.new()
+	panel.bg_color = COLOR_PANEL
+	panel.set_corner_radius_all(28)
+	panel.set_content_margin_all(28)
+	panel.border_color = Color("#c9a66b")
+	panel.set_border_width_all(5)
+	panel.shadow_color = Color(0, 0, 0, 0.3)
+	panel.shadow_size = 12
+	th.set_stylebox("panel", "PanelContainer", panel)
+	var edit := StyleBoxFlat.new()
+	edit.bg_color = Color.WHITE
+	edit.set_corner_radius_all(14)
+	edit.set_content_margin_all(16)
+	edit.border_color = Color("#c9a66b")
+	edit.set_border_width_all(3)
+	th.set_stylebox("normal", "LineEdit", edit)
+	th.set_color("font_color", "LineEdit", COLOR_INK)
+	th.set_constant("separation", "VBoxContainer", 16)
+	th.set_constant("separation", "HBoxContainer", 16)
+	return th

@@ -19,16 +19,14 @@ static func play(core: GameCore, level: Dictionary, seed: int, boosts: Array = [
 	return b._run()
 
 
-## Drives an existing session for a number of ticks (used by the benchmark scene).
-static func drive(core: GameCore, session: LevelSession, ticks: int) -> void:
+## Makes one round of decisions on a live session without advancing it
+## (used by the benchmark scene, which advances time itself).
+static func act(core: GameCore, session: LevelSession) -> void:
 	var b := Bot.new()
 	b._core = core
 	b._cat = core.catalog()
 	b._s = session
-	var end := session.tick() + ticks
-	while not session.is_won() and session.tick() < end:
-		b._decide(session.state())
-		session.advance(STEP_TICKS)
+	b._decide(session.state())
 
 
 func _run() -> Dictionary:
