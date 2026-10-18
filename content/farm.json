@@ -9,6 +9,6 @@
   "predator_warning_ticks": 50,
   "predators": {
     "bear": {"hits": 8, "hit_decay_ticks": 8, "life_ticks": 600, "attack_ticks": 30, "attack_range": 80, "speed": 5, "cage_product": "caged_bear"},
-    "mole": {"hits": 3, "hit_decay_ticks": 20, "life_ticks": 400, "eat_every_ticks": 40, "eat_range": 100, "speed": 2}
+    "mole": {"hits": 3, "hit_decay_ticks": 20, "life_ticks": 0, "eat_every_ticks": 40, "eat_range": 100, "speed": 2}
   }
 }

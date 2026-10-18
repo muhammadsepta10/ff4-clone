@@ -1,5 +1,6 @@
 ## One level being played. Deterministic: fixed 10 ticks per second, all randomness
-## from the session's seeded RNG, integer-only state (ADR 0005).
+## from the session's seeded RNG, integer-only state (ADR 0005). The only float
+## operation is sqrt in _dist(), which IEEE 754 requires to be correctly rounded.
 ## Create through GameCore.start_session() / GameCore.restore_session().
 class_name LevelSession
 extends RefCounted
@@ -142,6 +143,7 @@ func state() -> Dictionary:
 	st.field = _c.farm.field.duplicate()
 	st.trophy = lvl.trophy.duplicate()
 	st.trophy_won = _s.trophy
+	st.trophy_now = _s.trophy if _s.won else _trophy_at(_s.tick)
 	st.warehouse.capacity = _warehouse_capacity()
 	st.warehouse.used = _warehouse_used()
 	st.truck.capacity = _truck_capacity()
@@ -352,7 +354,8 @@ func _tick_orders() -> void:
 			var fw := _field_w()
 			var fh := _field_h()
 			for i in o.qty:
-				_spawn_ground(o.product, fw - 60 - _rng.randi_range(0, 120), fh / 2 + _rng.randi_range(-200, 200))
+				var g := _spawn_ground(o.product, fw - 60 - _rng.randi_range(0, 120), fh / 2 + _rng.randi_range(-200, 200))
+				g.bought = true
 			_emit("order_arrived", {"product": o.product, "qty": o.qty})
 
 
@@ -375,8 +378,9 @@ func _schedule_predators() -> void:
 func _tick_predators() -> void:
 	for p in _s.predators.duplicate():
 		var d: Dictionary = _c.farm.predators[p.type]
-		p.life -= 1
-		if p.life <= 0:
+		if d.life_ticks > 0:
+			p.life -= 1
+		if d.life_ticks > 0 and p.life <= 0:
 			_s.predators.erase(p)
 			_emit("predator_left", {"uid": p.uid, "predator": p.type})
 			continue
@@ -458,9 +462,13 @@ func _evaluate_goals() -> void:
 	if all_done:
 		_s.won = true
 		_s.win_tick = _s.tick
-		var t: Dictionary = _s.level.trophy
-		_s.trophy = "gold" if _s.tick <= t.gold_ticks else ("silver" if _s.tick <= t.silver_ticks else "bronze")
+		_s.trophy = _trophy_at(_s.tick)
 		_emit("level_won", {"ticks": _s.tick, "trophy": _s.trophy})
+
+
+func _trophy_at(t: int) -> String:
+	var lim: Dictionary = _s.level.trophy
+	return "gold" if t <= lim.gold_ticks else ("silver" if t <= lim.silver_ticks else "bronze")
 
 
 # ---------------------------------------------------------------- commands
@@ -526,7 +534,9 @@ func _collect(uid: int) -> bool:
 		return false
 	_s.ground.erase(g)
 	_add(_s.warehouse.items, g.product, 1)
-	_add(_s.collected, g.product, 1)
+	# Goods bought in town are ingredients only; collect goals count what the farm makes.
+	if not g.get("bought", false):
+		_add(_s.collected, g.product, 1)
 	_add(_s.stats.collected, g.product, 1)
 	_emit("product_collected", {"uid": uid, "product": g.product, "x": g.x, "y": g.y})
 	return true
@@ -710,11 +720,12 @@ func _spawn_animal(type: String, x: int, y: int) -> Dictionary:
 	return a
 
 
-func _spawn_ground(product: String, x: int, y: int) -> void:
+func _spawn_ground(product: String, x: int, y: int) -> Dictionary:
 	var g := {"uid": _uid(), "product": product, "x": clampi(x, 20, _field_w() - 20), "y": clampi(y, 20, _field_h() - 20),
 		"life": _c.products[product].ground_ticks}
 	_s.ground.append(g)
 	_emit("product_spawned", {"uid": g.uid, "product": product, "x": g.x, "y": g.y})
+	return g
 
 
 ## Moves e toward (tx, ty); returns true when it has arrived.

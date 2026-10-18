@@ -60,8 +60,14 @@ func test_mole_eats_grass_until_chased_away() -> void:
 	check_eq(events_of(s.poll_events(), "predator_chased").size(), 1)
 
 
-func test_predator_leaves_after_lifetime() -> void:
-	var s := core().start_session(level({"predators": [{"type": "mole", "tick": 0}]}), 1)
-	s.advance(401)
+func test_bear_leaves_after_lifetime() -> void:
+	var s := core().start_session(level({"predators": [{"type": "bear", "tick": 0}]}), 1)
+	s.advance(601)
 	check_eq(s.state().predators.size(), 0)
 	check_eq(events_of(s.poll_events(), "predator_left").size(), 1)
+
+
+func test_mole_stays_until_chased_away() -> void:
+	var s := core().start_session(level({"predators": [{"type": "mole", "tick": 0}]}), 1)
+	s.advance(3000)
+	check_eq(s.state().predators.size(), 1)

@@ -9,26 +9,37 @@ func _buy_and_collect(s: LevelSession, product: String, n: int) -> void:
 
 
 func test_level_won_when_all_goals_met_with_gold_trophy() -> void:
-	var lvl := level({"goals": [{"type": "collect", "product": "egg", "count": 2}, {"type": "animal", "animal": "chicken", "count": 1}]})
-	var s := core().start_session(lvl, 1)
-	_buy_and_collect(s, "egg", 2)
+	var lvl := level({"start_animals": [{"type": "chicken", "count": 1}],
+		"goals": [{"type": "collect", "product": "egg", "count": 1}, {"type": "animal", "animal": "chicken", "count": 2}]})
+	var s := core().start_session(lvl, 5)
+	s.advance(150)
+	s.apply(Cmd.collect(s.state().ground[0].uid))
 	var evts := s.poll_events()
 	check_eq(events_of(evts, "goal_reached").size(), 1)
 	check(not s.is_won())
+	check_eq(s.state().trophy_now, "gold")
 	s.apply(Cmd.buy_animal("chicken"))
 	evts = s.poll_events()
 	check_eq(events_of(evts, "level_won").size(), 1)
 	check(s.is_won())
 	var r := s.result()
 	check_eq(r.trophy, "gold")
-	check_eq(r.ticks, 120)
+	check_eq(r.ticks, 150)
 	check_eq(r.level_id, "test_level")
+
+
+func test_products_bought_in_town_do_not_count_for_collect_goals() -> void:
+	var s := core().start_session(level({"goals": [{"type": "collect", "product": "egg", "count": 2}]}), 1)
+	_buy_and_collect(s, "egg", 2)
+	check_eq(s.state().warehouse.items.get("egg", 0), 2, "stored")
+	check_eq(s.state().goals[0].progress, 0, "not counted")
 
 
 func test_slow_win_still_wins_with_lower_trophy() -> void:
 	var lvl := level({"goals": [{"type": "money", "amount": 1000}], "start_money": 990, "trophy": {"gold_ticks": 10, "silver_ticks": 20}})
 	var s := core().start_session(lvl, 1)
 	s.advance(15)
+	check_eq(s.state().trophy_now, "silver")
 	for i in 25:
 		s.apply(Cmd.tap())
 	check(s.is_won())

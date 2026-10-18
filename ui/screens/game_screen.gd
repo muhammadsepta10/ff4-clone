@@ -307,7 +307,7 @@ func _refresh_hud() -> void:
 	_money.text = "◉ %d" % _st.money
 	var t: Dictionary = _st.trophy
 	var now: int = _st.tick
-	var color := "gold" if now <= t.gold_ticks else ("silver" if now <= t.silver_ticks else "bronze")
+	var color: String = _st.trophy_now
 	_timer.text = "%s  [%s %s | %s %s]" % [App.format_time(now), tr("gold"), App.format_time(t.gold_ticks), tr("silver"), App.format_time(t.silver_ticks)]
 	_timer.add_theme_color_override("font_color", TrophyBadge.COLORS[color].darkened(0.3))
 	while _goals.get_child_count() < _st.goals.size():
