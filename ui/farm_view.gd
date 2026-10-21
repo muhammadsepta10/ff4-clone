@@ -19,7 +19,8 @@ var _prev := {}   # uid -> Vector2 (field units) from the previous tick
 var _cur: Dictionary = {}
 var _alpha := 1.0
 var _time := 0.0
-var _fx: Array = []  # floating texts/pops: {pos, text, color, life, max}
+var _fx: Array = []
+var _grass_shown := {}  # cell index -> displayed growth, eased toward the sim value  # floating texts/pops: {pos, text, color, life, max}
 
 
 func _init() -> void:
@@ -95,21 +96,11 @@ func _draw() -> void:
 	if _cur.is_empty():
 		return
 	var f: Dictionary = _cur.field
-	var w: float = f.cols * f.cell * SCALE
-	var h: float = f.rows * f.cell * SCALE
-	draw_rect(Rect2(Vector2(-14, -14), Vector2(w + 28, h + 28)), Color("#8b6b3d"))
-	draw_rect(Rect2(Vector2.ZERO, Vector2(w, h)), Color("#c8a96a"))
 	var cs: float = f.cell * SCALE
-	for i in _cur.grass.size():
-		var g: int = _cur.grass[i]
-		if g <= 0:
-			continue
-		var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
-		draw_rect(Rect2(o + Vector2(2, 2), Vector2(cs - 4, cs - 4)), Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33))
-		for k in g * 3:
-			var t := o + Vector2(10 + (k * 23) % int(cs - 20), 14 + (k * 37) % int(cs - 24))
-			draw_line(t, t + Vector2(-4, -12 - sin(_time * 3 + k) * 2), Color("#aed581"), 3)
-			draw_line(t, t + Vector2(4, -12 + sin(_time * 3 + k) * 2), Color("#aed581"), 3)
+	if Art.tex("grass") == null:
+		_draw_grass_placeholder(f, cs)
+	else:
+		_draw_grass(f, cs)
 	for hi in _cur.hidden_items:
 		if not hi.found:
 			var hp := Vector2(hi.x, hi.y) * SCALE
@@ -252,3 +243,39 @@ func _draw_predator(pr: Dictionary) -> void:
 		draw_circle(p + Vector2(8, -4), 3, Color.BLACK)
 	if pr.hits > 0:
 		draw_arc(p, 58, -PI / 2, -PI / 2 + TAU * pr.hits / needed, 32, Color("#ffeb3b"), 8)
+
+
+## Grass as overlapping tufts with jittered positions, so planted cells read as an
+## organic patch. Growth eases in and out instead of popping.
+func _draw_grass(f: Dictionary, cs: float) -> void:
+	var tex := Art.tex("grass")
+	var k := 1.0 - exp(-get_process_delta_time() * 6.0)
+	for i in _cur.grass.size():
+		var target: float = _cur.grass[i]
+		var shown: float = _grass_shown.get(i, 0.0)
+		shown = lerpf(shown, target, k)
+		if absf(shown - target) < 0.01:
+			shown = target
+		if shown <= 0.02:
+			_grass_shown.erase(i)
+			continue
+		_grass_shown[i] = shown
+		var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
+		for t in 4:
+			var h := hash(i * 7 + t)
+			var j := Vector2((h % 1000) / 1000.0, ((h / 1000) % 1000) / 1000.0)
+			var foot := o + Vector2(cs * (0.15 + 0.7 * j.x), cs * (0.35 + 0.6 * j.y))
+			var hgt := 30.0 + 16.0 * shown * (0.85 + 0.3 * j.x)
+			var sz := Vector2(hgt * tex.get_width() / tex.get_height(), hgt)
+			var sway := sin(_time * 2.0 + i * 0.7 + t) * 0.04
+			draw_set_transform(foot, sway, Vector2.ONE)
+			draw_texture_rect(tex, Rect2(Vector2(-sz.x / 2, -sz.y), sz), false)
+	draw_set_transform(Vector2.ZERO)
+
+
+func _draw_grass_placeholder(f: Dictionary, cs: float) -> void:
+	for i in _cur.grass.size():
+		var g: int = _cur.grass[i]
+		if g > 0:
+			var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
+			draw_rect(Rect2(o + Vector2(2, 2), Vector2(cs - 4, cs - 4)), Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33))

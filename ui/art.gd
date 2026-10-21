@@ -24,6 +24,14 @@ const SPRITES := {
 	"cake": ["res://art/batch2/cake.png", 58.0],
 	"cloth": ["res://art/batch2/cloth.png", 56.0],
 	"coat": ["res://art/batch2/coat.png", 66.0],
+	# scene: buildings and decoration (cropped to content)
+	"well": ["res://art/scene/well.png", 200.0],
+	"warehouse": ["res://art/scene/warehouse.png", 220.0],
+	"truck": ["res://art/scene/truck.png", 130.0],
+	"plane": ["res://art/scene/plane.png", 130.0],
+	"grass": ["res://art/scene/grass.png", 60.0],
+	"tree": ["res://art/scene/tree.png", 170.0],
+	"plot": ["res://art/scene/plot.png", 140.0],
 }
 
 static var _cache := {}

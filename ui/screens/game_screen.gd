@@ -6,6 +6,13 @@ const TICK := 1.0 / LevelSession.TICKS_PER_SECOND
 const STAGE := Vector2(1920, 1080)
 const FIELD_POS := Vector2(360, 300)
 const AUTOSAVE_TICKS := 50
+# Where buildings stand on the yard (feet, stage px). Workshop slots fill in order.
+const SLOT_FEET := [Vector2(560, 300), Vector2(1360, 300), Vector2(1705, 590), Vector2(215, 590),
+	Vector2(1705, 830), Vector2(215, 830)]
+const WELL_FOOT := Vector2(960, 300)
+const WAREHOUSE_FOOT := Vector2(230, 1010)
+const TRUCK_FOOT := Vector2(470, 1030)
+const PLANE_FOOT := Vector2(1680, 1030)
 
 var session: LevelSession
 var _cat: Content
@@ -20,11 +27,10 @@ var _farm: FarmView
 var _money: Label
 var _timer: Label
 var _goals: VBoxContainer
-var _well_btn: Button
-var _wh_btn: Button
-var _truck_btn: Button
-var _ws_btns: Array[Button] = []
-var _ws_bars: Array[ProgressBar] = []
+var _well_b: Building
+var _wh_b: Building
+var _truck_b: Building
+var _ws_b: Array[Building] = []
 var _meter: ProgressBar
 var _hidden: Label
 var _boosts: Label
@@ -195,15 +201,11 @@ func _show_next_tutorial() -> void:
 # ---------------------------------------------------------------- layout
 
 func _build() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color("#9ccc65")
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
 	_stage = Control.new()
 	_stage.size = STAGE
 	_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_stage)
+	_stage.add_child(FarmScene.new())
 	_farm = FarmView.new()
 	_farm.position = FIELD_POS
 	var f: Dictionary = _cat.farm.field
@@ -212,31 +214,20 @@ func _build() -> void:
 	_stage.add_child(_farm)
 	var slots: int = session.state().workshops.size()
 	for i in slots:
-		var b := _stage_button("", Vector2(0, 0), Vector2(250, 130), func(): _open_panel("workshop", i))
-		b.expand_icon = true
-		b.add_theme_constant_override("icon_max_width", 64)
-		b.add_theme_font_size_override("font_size", 24)
-		b.add_theme_constant_override("h_separation", 4)
-		var bar := ProgressBar.new()
-		bar.show_percentage = false
-		bar.custom_minimum_size = Vector2(210, 18)
-		bar.position = Vector2(20, 100)
-		bar.size = Vector2(210, 18)
-		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		b.add_child(bar)
-		_ws_btns.append(b)
-		_ws_bars.append(bar)
-	_well_btn = _stage_button("", Vector2(40, 300), Vector2(280, 200), func():
+		var b := _building("plot", SLOT_FEET[i], 170, func(): _open_panel("workshop", i))
+		_ws_b.append(b)
+	_well_b = _building("well", WELL_FOOT, 180, func():
 		if not _send(Cmd.refill_well()):
 			App.play_sfx("error"))
-	_wh_btn = _stage_button("", Vector2(40, 560), Vector2(280, 260), func(): _open_panel("warehouse", null))
-	_truck_btn = _stage_button("", Vector2(1600, 300), Vector2(280, 200), func(): _open_panel("truck", null))
-	_stage_button(tr("city"), Vector2(1600, 520), Vector2(280, 140), func(): _open_panel("city", null))
-	_stage_button(tr("shop"), Vector2(1600, 680), Vector2(280, 140), func(): _open_panel("animals", null))
+	_wh_b = _building("warehouse", WAREHOUSE_FOOT, 210, func(): _open_panel("warehouse", null))
+	_truck_b = _building("truck", TRUCK_FOOT, 120, func(): _open_panel("truck", null))
+	_building("plane", PLANE_FOOT, 120, func(): _open_panel("city", null)).set_badge(tr("city"))
+	_stage_button(tr("shop"), Vector2(20, 380), Vector2(170, 110), func(): _open_panel("animals", null))
 	_meter = ProgressBar.new()
 	_meter.show_percentage = false
-	_meter.position = Vector2(360, 1000)
-	_meter.size = Vector2(900, 40)
+	_meter.position = Vector2(1862, 330)
+	_meter.size = Vector2(38, 520)
+	_meter.fill_mode = ProgressBar.FILL_BOTTOM_TO_TOP
 	_meter.max_value = _cat.farm.click_meter.max
 	_meter.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var fill := StyleBoxFlat.new()
@@ -249,10 +240,10 @@ func _build() -> void:
 	_meter.add_theme_stylebox_override("background", bgs)
 	_stage.add_child(_meter)
 	_hidden = UI.label("", 32)
-	_hidden.position = Vector2(1290, 996)
+	_hidden.position = Vector2(1630, 285)
 	_stage.add_child(_hidden)
 	_boosts = UI.label("", 28)
-	_boosts.position = Vector2(40, 840)
+	_boosts.position = Vector2(40, 130)
 	_boosts.size = Vector2(300, 200)
 	_stage.add_child(_boosts)
 	# HUD pinned to safe area (top bar)
@@ -284,6 +275,13 @@ func _build() -> void:
 	_layout()
 
 
+func _building(id: String, foot: Vector2, height: float, cb: Callable) -> Building:
+	var b := Building.new().setup(id, foot, height)
+	b.tapped.connect(cb)
+	_stage.add_child(b)
+	return b
+
+
 func _stage_button(text: String, pos: Vector2, sz: Vector2, cb: Callable) -> Button:
 	var b := UI.button(text, cb, 30)
 	b.position = pos
@@ -300,11 +298,6 @@ func _layout() -> void:
 	var s := minf(vp.x / STAGE.x, vp.y / STAGE.y)
 	_stage.scale = Vector2(s, s)
 	_stage.position = (vp - STAGE * s) / 2
-	var slots := _ws_btns.size()
-	var fw: float = _cat.farm.field.cols * _cat.farm.field.cell
-	for i in slots:
-		var x: float = (i + 1) * fw / (slots + 1) * FarmView.SCALE + FIELD_POS.x - 125
-		_ws_btns[i].position = Vector2(x, 150)
 
 
 func _refresh_hud() -> void:
@@ -322,24 +315,38 @@ func _refresh_hud() -> void:
 		l.text = "%s %s  %d/%d" % ["✔" if g.done else "•", App.goal_text(g), mini(g.progress, g.target), g.target]
 		l.add_theme_color_override("font_color", App.COLOR_ACCENT_DARK if g.done else App.COLOR_INK)
 	var w: Dictionary = _st.well
-	_well_btn.text = "%s\n%d/%d" % [tr("well"), w.water, w.capacity] if w.refill_left == 0 else "%s\n…%ds" % [tr("well"), ceili(w.refill_left / 10.0)]
-	if w.water == 0 and w.refill_left == 0:
-		_well_btn.text += "\n" + App.t("refill", {"p": _cat.farm.well.refill_price})
-	_wh_btn.text = "%s\n%d/%d" % [tr("warehouse"), _st.warehouse.used, _st.warehouse.capacity]
+	if w.refill_left > 0:
+		_well_b.set_badge("…%ds" % ceili(w.refill_left / 10.0))
+	elif w.water == 0:
+		_well_b.set_badge(App.t("refill", {"p": _cat.farm.well.refill_price}))
+	else:
+		_well_b.set_badge("%d/%d" % [w.water, w.capacity])
+	_well_b.set_meter(w.water, w.capacity, Color("#4fc3f7"))
+	var wh: Dictionary = _st.warehouse
+	_wh_b.set_badge("%d/%d" % [wh.used, wh.capacity])
+	_wh_b.set_tag("⬆ %d" % _cat.farm.warehouse.levels[wh.level + 1].price if wh.can_upgrade else "")
 	var tr_: Dictionary = _st.truck
-	_truck_btn.text = "%s\n%s" % [tr("truck"), ("…%ds" % ceili(tr_.left / 10.0)) if tr_.away else "%d/%d" % [tr_.used, tr_.capacity]]
-	for i in _ws_btns.size():
+	_truck_b.set_badge(("…%ds" % ceili(tr_.left / 10.0)) if tr_.away else "%d/%d" % [tr_.used, tr_.capacity])
+	_truck_b.modulate.a = 0.35 if tr_.away else 1.0
+	_truck_b.set_tag("⬆ %d" % _cat.farm.truck.levels[tr_.level + 1].price if tr_.can_upgrade and not tr_.away else "")
+	for i in _ws_b.size():
 		var ws = _st.workshops[i]
+		var b := _ws_b[i]
 		if ws == null:
-			_ws_btns[i].text = "+\n" + tr("empty_slot")
-			_ws_btns[i].icon = null
-			_ws_bars[i].visible = false
+			if b.sprite_id != "plot":
+				b.sprite_id = "plot"
+				b.set_sprite("plot")
+			b.set_badge("+ " + tr("empty_slot"))
+			b.set_tag("")
+			b.set_meter(-1, 1, Color.WHITE)
 		else:
-			_ws_btns[i].icon = Art.tex(ws.type)
-			_ws_btns[i].text = ("%s\n★%d" if _ws_btns[i].icon != null else "%s ★%d") % [tr(ws.type), ws.level + 1]
-			_ws_bars[i].visible = ws.left > 0
-			_ws_bars[i].max_value = ws.duration
-			_ws_bars[i].value = ws.duration - ws.left
+			if b.sprite_id != ws.type:
+				b.sprite_id = ws.type
+				b.set_sprite(ws.type)
+				b.bounce()
+			b.set_badge("%s ★%d" % [tr(ws.type), ws.level + 1])
+			b.set_tag("⬆ %d" % _cat.workshops[ws.type].upgrades[ws.level].price if ws.can_upgrade else "")
+			b.set_meter(ws.duration - ws.left if ws.left > 0 else -1, ws.duration, Color("#ffca28"))
 	_meter.value = _st.click_meter.fill
 	_hidden.text = App.t("hidden_left", {"n": _st.hidden_items_left})
 	var bl := []
