@@ -15,17 +15,6 @@ const PRODUCT_COLORS := {
 	"cake": Color("#f5a3c7"), "coat": Color("#a0522d"),
 }
 
-# Approved batch-1 sprites. Each source image is 200 px and faces left; the value is
-# the on-screen height in px at 1080p (docs/style-bible.md sprite sizes, plus padding).
-const SPRITES := {
-	"chicken": ["res://art/batch1/chicken.png", 104.0],
-	"sheep": ["res://art/batch1/sheep.png", 120.0],
-	"cow": ["res://art/batch1/cow.png", 150.0],
-	"bear": ["res://art/batch1/bear.png", 180.0],
-	"mole": ["res://art/batch1/mole.png", 130.0],
-}
-
-var _tex := {}    # type -> Texture2D, only for sprites that exist
 var _prev := {}   # uid -> Vector2 (field units) from the previous tick
 var _cur: Dictionary = {}
 var _alpha := 1.0
@@ -36,10 +25,6 @@ var _fx: Array = []  # floating texts/pops: {pos, text, color, life, max}
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = false
-	for k in SPRITES:
-		var path: String = SPRITES[k][0]
-		if ResourceLoader.exists(path):
-			_tex[k] = load(path)
 
 
 ## Called after every simulation tick with the new state.
@@ -163,7 +148,7 @@ func _draw_animal(a: Dictionary) -> void:
 	var squash := 1.0 + sin(_time * 18 + a.uid) * 0.04
 	draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
 	draw_circle(Vector2(0, bob + 26), 26, Color(0, 0, 0, 0.18))
-	if _tex.has(a.type):
+	if Art.tex(a.type) != null:
 		# Art faces left, so mirror it when the animal walks right.
 		draw_set_transform(p + Vector2(0, -bob), 0, Vector2(-face * squash, 2.0 - squash))
 		_draw_sprite(a.type, Vector2(0, bob + 26))
@@ -197,8 +182,8 @@ func _draw_animal(a: Dictionary) -> void:
 
 ## Draws a sprite centred on x with its feet at `feet`, in the current draw transform.
 func _draw_sprite(type: String, feet: Vector2) -> void:
-	var tex: Texture2D = _tex[type]
-	var hgt: float = SPRITES[type][1]
+	var tex := Art.tex(type)
+	var hgt := Art.height(type)
 	var sz := Vector2(hgt * tex.get_width() / tex.get_height(), hgt)
 	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2, sz.y * 0.8), sz), false)
 
@@ -216,6 +201,9 @@ func _draw_product(product: String, p: Vector2, life: int) -> void:
 		return
 	var c: Color = PRODUCT_COLORS.get(product, Color.WHITE)
 	draw_circle(p + Vector2(0, 14), 18, Color(0, 0, 0, 0.2))
+	if Art.tex(product) != null:
+		_draw_sprite(product, p + Vector2(0, 18))
+		return
 	match product:
 		"egg", "fluff_egg":
 			draw_set_transform(p, 0, Vector2(0.8, 1.0))
@@ -244,7 +232,7 @@ func _draw_predator(pr: Dictionary) -> void:
 	var shake := Vector2(sin(_time * 40) * 3, 0) if pr.hits > 0 else Vector2.ZERO
 	p += shake
 	var needed: int = App.core.catalog().farm.predators[pr.type].hits
-	if _tex.has(pr.type):
+	if Art.tex(pr.type) != null:
 		var feet := 34.0 if pr.type == "bear" else 24.0
 		draw_circle(p + Vector2(0, feet * 0.6), 40 if pr.type == "bear" else 28, Color(0, 0, 0, 0.2))
 		_draw_sprite(pr.type, p + Vector2(0, feet))

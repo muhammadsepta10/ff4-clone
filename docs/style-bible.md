@@ -22,7 +22,7 @@ fixed 3/4 top-down angle, centered, plain white background, no text, no logo.
 
 Contoh `{subject}`: `white hen with a red comb`, `fluffy sheep`, `black-and-white cow`, `wooden bakery hut`, `glass bottle of milk`.
 
-Lampirkan gambar referensi gaya dari batch yang sudah disetujui. Setelah disetujui, hapus background, potong ke ukuran di atas, dan simpan di `art/<batch>/`.
+Lampirkan gambar referensi gaya dari batch yang sudah disetujui. Setelah disetujui, hapus background, potong ke ukuran di atas, dan simpan di `art/<batch>/`. Daftarkan setiap sprite beserta tinggi tampilnya di `ui/art.gd`; tampilan memakai placeholder prosedural untuk id yang belum punya sprite.
 
 ## Animasi
 

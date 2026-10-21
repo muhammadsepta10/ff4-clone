@@ -213,6 +213,10 @@ func _build() -> void:
 	var slots: int = session.state().workshops.size()
 	for i in slots:
 		var b := _stage_button("", Vector2(0, 0), Vector2(250, 130), func(): _open_panel("workshop", i))
+		b.expand_icon = true
+		b.add_theme_constant_override("icon_max_width", 64)
+		b.add_theme_font_size_override("font_size", 24)
+		b.add_theme_constant_override("h_separation", 4)
 		var bar := ProgressBar.new()
 		bar.show_percentage = false
 		bar.custom_minimum_size = Vector2(210, 18)
@@ -328,9 +332,11 @@ func _refresh_hud() -> void:
 		var ws = _st.workshops[i]
 		if ws == null:
 			_ws_btns[i].text = "+\n" + tr("empty_slot")
+			_ws_btns[i].icon = null
 			_ws_bars[i].visible = false
 		else:
-			_ws_btns[i].text = "%s ★%d" % [tr(ws.type), ws.level + 1]
+			_ws_btns[i].icon = Art.tex(ws.type)
+			_ws_btns[i].text = ("%s\n★%d" if _ws_btns[i].icon != null else "%s ★%d") % [tr(ws.type), ws.level + 1]
 			_ws_bars[i].visible = ws.left > 0
 			_ws_bars[i].max_value = ws.duration
 			_ws_bars[i].value = ws.duration - ws.left
@@ -397,10 +403,11 @@ func _close_panel() -> void:
 	_panel_kind = ""
 
 
-func _row(text: String, buttons: Array) -> HBoxContainer:
+func _row(text: String, buttons: Array, icon_id := "") -> HBoxContainer:
 	var l := UI.label(text, 32)
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	return UI.hbox([l] + buttons)
+	var lead: Array = [Art.icon(icon_id)] if icon_id != "" and Art.tex(icon_id) != null else []
+	return UI.hbox(lead + [l] + buttons)
 
 
 func _small(text: String, cmd: Dictionary, enabled := true) -> Button:
@@ -420,7 +427,7 @@ func _warehouse_panel(box: VBoxContainer) -> void:
 		box.add_child(_row("%s ×%d  (%s)" % [tr(p), n, App.t("price_each", {"p": price})], [
 			_small(tr("load"), Cmd.load_truck(p, 1), not _st.truck.away),
 			_small(tr("load_all"), Cmd.load_truck(p, mini(n, (_st.truck.capacity - _st.truck.used) / _cat.products[p].size)), not _st.truck.away),
-		]))
+		], p))
 	if wh.can_upgrade:
 		var next: Dictionary = _cat.farm.warehouse.levels[wh.level + 1]
 		box.add_child(_small("%s → %d (◉ %d)" % [tr("upgrade"), next.capacity + wh.bonus, next.price], Cmd.upgrade_warehouse(), _st.money >= next.price))
@@ -436,7 +443,7 @@ func _truck_panel(box: VBoxContainer) -> void:
 	for p in t.cargo:
 		var price: int = _cat.products[p].sell_price
 		total += price * t.cargo[p]
-		box.add_child(_row("%s ×%d  (%s)" % [tr(p), t.cargo[p], App.t("price_each", {"p": price})], [_small(tr("unload"), Cmd.unload_truck(p, 1))]))
+		box.add_child(_row("%s ×%d  (%s)" % [tr(p), t.cargo[p], App.t("price_each", {"p": price})], [_small(tr("unload"), Cmd.unload_truck(p, 1))], p))
 	box.add_child(_small("%s  (◉ %d)" % [tr("send"), total], Cmd.send_truck(), total > 0 or not t.cargo.is_empty()))
 	if t.can_upgrade:
 		var next: Dictionary = _cat.farm.truck.levels[t.level + 1]
@@ -451,7 +458,7 @@ func _city_panel(box: VBoxContainer) -> void:
 		box.add_child(_row("%s  (%s)" % [tr(p.id), App.t("price_each", {"p": p.buy_price})], [
 			_small(tr("buy") + " 1", Cmd.buy_from_city(p.id, 1), _st.money >= p.buy_price),
 			_small(tr("buy") + " 5", Cmd.buy_from_city(p.id, 5), _st.money >= p.buy_price * 5),
-		]))
+		], p.id))
 
 
 func _animals_panel(box: VBoxContainer) -> void:
@@ -463,11 +470,11 @@ func _animals_panel(box: VBoxContainer) -> void:
 		var d: Dictionary = _cat.animals[id]
 		var mine: Array = owned.get(id, [])
 		var sell_btn := _small("%s (◉ %d)" % [tr("sell"), d.sell_price], Cmd.sell_animal(mine[0].uid if not mine.is_empty() else -1), not mine.is_empty())
-		box.add_child(_row("%s ×%d" % [tr(id), mine.size()], [_small("%s (◉ %d)" % [tr("buy"), d.price], Cmd.buy_animal(id), _st.money >= d.price), sell_btn]))
+		box.add_child(_row("%s ×%d" % [tr(id), mine.size()], [_small("%s (◉ %d)" % [tr("buy"), d.price], Cmd.buy_animal(id), _st.money >= d.price), sell_btn], id))
 	for id in owned:
 		if not _st.available_animals.has(id):
 			var d: Dictionary = _cat.animals[id]
-			box.add_child(_row("%s ×%d" % [tr(id), owned[id].size()], [_small("%s (◉ %d)" % [tr("sell"), d.sell_price], Cmd.sell_animal(owned[id][0].uid))]))
+			box.add_child(_row("%s ×%d" % [tr(id), owned[id].size()], [_small("%s (◉ %d)" % [tr("sell"), d.sell_price], Cmd.sell_animal(owned[id][0].uid))], id))
 
 
 func _workshop_panel(box: VBoxContainer, slot: int) -> void:
@@ -477,7 +484,7 @@ func _workshop_panel(box: VBoxContainer, slot: int) -> void:
 		for id in _st.available_workshops:
 			var d: Dictionary = _cat.workshops[id]
 			box.add_child(_row("%s: %s → %s" % [tr(id), _recipe(d.inputs), tr(d.output)],
-				[_small("◉ %d" % d.build_price, Cmd.build_workshop(slot, id), _st.money >= d.build_price)]))
+				[_small("◉ %d" % d.build_price, Cmd.build_workshop(slot, id), _st.money >= d.build_price)], id))
 		return
 	box.add_child(UI.label("%s ★%d" % [tr(ws.type), ws.level + 1], 40))
 	box.add_child(UI.label("%s → %s  (%ds)" % [_recipe(ws.inputs), tr(ws.output), ceili(ws.duration / 10.0)], 32))
