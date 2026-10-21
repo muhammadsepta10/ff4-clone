@@ -41,7 +41,12 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # The default package list includes the removed "tools" package, which
+      # makes sdkmanager fail. Godot needs platform-tools and apksigner from
+      # build-tools to sign the debug APK.
       - uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools build-tools;35.0.0"
 
       - name: Debug keystore and editor settings
         run: |
