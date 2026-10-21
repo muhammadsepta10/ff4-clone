@@ -6,13 +6,14 @@ const TICK := 1.0 / LevelSession.TICKS_PER_SECOND
 const STAGE := Vector2(1920, 1080)
 const FIELD_POS := Vector2(360, 300)
 const AUTOSAVE_TICKS := 50
+const HUD_FG := Color("#fff3d6")
 # Where buildings stand on the yard (feet, stage px). Workshop slots fill in order.
 const SLOT_FEET := [Vector2(560, 300), Vector2(1360, 300), Vector2(1705, 590), Vector2(215, 590),
 	Vector2(1705, 830), Vector2(215, 830)]
 const WELL_FOOT := Vector2(960, 300)
-const WAREHOUSE_FOOT := Vector2(230, 1010)
-const TRUCK_FOOT := Vector2(470, 1030)
-const PLANE_FOOT := Vector2(1680, 1030)
+const WAREHOUSE_FOOT := Vector2(255, 950)
+const TRUCK_FOOT := Vector2(490, 1000)
+const PLANE_FOOT := Vector2(1720, 330)
 
 var session: LevelSession
 var _cat: Content
@@ -26,7 +27,10 @@ var _stage: Control
 var _farm: FarmView
 var _money: Label
 var _timer: Label
-var _goals: VBoxContainer
+var _goals: HBoxContainer
+var _goal_labels: Array[Label] = []
+var _trophy_dot: TrophyBadge
+var _buy_btns := {}  # animal id -> Button
 var _well_b: Building
 var _wh_b: Building
 var _truck_b: Building
@@ -202,6 +206,11 @@ func _show_next_tutorial() -> void:
 # ---------------------------------------------------------------- layout
 
 func _build() -> void:
+	var bg := ColorRect.new()
+	bg.color = Color("#8cc63f")
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(bg)
 	_stage = Control.new()
 	_stage.size = STAGE
 	_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -224,7 +233,6 @@ func _build() -> void:
 	_wh_b = _building("warehouse", WAREHOUSE_FOOT, 210, func(): _open_panel("warehouse", null))
 	_truck_b = _building("truck", TRUCK_FOOT, 120, func(): _open_panel("truck", null))
 	_building("plane", PLANE_FOOT, 120, func(): _open_panel("city", null)).set_badge(tr("city"))
-	_stage_button(tr("shop"), Vector2(20, 380), Vector2(170, 110), func(): _open_panel("animals", null))
 	_meter = ProgressBar.new()
 	_meter.show_percentage = false
 	_meter.position = Vector2(1862, 330)
@@ -241,31 +249,21 @@ func _build() -> void:
 	bgs.set_corner_radius_all(16)
 	_meter.add_theme_stylebox_override("background", bgs)
 	_stage.add_child(_meter)
-	_hidden = UI.label("", 32)
-	_hidden.position = Vector2(1630, 285)
+	_hidden = UI.label("", 26, Color.WHITE)
+	_hidden.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.6))
+	_hidden.add_theme_constant_override("outline_size", 6)
+	_hidden.position = Vector2(1500, 860)
+	_hidden.size = Vector2(400, 40)
+	_hidden.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_stage.add_child(_hidden)
-	_boosts = UI.label("", 28)
-	_boosts.position = Vector2(40, 130)
-	_boosts.size = Vector2(300, 200)
+	_boosts = UI.label("", 26, Color.WHITE)
+	_boosts.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.6))
+	_boosts.add_theme_constant_override("outline_size", 6)
+	_boosts.position = Vector2(800, 80)
+	_boosts.size = Vector2(320, 120)
+	_boosts.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_stage.add_child(_boosts)
-	# HUD pinned to safe area (top bar)
-	var hud := safe_root()
-	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var top := UI.hbox([], 32)
-	top.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(top)
-	_money = UI.label("", 44)
-	_money.custom_minimum_size.x = 260
-	top.add_child(UI.panel(_money))
-	_timer = UI.label("", 36)
-	top.add_child(UI.panel(_timer))
-	_goals = UI.vbox([], 2)
-	_goals.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var gp := UI.panel(_goals)
-	gp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(gp)
-	top.add_child(UI.button("❚❚", _show_pause, 40))
+	_build_hud()
 	_toast = UI.label("", 44, Color.WHITE)
 	_toast.add_theme_color_override("font_outline_color", Color.BLACK)
 	_toast.add_theme_constant_override("outline_size", 10)
@@ -275,6 +273,91 @@ func _build() -> void:
 	_toast.modulate.a = 0
 	_stage.add_child(_toast)
 	_layout()
+
+
+## HUD laid out like the reference: coins top centre, animal shop down the left edge,
+## pause + timer bottom-left, goals with product icons bottom-right.
+func _build_hud() -> void:
+	_money = UI.label("", 40, HUD_FG)
+	var coin := UI.label("●", 40, Color("#ffd54f"))
+	coin.add_theme_color_override("font_outline_color", Color("#b8860b"))
+	coin.add_theme_constant_override("outline_size", 6)
+	var mp := _wood(UI.hbox([coin, _money], 12))
+	mp.position = Vector2(810, 6)
+	mp.custom_minimum_size = Vector2(300, 0)
+	_stage.add_child(mp)
+	# Animal shop column
+	var col := UI.vbox([], 10)
+	col.position = Vector2(10, 110)
+	_stage.add_child(col)
+	for id in _st_avail_animals():
+		var d: Dictionary = _cat.animals[id]
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(120, 118)
+		b.icon = Art.tex(id)
+		b.expand_icon = true
+		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+		b.add_theme_constant_override("icon_max_width", 84)
+		b.text = "%d" % d.price
+		b.add_theme_font_size_override("font_size", 26)
+		b.pressed.connect(func():
+			if not _send(Cmd.buy_animal(id)):
+				App.play_sfx("error")
+			else:
+				App.play_sfx("coins"))
+		col.add_child(b)
+		_buy_btns[id] = b
+	col.add_child(UI.button("⇄", func(): _open_panel("animals", null), 34))
+	# Pause + timer, bottom-left
+	var pause := UI.button("❚❚", _show_pause, 34)
+	pause.custom_minimum_size = Vector2(84, 72)
+	pause.position = Vector2(12, 996)
+	_stage.add_child(pause)
+	_timer = UI.label("", 34, HUD_FG)
+	_trophy_dot = TrophyBadge.make("gold")
+	var tp := _wood(UI.hbox([_trophy_dot, _timer], 10))
+	tp.position = Vector2(106, 1000)
+	_stage.add_child(tp)
+	# Goals, bottom-right
+	_goals = UI.hbox([], 18)
+	for g in session.state().goals:
+		var icon_id: String = g.get("product", g.get("animal", ""))
+		var cell := UI.hbox([], 6)
+		if icon_id != "" and Art.tex(icon_id) != null:
+			cell.add_child(Art.icon(icon_id, 58))
+		else:
+			cell.add_child(UI.label("●" if g.type == "money" else "•", 40, Color("#ffd54f")))
+		var l := UI.label("", 30, HUD_FG)
+		cell.add_child(l)
+		_goal_labels.append(l)
+		_goals.add_child(cell)
+	var gp := _wood(_goals)
+	_stage.add_child(gp)
+	gp.reset_size()
+	gp.position = Vector2(STAGE.x - 12 - gp.size.x, STAGE.y - 8 - gp.size.y)
+	gp.resized.connect(func(): gp.position = Vector2(STAGE.x - 12 - gp.size.x, STAGE.y - 8 - gp.size.y))
+
+
+func _st_avail_animals() -> Array:
+	return session.state().available_animals
+
+
+func _wood(child: Control) -> PanelContainer:
+	var p := PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#7a4a22")
+	sb.border_color = Color("#4a2c12")
+	sb.set_border_width_all(4)
+	sb.set_corner_radius_all(16)
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	p.add_theme_stylebox_override("panel", sb)
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	p.add_child(child)
+	return p
 
 
 func _building(id: String, foot: Vector2, height: float, cb: Callable) -> Building:
@@ -303,19 +386,19 @@ func _layout() -> void:
 
 
 func _refresh_hud() -> void:
-	_money.text = "◉ %d" % _st.money
+	_money.text = "%d" % _st.money
 	var t: Dictionary = _st.trophy
 	var now: int = _st.tick
 	var color: String = _st.trophy_now
-	_timer.text = "%s  [%s %s | %s %s]" % [App.format_time(now), tr("gold"), App.format_time(t.gold_ticks), tr("silver"), App.format_time(t.silver_ticks)]
-	_timer.add_theme_color_override("font_color", TrophyBadge.COLORS[color].darkened(0.3))
-	while _goals.get_child_count() < _st.goals.size():
-		_goals.add_child(UI.label("", 28))
+	var limit: int = t.gold_ticks if color == "gold" else t.silver_ticks
+	_timer.text = App.format_time(now) + ("  / " + App.format_time(limit) if color in ["gold", "silver"] else "")
+	_trophy_dot.set_trophy(color)
 	for i in _st.goals.size():
 		var g: Dictionary = _st.goals[i]
-		var l: Label = _goals.get_child(i)
-		l.text = "%s %s  %d/%d" % ["✔" if g.done else "•", App.goal_text(g), mini(g.progress, g.target), g.target]
-		l.add_theme_color_override("font_color", App.COLOR_ACCENT_DARK if g.done else App.COLOR_INK)
+		_goal_labels[i].text = ("✔ " if g.done else "") + "%d/%d" % [mini(g.progress, g.target), g.target]
+		_goal_labels[i].add_theme_color_override("font_color", Color("#b9f6ca") if g.done else HUD_FG)
+	for id in _buy_btns:
+		_buy_btns[id].modulate.a = 1.0 if _st.money >= _cat.animals[id].price else 0.5
 	var w: Dictionary = _st.well
 	if w.refill_left > 0:
 		_well_b.set_badge("…%ds" % ceili(w.refill_left / 10.0))
