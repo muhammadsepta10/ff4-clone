@@ -22,6 +22,13 @@ The in-game Credits screen shows this file.
 | art/batch2/cake.png | Canva AI, batch 2 | https://www.canva.com/M/MAHYn781MTE | Canva AI, prompted by project | Canva Content License |
 | art/batch2/cloth.png | Canva AI, batch 2 | https://www.canva.com/M/MAHYn5wHJpY | Canva AI, prompted by project | Canva Content License |
 | art/batch2/coat.png | Canva AI, batch 2 | https://www.canva.com/M/MAHYn-AB0Nc | Canva AI, prompted by project | Canva Content License |
+| art/batch3/fluffhen.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoNavlsc | Canva AI, prompted by project | Canva Content License |
+| art/batch3/fluff_egg.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoPGynbE | Canva AI, prompted by project | Canva Content License |
+| art/batch3/patisserie.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoP0FW0E | Canva AI, prompted by project | Canva Content License |
+| art/batch3/caged_bear.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoPmIq6M | Canva AI, prompted by project | Canva Content License |
+| art/batch3/well.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoKCFGWs | Canva AI, prompted by project | Canva Content License |
+| art/batch3/warehouse.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoAYO6UI | Canva AI, prompted by project | Canva Content License |
+| art/batch3/truck.png | Canva AI, batch 3 | https://www.canva.com/M/MAHYoDEOOGs | Canva AI, prompted by project | Canva Content License |
 | audio/music/menu.ogg | OpenGameArt, "Happy Adventure (Loop)" | https://opengameart.org/content/happy-adventure-loop | TinyWorlds | CC0 1.0 |
 | audio/music/w1.ogg | OpenGameArt, "Fields of Cabbage" (trailing silence trimmed) | https://opengameart.org/content/fields-of-cabbage | ARoachIFoundOnMyPillow | CC0 1.0 |
 | audio/music/w2.ogg | OpenGameArt, "Flowerbed Fields (Loop)" | https://opengameart.org/content/flowerbed-fields-loop | Zane Little Music | CC0 1.0 |
@@ -43,9 +50,9 @@ The in-game Credits screen shows this file.
 Engine: Godot Engine 4 (MIT) — https://godotengine.org/license
 
 Batch 1 (2026-10-21): chicken, cow, sheep, bear, mole. Batch 2 (2026-10-21): bakery, dairy, loom,
-tailor, egg, milk, wool, pastry, butter, cake, cloth, coat. Owner approved the chicken as the style
-reference; the rest is approved by merging its PR. Fluffhen, fluff egg, patisserie and the caged bear
-still use procedural placeholder graphics drawn in code.
+tailor, egg, milk, wool, pastry, butter, cake, cloth, coat. Batch 3 (2026-10-21): fluffhen, fluff egg,
+patisserie, caged bear, well, warehouse, truck. Owner approved the chicken as the style reference; the
+rest is approved by merging its PR. The field (soil, fence, grass) is drawn in code.
 
 Audio batch 1 (2026-10-21): music for the menu and the four worlds, plus every sound effect. All CC0;
 music was re-encoded to Ogg Vorbis q3 with metadata removed. Approved by merging its PR.
