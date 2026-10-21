@@ -139,8 +139,18 @@ static func format_time(ticks: int) -> String:
 
 # ---------------------------------------------------------------- audio
 
+const MUSIC_FADE := 0.6
+## Effect ids the game plays (docs/style-bible.md). Files live in audio/sfx/<id>.ogg.
+const SFX_IDS := ["click", "collect", "coins", "error", "warning", "cage", "sparkle", "goal",
+	"achievement", "win", "animal_lost", "hybrid"]
+
 var _music := AudioStreamPlayer.new()
+var _music_id := ""
+var _music_tween: Tween
+var _music_next: AudioStream
 var _sfx: Array[AudioStreamPlayer] = []
+var _sfx_streams := {}
+var _sfx_next := 0
 
 
 func _setup_audio() -> void:
@@ -152,11 +162,16 @@ func _setup_audio() -> void:
 	_apply_volume("sfx")
 	_music.bus = "Music"
 	add_child(_music)
-	for i in 6:
+	for i in 8:
 		var p := AudioStreamPlayer.new()
 		p.bus = "SFX"
 		add_child(p)
 		_sfx.append(p)
+	# Load every effect once so the first tap on a phone does not stall on disk.
+	for id in SFX_IDS:
+		var path := "res://audio/sfx/%s.ogg" % id
+		if ResourceLoader.exists(path):
+			_sfx_streams[id] = load(path)
 
 
 func _apply_volume(key: String) -> void:
@@ -165,27 +180,49 @@ func _apply_volume(key: String) -> void:
 		AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(settings[key], 0.0001)))
 
 
-## Music per world and menu. Files are optional until audio assets are approved (see CREDITS.md).
+## Music per world and menu (US 75). Tracks loop and crossfade when the id changes.
 func play_music(id: String) -> void:
-	var path := "res://audio/music/%s.ogg" % id
-	if not ResourceLoader.exists(path):
-		_music.stop()
+	if id == _music_id:
 		return
-	var s: AudioStream = load(path)
-	if _music.stream != s:
-		_music.stream = s
+	_music_id = id
+	var path := "res://audio/music/%s.ogg" % id
+	_music_next = load(path) if ResourceLoader.exists(path) else null
+	if _music_next is AudioStreamOggVorbis:
+		_music_next.loop = true
+	if _music_tween:
+		_music_tween.kill()
+	_music_tween = create_tween()
+	if _music.playing:
+		_music_tween.tween_property(_music, "volume_db", -40.0, MUSIC_FADE)
+	_music_tween.tween_callback(_swap_music)
+	if _music_next != null:
+		_music_tween.tween_property(_music, "volume_db", 0.0, MUSIC_FADE)
+
+
+func _swap_music() -> void:
+	_music.stop()
+	_music.stream = _music_next
+	_music_next = null
+	if _music.stream != null:
+		_music.volume_db = -40.0
 		_music.play()
 
 
 func play_sfx(id: String) -> void:
-	var path := "res://audio/sfx/%s.ogg" % id
-	if not ResourceLoader.exists(path):
+	var s: AudioStream = _sfx_streams.get(id)
+	if s == null:
 		return
-	for p in _sfx:
-		if not p.playing:
-			p.stream = load(path)
-			p.play()
-			return
+	# Prefer an idle player; when all are busy, take them over in turn.
+	var p: AudioStreamPlayer = null
+	for q in _sfx:
+		if not q.playing:
+			p = q
+			break
+	if p == null:
+		p = _sfx[_sfx_next]
+		_sfx_next = (_sfx_next + 1) % _sfx.size()
+	p.stream = s
+	p.play()
 
 
 # ---------------------------------------------------------------- theme

@@ -32,5 +32,6 @@ Lampirkan gambar referensi gaya dari batch yang sudah disetujui. Setelah disetuj
 ## Audio
 
 - Musik: satu trek per dunia (`audio/music/w1.ogg` … `w4.ogg`) dan satu untuk menu (`menu.ogg`).
-- Efek: `click`, `collect`, `coins`, `error`, `warning`, `cage`, `sparkle`, `goal`, `achievement` di `audio/sfx/<nama>.ogg`.
+- Efek: `click`, `collect`, `coins`, `error`, `warning`, `cage`, `sparkle`, `goal`, `achievement`, `win`, `animal_lost`, `hybrid` di `audio/sfx/<nama>.ogg`. Id baru juga didaftarkan di `App.SFX_IDS`.
+- Musik di-loop dan berpindah dengan crossfade. Potong jeda sunyi di akhir trek agar loop mulus. Encode ke Ogg Vorbis q3 tanpa metadata.
 - Lisensi apa pun boleh, tetapi wajib dicatat di `CREDITS.md`.

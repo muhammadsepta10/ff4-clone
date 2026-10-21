@@ -22,9 +22,18 @@ var _time := 0.0
 var _fx: Array = []  # floating texts/pops: {pos, text, color, life, max}
 
 
+var _ground := Control.new()
+
+
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = false
+	# Soil and fence never change during a level, so they are drawn once behind the field.
+	_ground.show_behind_parent = true
+	_ground.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ground.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_ground.draw.connect(_draw_ground)
+	add_child(_ground)
 
 
 ## Called after every simulation tick with the new state.
@@ -97,15 +106,17 @@ func _draw() -> void:
 	var f: Dictionary = _cur.field
 	var w: float = f.cols * f.cell * SCALE
 	var h: float = f.rows * f.cell * SCALE
-	draw_rect(Rect2(Vector2(-14, -14), Vector2(w + 28, h + 28)), Color("#8b6b3d"))
-	draw_rect(Rect2(Vector2.ZERO, Vector2(w, h)), Color("#c8a96a"))
 	var cs: float = f.cell * SCALE
 	for i in _cur.grass.size():
 		var g: int = _cur.grass[i]
 		if g <= 0:
 			continue
 		var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
-		draw_rect(Rect2(o + Vector2(2, 2), Vector2(cs - 4, cs - 4)), Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33))
+		var c := Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33)
+		# A soft clump of blobs reads as grass better than a square tile.
+		draw_circle(o + Vector2(cs * 0.5, cs * 0.55), cs * 0.47, c.darkened(0.25))
+		for k in 4:
+			draw_circle(o + Vector2(cs * (0.32 + 0.36 * (k % 2)), cs * (0.32 + 0.34 * (k / 2))), cs * 0.27, c)
 		for k in g * 3:
 			var t := o + Vector2(10 + (k * 23) % int(cs - 20), 14 + (k * 37) % int(cs - 24))
 			draw_line(t, t + Vector2(-4, -12 - sin(_time * 3 + k) * 2), Color("#aed581"), 3)
@@ -178,6 +189,46 @@ func _draw_animal(a: Dictionary) -> void:
 			draw_circle(Vector2(40, -25), 2.5, Color.BLACK)
 	draw_set_transform(Vector2.ZERO)
 	_draw_hungry(a, p)
+
+
+## Soil with furrows and pebbles, framed by a wooden fence. Positions come from a
+## fixed hash so the field looks the same every frame and every level.
+func _draw_ground() -> void:
+	var w := size.x
+	var h := size.y
+	var ink := Color("#3b2a1a")
+	var wood := Color("#8b6b3d")
+	var wood_light := Color("#a9834f")
+	_ground.draw_rect(Rect2(Vector2(-22, -22), Vector2(w + 44, h + 44)), Color(0, 0, 0, 0.18))
+	_ground.draw_rect(Rect2(Vector2.ZERO, Vector2(w, h)), Color("#c8a96a"))
+	var row := 0.0
+	while row < h:
+		_ground.draw_rect(Rect2(Vector2(0, row + 34), Vector2(w, 6)), Color("#bb9a5c"))
+		row += 60.0
+	for k in 220:
+		var px := fmod(k * 137.5 + (k * k) % 53, w)
+		var py := fmod(k * 89.3 + (k * 7) % 31, h)
+		var light := k % 3 == 0
+		_ground.draw_circle(Vector2(px, py), 2.5 + k % 3, Color("#dcc28f") if light else Color("#a88a52"))
+	# Fence: two rails all round, posts every ~90 px.
+	for r in [-16.0, -6.0]:
+		_ground.draw_rect(Rect2(Vector2(r, r), Vector2(w - 2 * r, 8)), wood)
+		_ground.draw_rect(Rect2(Vector2(r, h - r - 8), Vector2(w - 2 * r, 8)), wood)
+		_ground.draw_rect(Rect2(Vector2(r, r), Vector2(8, h - 2 * r)), wood)
+		_ground.draw_rect(Rect2(Vector2(w - r - 8, r), Vector2(8, h - 2 * r)), wood)
+	var posts: Array[Vector2] = []
+	var nx := int(w / 90.0)
+	var ny := int(h / 90.0)
+	for i in nx + 1:
+		posts.append(Vector2(w * i / nx, -12))
+		posts.append(Vector2(w * i / nx, h + 12))
+	for j in range(1, ny):
+		posts.append(Vector2(-12, h * j / ny))
+		posts.append(Vector2(w + 12, h * j / ny))
+	for p in posts:
+		var r := Rect2(p - Vector2(9, 14), Vector2(18, 26))
+		_ground.draw_rect(r, wood_light)
+		_ground.draw_rect(r, ink, false, 3.0)
 
 
 ## Draws a sprite centred on x with its feet at `feet`, in the current draw transform.

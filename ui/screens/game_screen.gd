@@ -143,8 +143,10 @@ func _handle_events(evts: Array) -> void:
 				App.play_sfx("cage")
 			"animal_eaten", "animal_died":
 				_farm.pop_text(Vector2(e.x, e.y), "✖", Color("#ff8a80"))
+				App.play_sfx("animal_lost")
 			"hybrid_born":
 				_farm.pop_text(Vector2(e.x, e.y), "♥ " + tr(e.animal), Color("#f8bbd0"))
+				App.play_sfx("hybrid")
 			"hidden_found":
 				_show_toast(App.t("hidden_left", {"n": _st.hidden_items_left}))
 				App.play_sfx("sparkle")
@@ -231,6 +233,8 @@ func _build() -> void:
 			App.play_sfx("error"))
 	_wh_btn = _stage_button("", Vector2(40, 560), Vector2(280, 260), func(): _open_panel("warehouse", null))
 	_truck_btn = _stage_button("", Vector2(1600, 300), Vector2(280, 200), func(): _open_panel("truck", null))
+	for pair in [[_well_btn, "well"], [_wh_btn, "warehouse"], [_truck_btn, "truck"]]:
+		_set_building_icon(pair[0], pair[1])
 	_stage_button(tr("city"), Vector2(1600, 520), Vector2(280, 140), func(): _open_panel("city", null))
 	_stage_button(tr("shop"), Vector2(1600, 680), Vector2(280, 140), func(): _open_panel("animals", null))
 	_meter = ProgressBar.new()
@@ -292,6 +296,18 @@ func _stage_button(text: String, pos: Vector2, sz: Vector2, cb: Callable) -> But
 	b.clip_text = true
 	_stage.add_child(b)
 	return b
+
+
+## Shows a building sprite left of the button text, when the sprite exists.
+func _set_building_icon(b: Button, id: String) -> void:
+	var t := Art.tex(id)
+	if t == null:
+		return
+	b.icon = t
+	b.expand_icon = true
+	b.add_theme_constant_override("icon_max_width", 120)
+	b.add_theme_font_size_override("font_size", 28)
+	b.add_theme_constant_override("h_separation", 6)
 
 
 ## Keeps the 16:9 core stage centered; extra width/height (4:3 … 21:9) is background.
