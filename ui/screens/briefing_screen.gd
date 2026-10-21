@@ -17,7 +17,14 @@ func _ready() -> void:
 	v.add_child(cols)
 	var left := UI.vbox()
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left.add_child(UI.para(tr(lvl.get("story_key", "")), 900, 36))
+	var story := _story_keys(lid, lvl)
+	var line := StoryDialog.parse(tr(lvl.get("story_key", "")))
+	var story_row := UI.hbox([], 20)
+	var line_label := UI.para(("%s: %s" % [line.speaker, line.text]) if line.speaker != "" else line.text, 700, 36)
+	line_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	story_row.add_child(line_label)
+	story_row.add_child(UI.button(tr("story_replay"), func(): StoryDialog.show_keys(self, story), 30))
+	left.add_child(story_row)
 	left.add_child(UI.label(tr("briefing"), 44, App.COLOR_ACCENT_DARK))
 	for g in lvl.goals:
 		left.add_child(UI.label("• " + App.goal_text({"type": g.type, "target": g.get("count", g.get("amount", 0)),
@@ -38,6 +45,20 @@ func _ready() -> void:
 	start.custom_minimum_size = Vector2(420, 120)
 	start.size_flags_horizontal = Control.SIZE_SHRINK_END
 	v.add_child(start)
+	# Tell the story the first time a level is opened (until it is beaten).
+	if App.campaign.best_trophy(lid) == "":
+		StoryDialog.show_keys(self, story)
+
+
+## World intro on a world's first level, then the level's own line.
+func _story_keys(lid: String, lvl: Dictionary) -> Array:
+	var keys := []
+	if App.core.level_ids_in_world(lvl.world).find(lid) == 0:
+		for w in App.core.catalog().worlds:
+			if w.id == lvl.world:
+				keys.append(w.story_key)
+	keys.append(lvl.get("story_key", ""))
+	return keys
 
 
 func _refresh_boosts() -> void:

@@ -183,5 +183,13 @@
  "world_w1": "Lembah Embun",
  "world_w2": "Bukit Angin",
  "world_w3": "Pesisir Garam",
- "world_w4": "Puncak Salju"
+ "world_w4": "Puncak Salju",
+ "tap_to_continue": "Ketuk untuk lanjut",
+ "skip": "Lewati",
+ "story_replay": "📖 Cerita",
+ "story_w1_l1_end": "Pak Darto: \"Telurnya segar sekali! Warung pasti senang.\"",
+ "story_w1_l2_end": "Bu Wulan: \"Kandangnya ramai sekarang. Nenek pasti bangga.\"",
+ "story_w1_l3_end": "Pak Darto: \"Kuenya laris! Antrean di warung sampai ke jalan.\"",
+ "story_w1_l4_end": "Bu Wulan: \"Beruangnya kabur dan susunya melimpah. Kerja bagus!\"",
+ "story_w1_l5_end": "Nenek Sari: \"Lembah Embun hidup lagi berkat kamu. Bukit Angin sudah menunggu!\""
 }

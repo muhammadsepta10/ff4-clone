@@ -32,6 +32,10 @@ const SPRITES := {
 	"grass": ["res://art/scene/grass.png", 60.0],
 	"tree": ["res://art/scene/tree.png", 170.0],
 	"plot": ["res://art/scene/plot.png", 140.0],
+	# story: character portraits (cropped to content)
+	"char_sari": ["res://art/story/sari.png", 560.0],
+	"char_darto": ["res://art/story/darto.png", 560.0],
+	"char_wulan": ["res://art/story/wulan.png", 560.0],
 }
 
 static var _cache := {}

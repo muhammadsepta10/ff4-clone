@@ -32,3 +32,6 @@ func _ready() -> void:
 		buttons.add_child(UI.button(tr("next"), func(): main.goto("briefing", {"level_id": ids[next_i]})))
 	box.add_child(buttons)
 	add_child(UI.centered(UI.panel(box)))
+	var lvl := App.core.get_level(r.level_id)
+	if r.get("won", true) and lvl.has("story_key"):
+		StoryDialog.show_keys(self, [lvl.story_key + "_end"])

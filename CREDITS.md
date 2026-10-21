@@ -29,6 +29,9 @@ The in-game Credits screen shows this file.
 | art/scene/grass.png | Canva AI, scene batch | https://www.canva.com/M/MAHYpIMlir4 | Canva AI, prompted by project | Canva Content License |
 | art/scene/tree.png | Canva AI, scene batch | https://www.canva.com/M/MAHYpDic_uo | Canva AI, prompted by project | Canva Content License |
 | art/scene/plot.png | Canva AI, scene batch | https://www.canva.com/M/MAHYpOS5ZIA | Canva AI, prompted by project | Canva Content License |
+| art/story/sari.png | Canva AI, story batch | https://www.canva.com/M/MAHYpEJofLk | Canva AI, prompted by project | Canva Content License |
+| art/story/darto.png | Canva AI, story batch | https://www.canva.com/M/MAHYpHGapLE | Canva AI, prompted by project | Canva Content License |
+| art/story/wulan.png | Canva AI, story batch | https://www.canva.com/M/MAHYpB4V8tY | Canva AI, prompted by project | Canva Content License |
 
 Engine: Godot Engine 4 (MIT) — https://godotengine.org/license
 
