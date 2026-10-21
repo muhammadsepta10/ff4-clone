@@ -1,11 +1,94 @@
 {
-  "animals": [
-    {"id": "chicken",  "price": 100,  "sell_price": 50,  "product": "egg",       "produce_ticks": 150, "food_max": 300, "hungry_below": 150, "bite_food": 150, "starve_ticks": 200, "speed": 6, "buyable": true},
-    {"id": "sheep",    "price": 400,  "sell_price": 200, "product": "wool",      "produce_ticks": 200, "food_max": 300, "hungry_below": 150, "bite_food": 120, "starve_ticks": 200, "speed": 5, "buyable": true},
-    {"id": "cow",      "price": 800,  "sell_price": 400, "product": "milk",      "produce_ticks": 250, "food_max": 300, "hungry_below": 150, "bite_food": 100, "starve_ticks": 200, "speed": 4, "buyable": true},
-    {"id": "fluffhen", "price": 0,    "sell_price": 300, "product": "fluff_egg", "produce_ticks": 200, "food_max": 300, "hungry_below": 150, "bite_food": 150, "starve_ticks": 200, "speed": 6, "buyable": false}
-  ],
-  "hybrids": [
-    {"parents": ["chicken", "sheep"], "result": "fluffhen", "range": 160, "breed_ticks": 30, "cooldown_ticks": 300}
-  ]
+ "animals": [
+  {
+   "id": "chicken",
+   "role": "producer",
+   "price": 100,
+   "sell_price": 50,
+   "size": 4,
+   "product": "egg",
+   "produce_ticks": 95,
+   "food_ticks": 100,
+   "bites": 1,
+   "sleep_after_ticks": 50,
+   "speed": 4,
+   "run_speed": 10,
+   "buyable": true
+  },
+  {
+   "id": "pig",
+   "role": "producer",
+   "price": 1000,
+   "sell_price": 500,
+   "size": 10,
+   "product": "meat",
+   "produce_ticks": 145,
+   "food_ticks": 150,
+   "bites": 2,
+   "sleep_after_ticks": 50,
+   "speed": 6,
+   "run_speed": 10,
+   "buyable": true
+  },
+  {
+   "id": "sheep",
+   "role": "producer",
+   "price": 10000,
+   "sell_price": 5000,
+   "size": 10,
+   "product": "wool",
+   "produce_ticks": 155,
+   "food_ticks": 160,
+   "bites": 2,
+   "sleep_after_ticks": 50,
+   "speed": 7,
+   "run_speed": 10,
+   "buyable": true
+  },
+  {
+   "id": "cow",
+   "role": "producer",
+   "price": 5000,
+   "sell_price": 2500,
+   "size": 20,
+   "product": "milk",
+   "produce_ticks": 195,
+   "food_ticks": 200,
+   "bites": 4,
+   "sleep_after_ticks": 50,
+   "speed": 7,
+   "run_speed": 14,
+   "buyable": true
+  },
+  {
+   "id": "cat",
+   "role": "cat",
+   "price": 2500,
+   "sell_price": 1250,
+   "size": 4,
+   "product": "",
+   "produce_ticks": 0,
+   "food_ticks": 0,
+   "bites": 0,
+   "sleep_after_ticks": 50,
+   "speed": 8,
+   "run_speed": 10,
+   "buyable": true
+  },
+  {
+   "id": "dog",
+   "role": "dog",
+   "price": 3000,
+   "sell_price": 1500,
+   "size": 8,
+   "product": "",
+   "produce_ticks": 0,
+   "food_ticks": 0,
+   "bites": 0,
+   "sleep_after_ticks": 50,
+   "speed": 7,
+   "run_speed": 16,
+   "buyable": true
+  }
+ ]
 }

@@ -35,8 +35,10 @@ var _well_b: Building
 var _wh_b: Building
 var _truck_b: Building
 var _truck_home := Vector2.ZERO
+var _plane_b: Building
+var _plane_home := Vector2.ZERO
 var _road: TransportBar
-var _ws_b: Array[Building] = []
+var _ws_b: Array = []  # Building per slot, null where the level has no building spot
 var _meter: ProgressBar
 var _hidden: Label
 var _boosts: Label
@@ -147,18 +149,24 @@ func _handle_events(evts: Array) -> void:
 				_drive_truck(true)
 				_farm.pop_text((_truck_home - FIELD_POS + Vector2(80, -60)) / FarmView.SCALE, "+%d" % e.money, Color("#ffd54f"))
 				App.play_sfx("coins")
+			"plane_sent":
+				_fly_plane(false)
+			"plane_returned":
+				_fly_plane(true)
+				App.play_sfx("collect")
+			"bear_escaped":
+				_show_toast(tr("bear_escaped"))
+				App.play_sfx("warning")
+			"animal_asleep":
+				_farm.pop_text(Vector2(e.x, e.y), "z z", Color("#e1f5fe"))
+			"workshop_upgraded", "warehouse_upgraded", "well_upgraded", "truck_upgraded", "plane_upgraded":
+				App.play_sfx("goal")
 			"predator_warning":
 				_show_toast(tr("predator_warning_" + e.predator))
 				App.play_sfx("warning")
 			"predator_caged", "predator_chased":
 				_farm.pop_text(Vector2(e.x, e.y), "✔", Color("#b9f6ca"))
 				App.play_sfx("cage")
-			"animal_eaten", "animal_died":
-				_farm.pop_text(Vector2(e.x, e.y), "✖", Color("#ff8a80"))
-				App.play_sfx("animal_lost")
-			"hybrid_born":
-				_farm.pop_text(Vector2(e.x, e.y), "♥ " + tr(e.animal), Color("#f8bbd0"))
-				App.play_sfx("hybrid")
 			"hidden_found":
 				_show_toast(App.t("hidden_left", {"n": _st.hidden_items_left}))
 				App.play_sfx("sparkle")
@@ -185,13 +193,26 @@ func _drive_truck(back: bool) -> void:
 		tw.tween_callback(func(): _truck_b.visible = false)
 
 
+## The plane takes off to the top right to shop in town and lands back with the goods.
+func _fly_plane(back: bool) -> void:
+	var off := _plane_home + Vector2(500, -420)
+	var tw := create_tween()
+	if back:
+		_plane_b.visible = true
+		_plane_b.position = off
+		tw.tween_property(_plane_b, "position", _plane_home, 1.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	else:
+		tw.tween_property(_plane_b, "position", off, 1.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.tween_callback(func(): _plane_b.visible = false)
+
+
 # ---------------------------------------------------------------- tutorials
 
 const TUTORIAL_TRIGGERS := {
 	"plant_grass": "animal_hungry", "collect": "product_spawned", "well": "well_empty",
 	"warehouse": "product_collected", "click_meter": "click_reward", "mole": "predator_warning:mole",
 	"bear": "predator_warning:bear", "truck": "start", "workshop": "start", "buy_animal": "start",
-	"hybrid": "start", "city": "start",
+	"city": "start", "plane": "start", "cat": "start", "dog": "predator_warning:bear", "upgrade": "start",
 }
 
 
@@ -244,17 +265,22 @@ func _build() -> void:
 	_farm.command.connect(func(c): _send(c))
 	_farm.warehouse_pos = WAREHOUSE_FOOT - FIELD_POS - Vector2(0, 90)
 	_stage.add_child(_farm)
-	var slots: int = session.state().workshops.size()
-	for i in slots:
+	var st := session.state()
+	for i in st.slots.size():
+		# A spot only exists where the level offers buildings (or one stands already).
+		if st.slots[i].is_empty() and st.workshops[i] == null:
+			_ws_b.append(null)
+			continue
 		var b := _building("plot", SLOT_FEET[i], 170, func(): _open_panel("workshop", i))
 		_ws_b.append(b)
-	_well_b = _building("well", WELL_FOOT, 180, func():
-		if not _send(Cmd.refill_well()):
-			App.play_sfx("error"))
+	_well_b = _building("well", WELL_FOOT, 180, _on_well_tapped)
 	_wh_b = _building("warehouse", WAREHOUSE_FOOT, 210, func(): _open_panel("market", null))
 	_truck_b = _building("truck", TRUCK_FOOT, 120, _on_truck_tapped)
 	_truck_home = _truck_b.position
-	_building("plane", PLANE_FOOT, 120, func(): _open_panel("city", null)).set_badge(tr("city"))
+	_truck_b.visible = st.truck.available
+	_plane_b = _building("plane", PLANE_FOOT, 120, _on_plane_tapped)
+	_plane_home = _plane_b.position
+	_plane_b.visible = st.plane.available
 	_meter = ProgressBar.new()
 	_meter.show_percentage = false
 	_meter.position = Vector2(1862, 330)
@@ -311,6 +337,7 @@ func _build_hud() -> void:
 	# Road to town under the coins: the truck icon drives it while away.
 	_road = TransportBar.new()
 	_road.position = Vector2(STAGE.x / 2 - _road.size.x / 2, 58)
+	_road.visible = session.state().truck.available
 	_stage.add_child(_road)
 	# Animal shop column
 	var col := UI.vbox([], 10)
@@ -319,12 +346,12 @@ func _build_hud() -> void:
 	for id in _st_avail_animals():
 		var d: Dictionary = _cat.animals[id]
 		var b := Button.new()
-		b.custom_minimum_size = Vector2(120, 118)
+		b.custom_minimum_size = Vector2(120, 104)
 		b.icon = Art.tex(id)
 		b.expand_icon = true
 		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-		b.add_theme_constant_override("icon_max_width", 84)
+		b.add_theme_constant_override("icon_max_width", 72)
 		b.text = "%d" % d.price
 		b.add_theme_font_size_override("font_size", 26)
 		b.pressed.connect(func():
@@ -441,20 +468,26 @@ func _refresh_hud() -> void:
 	if w.refill_left > 0:
 		_well_b.set_badge("…%ds" % ceili(w.refill_left / 10.0))
 	elif w.water == 0:
-		_well_b.set_badge(App.t("refill", {"p": _cat.farm.well.refill_price}))
+		_well_b.set_badge(App.t("refill", {"p": w.refill_price}))
 	else:
 		_well_b.set_badge("%d/%d" % [w.water, w.capacity])
 	_well_b.set_meter(w.water, w.capacity, Color("#4fc3f7"))
+	_well_b.set_tag("⬆ %d" % w.upgrade_price if w.can_upgrade else "")
 	var wh: Dictionary = _st.warehouse
 	_wh_b.set_badge("%d/%d" % [wh.used, wh.capacity])
-	_wh_b.set_tag("⬆ %d" % _cat.farm.warehouse.levels[wh.level + 1].price if wh.can_upgrade else "")
+	_wh_b.set_tag("⬆ %d" % wh.upgrade_price if wh.can_upgrade else "")
 	var tr_: Dictionary = _st.truck
 	_truck_b.set_badge(("…%ds" % ceili(tr_.left / 10.0)) if tr_.away else "%d/%d" % [tr_.used, tr_.capacity])
 	_road.set_trip(tr_.left, tr_.trip_ticks)
-	_truck_b.set_tag("⬆ %d" % _cat.farm.truck.levels[tr_.level + 1].price if tr_.can_upgrade and not tr_.away else "")
+	_truck_b.set_tag("⬆ %d" % tr_.upgrade_price if tr_.can_upgrade else "")
+	var pl: Dictionary = _st.plane
+	_plane_b.set_badge(("…%ds" % ceili(pl.left / 10.0)) if pl.away else tr("city"))
+	_plane_b.set_tag("⬆ %d" % pl.upgrade_price if pl.can_upgrade else "")
 	for i in _ws_b.size():
 		var ws = _st.workshops[i]
-		var b := _ws_b[i]
+		var b = _ws_b[i]
+		if b == null:
+			continue
 		if ws == null:
 			if b.sprite_id != "plot":
 				b.sprite_id = "plot"
@@ -467,8 +500,8 @@ func _refresh_hud() -> void:
 				b.sprite_id = ws.type
 				b.set_sprite(ws.type)
 				b.bounce()
-			b.set_badge("%s ★%d" % [tr(ws.type), ws.level + 1])
-			b.set_tag("⬆ %d" % _cat.workshops[ws.type].upgrades[ws.level].price if ws.can_upgrade else "")
+			b.set_badge("%s ★%d" % [tr(ws.type), ws.level] + ("  +%d" % ws.queued if ws.queued > 0 else ""))
+			b.set_tag("⬆ %d" % ws.upgrade_price if ws.can_upgrade else "")
 			b.set_meter(ws.duration - ws.left if ws.left > 0 else -1, ws.duration, Color("#ffca28"))
 	_meter.value = _st.click_meter.fill
 	_hidden.text = App.t("hidden_left", {"n": _st.hidden_items_left})
@@ -533,7 +566,7 @@ func _intro() -> void:
 
 func _goals_popup(lvl: Dictionary) -> void:
 	var lid := session.level_id()
-	var n := App.core.level_ids_in_world(lvl.world).find(lid) + 1
+	var n := App.core.all_level_ids().find(lid) + 1
 	var p := GamePopup.open(self, App.t("level_n", {"n": n}), false)
 	p.body.custom_minimum_size.x = 980
 	p.body.add_child(_giver_row(tr(lvl.get("story_key", ""))))
@@ -662,7 +695,7 @@ func _results_popup(r: Dictionary, out: Dictionary) -> void:
 
 # ---------------------------------------------------------------- panels
 
-const PANEL_TITLES := {"market": "truck", "city": "city", "animals": "shop"}
+const PANEL_TITLES := {"market": "truck", "city": "plane", "animals": "shop", "well": "well"}
 
 
 func _open_panel(kind: String, arg) -> void:
@@ -672,7 +705,7 @@ func _open_panel(kind: String, arg) -> void:
 	var title: String
 	if kind == "workshop":
 		var ws = _st.workshops[arg]
-		title = tr("build") if ws == null else "%s ★%d" % [tr(ws.type), ws.level + 1]
+		title = tr("build") if ws == null else "%s ★%d" % [tr(ws.type), ws.level]
 	else:
 		title = tr(PANEL_TITLES[kind])
 	var p := GamePopup.open(self, title)
@@ -695,6 +728,7 @@ func _fill_panel() -> void:
 		"city": _city_panel(p.body)
 		"animals": _animals_panel(p.body)
 		"workshop": _workshop_panel(p.body, _panel_arg)
+		"well": _well_panel(p.body)
 
 
 func _close_panel() -> void:
@@ -712,6 +746,34 @@ func _on_truck_tapped() -> void:
 		_show_toast(App.t("truck_away", {"s": ceili(_st.truck.left / 10.0)}))
 		return
 	_open_panel("market", null)
+
+
+## Tap the well to refill it; when it is full the tap opens its upgrade window.
+func _on_well_tapped() -> void:
+	var w: Dictionary = _st.well
+	if w.water < w.capacity and w.refill_left == 0:
+		if not _send(Cmd.refill_well()):
+			App.play_sfx("error")
+		return
+	if w.can_upgrade:
+		_open_panel("well", null)
+	else:
+		_well_b.bounce()
+
+
+func _on_plane_tapped() -> void:
+	if _st.plane.away:
+		_plane_b.bounce()
+		_show_toast(App.t("plane_away", {"s": ceili(_st.plane.left / 10.0)}))
+		return
+	_open_panel("city", null)
+
+
+func _well_panel(box: VBoxContainer) -> void:
+	var w: Dictionary = _st.well
+	box.add_child(UI.label("★%d  ·  %d %s" % [w.level, w.capacity, tr("water")], 34, GamePopup.WOOD_DARK))
+	if w.can_upgrade:
+		box.add_child(_cmd_button("⬆ ◉ %d" % w.upgrade_price, Cmd.upgrade_well(), _st.money >= w.upgrade_price, Color("#e69138"), 32))
 
 
 func _cmd_button(text: String, cmd: Dictionary, enabled := true, color := GamePopup.RIBBON, size := 30) -> Button:
@@ -750,15 +812,14 @@ func _market_panel(box: VBoxContainer) -> void:
 	for prod in wh.items:
 		var sz: int = _cat.products[prod].size
 		grid.add_child(GamePopup.tile(prod, "×%d" % wh.items[prod], "◉ %d" % _cat.products[prod].sell_price,
-			func(): _try(Cmd.load_truck(prod, 1)), t.used + sz <= t.capacity))
+			func(): _try(Cmd.load_truck(prod, 1)), t.available and t.used + sz <= t.capacity))
 	if wh.items.is_empty():
 		left.add_child(UI.para(tr("warehouse_empty"), 580, 30, Color(App.COLOR_INK, 0.7)))
 	var lower := UI.hbox([], 12)
-	if not wh.items.is_empty():
+	if not wh.items.is_empty() and t.available:
 		lower.add_child(GamePopup.big_button(tr("load_all"), _load_all, Color("#3d85c6"), 28))
 	if wh.can_upgrade:
-		var next: Dictionary = _cat.farm.warehouse.levels[wh.level + 1]
-		lower.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("warehouse"), next.price], Cmd.upgrade_warehouse(), _st.money >= next.price, Color("#e69138"), 26))
+		lower.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("warehouse"), wh.upgrade_price], Cmd.upgrade_warehouse(), _st.money >= wh.upgrade_price, Color("#e69138"), 26))
 	left.add_child(lower)
 	# Right: the truck's load, total and Send.
 	var right := UI.vbox([], 10)
@@ -795,11 +856,12 @@ func _market_panel(box: VBoxContainer) -> void:
 			_close_panel()
 		else:
 			App.play_sfx("error"), GamePopup.RIBBON, 40)
-	send.disabled = t.cargo.is_empty()
+	send.disabled = t.cargo.is_empty() or not t.available
 	right.add_child(send)
+	if not t.available:
+		right.add_child(UI.para(tr("no_truck"), 420, 26, Color(App.COLOR_INK, 0.7)))
 	if t.can_upgrade:
-		var tn: Dictionary = _cat.farm.truck.levels[t.level + 1]
-		right.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("truck"), tn.price], Cmd.upgrade_truck(), _st.money >= tn.price, Color("#e69138"), 26))
+		right.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("truck"), t.upgrade_price], Cmd.upgrade_truck(), _st.money >= t.upgrade_price, Color("#e69138"), 26))
 
 
 ## Loads as much of every good as still fits.
@@ -820,14 +882,43 @@ func _load_all() -> void:
 	_fill_panel()
 
 
+## The plane's shopping list: tap a good to add one, tap it in the list to take
+## it off; paying happens when the plane leaves.
 func _city_panel(box: VBoxContainer) -> void:
-	var grid := _grid(5)
-	box.add_child(grid)
+	var t: Dictionary = _st.plane
+	var cols := UI.hbox([], 36)
+	box.add_child(cols)
+	var left := UI.vbox([], 10)
+	left.custom_minimum_size.x = 600
+	cols.add_child(left)
+	left.add_child(UI.label(tr("city"), 32, GamePopup.WOOD_DARK))
+	var grid := _grid(4)
+	left.add_child(grid)
 	for prod in _cat.products.values():
 		if prod.buy_price <= 0:
 			continue
-		grid.add_child(GamePopup.tile(prod.id, "", "◉ %d" % prod.buy_price, func(): _try(Cmd.buy_from_city(prod.id, 1)),
-			_st.money >= prod.buy_price))
+		grid.add_child(GamePopup.tile(prod.id, "", "◉ %d" % prod.buy_price, func(): _try(Cmd.order_plane(prod.id, 1)),
+			t.used + prod.size <= t.capacity))
+	var right := UI.vbox([], 10)
+	right.custom_minimum_size.x = 440
+	cols.add_child(right)
+	right.add_child(UI.label("%s  %d/%d" % [tr("plane"), t.used, t.capacity], 32, GamePopup.WOOD_DARK))
+	var cargo := _grid(3)
+	right.add_child(cargo)
+	for prod in t.cargo:
+		cargo.add_child(GamePopup.tile(prod, "×%d" % t.cargo[prod], "", func(): _try(Cmd.order_plane(prod, -1)), true, 112))
+	if t.cargo.is_empty():
+		right.add_child(UI.para(tr("plane_empty"), 420, 28, Color(App.COLOR_INK, 0.7)))
+	right.add_child(UI.label("◉ %d" % t.cost, 40, Color("#b8860b") if _st.money >= t.cost else Color("#c0504d")))
+	var send := GamePopup.big_button("✈ " + tr("send"), func():
+		if _send(Cmd.send_plane()):
+			_close_panel()
+		else:
+			App.play_sfx("error"), GamePopup.RIBBON, 40)
+	send.disabled = t.cargo.is_empty() or _st.money < t.cost
+	right.add_child(send)
+	if t.can_upgrade:
+		right.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("plane"), t.upgrade_price], Cmd.upgrade_plane(), _st.money >= t.upgrade_price, Color("#e69138"), 26))
 
 
 func _animals_panel(box: VBoxContainer) -> void:
@@ -856,26 +947,31 @@ func _animals_panel(box: VBoxContainer) -> void:
 func _workshop_panel(box: VBoxContainer, slot: int) -> void:
 	var ws = _st.workshops[slot]
 	if ws == null:
-		var grid := _grid(4)
+		# The spot offers one or more buildings; pick which one to build.
+		var grid := _grid(3)
 		box.add_child(grid)
-		for id in _st.available_workshops:
+		for id in _st.slots[slot]:
 			var d: Dictionary = _cat.workshops[id]
-			var v := UI.vbox([GamePopup.tile(id, "", "◉ %d" % d.build_price, func(): _try(Cmd.build_workshop(slot, id)),
-				_st.money >= d.build_price, 150), _recipe_row(d.inputs, d.output, 44)], 6)
+			var price: int = d.levels[0].price
+			var v := UI.vbox([GamePopup.tile(id, "", "◉ %d" % price, func(): _try(Cmd.build_workshop(slot, id)),
+				_st.money >= price, 150), _recipe_row(d.inputs, d.output, 44)], 6)
 			grid.add_child(v)
 		return
 	box.add_child(_recipe_row(ws.inputs, ws.output, 72))
 	var status := "%d dtk" % ceili(ws.duration / 10.0)
 	if ws.left > 0:
 		status = "… %d dtk" % ceili(ws.left / 10.0)
-	box.add_child(UI.label(status, 32, GamePopup.WOOD_DARK))
-	var row := UI.hbox([_cmd_button("▶ " + tr("produce"), Cmd.start_workshop(slot), ws.left == 0, GamePopup.RIBBON, 34)], 12)
-	var d: Dictionary = _cat.workshops[ws.type]
+	var busy: int = (1 if ws.left > 0 else 0) + ws.queued
+	box.add_child(UI.label("%s   ·   %s %d/%d" % [status, tr("queue"), busy, ws.queue_max], 32, GamePopup.WOOD_DARK))
+	var row := UI.hbox([_cmd_button("▶ " + tr("produce"), Cmd.start_workshop(slot), busy < ws.queue_max, GamePopup.RIBBON, 34)], 12)
 	if ws.can_upgrade:
-		var up: Dictionary = d.upgrades[ws.level]
-		row.add_child(_cmd_button("⬆ ◉ %d" % up.price, Cmd.upgrade_workshop(slot), _st.money >= up.price, Color("#e69138"), 28))
-	row.add_child(_cmd_button("%s ◉ %d" % [tr("sell"), d.sell_price], Cmd.sell_workshop(slot), ws.left == 0, Color("#a0522d"), 26))
+		row.add_child(_cmd_button("⬆ ★%d ◉ %d" % [ws.level + 1, ws.upgrade_price], Cmd.upgrade_workshop(slot), _st.money >= ws.upgrade_price, Color("#e69138"), 28))
+	row.add_child(_cmd_button("%s ◉ %d" % [tr("sell"), ws.sell_price], Cmd.sell_workshop(slot), ws.left == 0, Color("#a0522d"), 26))
 	box.add_child(row)
+	# Other buildings this spot could hold instead.
+	var others: Array = _st.slots[slot].filter(func(o): return o != ws.type)
+	if not others.is_empty():
+		box.add_child(UI.label(tr("slot_alternatives") + ": " + ", ".join(others.map(func(o): return tr(o))), 26, Color(App.COLOR_INK, 0.7)))
 
 
 ## Inputs → output drawn with icons, e.g. [egg] 2 → [pastry].

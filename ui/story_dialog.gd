@@ -9,8 +9,14 @@ signal finished
 # Speaker names in every language -> portrait sprite id
 const SPEAKERS := {
 	"Nenek Sari": "char_sari", "Grandma Sari": "char_sari",
-	"Pak Darto": "char_darto", "Mr. Darto": "char_darto",
+	"Kakek Darto": "char_darto", "Grandpa Darto": "char_darto",
 	"Bu Wulan": "char_wulan", "Mrs. Wulan": "char_wulan",
+	"Pak Bowo": "char_bowo", "Mr. Bowo": "char_bowo",
+	"Chef Rina": "char_rina",
+	"Pak Lurah": "char_lurah", "The Mayor": "char_lurah",
+	"Bu Tari": "char_tari", "Mrs. Tari": "char_tari",
+	"Pak Karto": "char_karto", "Mr. Karto": "char_karto",
+	"Zibo": "char_zibo",
 }
 const NARRATOR := "char_sari"
 

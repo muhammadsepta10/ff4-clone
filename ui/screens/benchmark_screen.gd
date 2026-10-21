@@ -35,7 +35,7 @@ func _busiest_level() -> String:
 	var score := -1
 	for id in App.core.all_level_ids():
 		var l := App.core.get_level(id)
-		var s: int = l.predators.size() * 5 + l.goals.size() * 3 + l.workshop_slots
+		var s: int = l.predators.size() * 5 + l.goals.size() * 3 + l.slots.filter(func(x): return not x.is_empty()).size()
 		if s > score:
 			score = s
 			best = id

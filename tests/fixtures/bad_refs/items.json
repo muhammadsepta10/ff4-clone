@@ -5,6 +5,6 @@
     {"id": "start_money",    "cost": {"clover": 1},             "effect": "start_money",    "value": 300, "duration_ticks": 0},
     {"id": "fast_animals",   "cost": {"clover": 2},             "effect": "fast_production", "value": 50,  "duration_ticks": 1200},
     {"id": "fast_workshops", "cost": {"acorn": 1},              "effect": "fast_workshops",  "value": 50,  "duration_ticks": 1200},
-    {"id": "big_warehouse",  "cost": {"acorn": 1, "clover": 1}, "effect": "big_warehouse",   "value": 15,  "duration_ticks": 0}
+    {"id": "big_warehouse",  "cost": {"acorn": 1, "clover": 1}, "effect": "big_warehouse",   "value": 100,  "duration_ticks": 0}
   ]
 }

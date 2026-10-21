@@ -40,23 +40,42 @@
   "well": {
    "type": "object",
    "properties": {
-    "capacity": {
-     "type": "integer",
-     "minimum": 1
-    },
-    "refill_ticks": {
-     "type": "integer",
-     "minimum": 1
-    },
     "refill_price": {
      "type": "integer",
      "minimum": 0
+    },
+    "levels": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "water": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "refill_ticks": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "price": {
+        "type": "integer",
+        "minimum": 0
+       }
+      },
+      "required": [
+       "water",
+       "refill_ticks",
+       "price"
+      ],
+      "additionalProperties": false
+     },
+     "minItems": 4,
+     "maxItems": 4
     }
    },
    "required": [
-    "capacity",
-    "refill_ticks",
-    "refill_price"
+    "refill_price",
+    "levels"
    ],
    "additionalProperties": false
   },
@@ -83,7 +102,8 @@
       ],
       "additionalProperties": false
      },
-     "minItems": 1
+     "minItems": 4,
+     "maxItems": 4
     }
    },
    "required": [
@@ -119,7 +139,8 @@
       ],
       "additionalProperties": false
      },
-     "minItems": 1
+     "minItems": 4,
+     "maxItems": 4
     }
    },
    "required": [
@@ -127,16 +148,40 @@
    ],
    "additionalProperties": false
   },
-  "city": {
+  "plane": {
    "type": "object",
    "properties": {
-    "delivery_ticks": {
-     "type": "integer",
-     "minimum": 1
+    "levels": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "capacity": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "trip_ticks": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "price": {
+        "type": "integer",
+        "minimum": 0
+       }
+      },
+      "required": [
+       "capacity",
+       "trip_ticks",
+       "price"
+      ],
+      "additionalProperties": false
+     },
+     "minItems": 4,
+     "maxItems": 4
     }
    },
    "required": [
-    "delivery_ticks"
+    "levels"
    ],
    "additionalProperties": false
   },
@@ -186,21 +231,13 @@
        "type": "integer",
        "minimum": 1
       },
-      "life_ticks": {
-       "type": "integer",
-       "minimum": 1
-      },
-      "attack_ticks": {
-       "type": "integer",
-       "minimum": 1
-      },
-      "attack_range": {
-       "type": "integer",
-       "minimum": 0
-      },
       "speed": {
        "type": "integer",
        "minimum": 1
+      },
+      "scare_range": {
+       "type": "integer",
+       "minimum": 0
       },
       "cage_product": {
        "type": "string",
@@ -210,10 +247,8 @@
      "required": [
       "hits",
       "hit_decay_ticks",
-      "life_ticks",
-      "attack_ticks",
-      "attack_range",
       "speed",
+      "scare_range",
       "cage_product"
      ],
      "additionalProperties": false
@@ -222,8 +257,27 @@
      "type": "object",
      "properties": {
       "hits": {
-       "type": "integer",
-       "minimum": 1
+       "type": "object",
+       "properties": {
+        "beginner": {
+         "type": "integer",
+         "minimum": 1
+        },
+        "mature": {
+         "type": "integer",
+         "minimum": 1
+        },
+        "veteran": {
+         "type": "integer",
+         "minimum": 1
+        }
+       },
+       "required": [
+        "beginner",
+        "mature",
+        "veteran"
+       ],
+       "additionalProperties": false
       },
       "hit_decay_ticks": {
        "type": "integer",
@@ -231,7 +285,7 @@
       },
       "life_ticks": {
        "type": "integer",
-       "minimum": 0
+       "minimum": 1
       },
       "eat_every_ticks": {
        "type": "integer",
@@ -262,6 +316,42 @@
     "mole"
    ],
    "additionalProperties": false
+  },
+  "helpers": {
+   "type": "object",
+   "properties": {
+    "cat": {
+     "type": "object",
+     "properties": {
+      "pick_range": {
+       "type": "integer",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "pick_range"
+     ],
+     "additionalProperties": false
+    },
+    "dog": {
+     "type": "object",
+     "properties": {
+      "catch_range": {
+       "type": "integer",
+       "minimum": 1
+      }
+     },
+     "required": [
+      "catch_range"
+     ],
+     "additionalProperties": false
+    }
+   },
+   "required": [
+    "cat",
+    "dog"
+   ],
+   "additionalProperties": false
   }
  },
  "required": [
@@ -270,10 +360,11 @@
   "well",
   "warehouse",
   "truck",
-  "city",
+  "plane",
   "click_meter",
   "predator_warning_ticks",
-  "predators"
+  "predators",
+  "helpers"
  ],
  "additionalProperties": false
 }

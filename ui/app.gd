@@ -142,7 +142,7 @@ static func format_time(ticks: int) -> String:
 const MUSIC_FADE := 0.6
 ## Effect ids the game plays (docs/style-bible.md). Files live in audio/sfx/<id>.ogg.
 const SFX_IDS := ["click", "collect", "coins", "error", "warning", "cage", "sparkle", "goal",
-	"achievement", "win", "animal_lost", "hybrid"]
+	"achievement", "win", "animal_lost"]
 
 var _music := AudioStreamPlayer.new()
 var _music_id := ""

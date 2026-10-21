@@ -18,8 +18,8 @@ func _script(s: LevelSession) -> void:
 
 
 func _lvl() -> Dictionary:
-	return level({"allow_hybrids": true, "start_animals": [{"type": "chicken", "count": 3}, {"type": "sheep", "count": 2}],
-		"predators": [{"type": "bear", "tick": 200}, {"type": "mole", "tick": 300}]})
+	return level({"start_animals": [{"type": "chicken", "count": 3}, {"type": "sheep", "count": 2}, {"type": "cat", "count": 1}, {"type": "dog", "count": 1}],
+		"predators": [{"type": "bear", "tick": 200, "count": 2}, {"type": "mole", "tick": 300, "count": 1, "tier": "veteran"}]})
 
 
 func test_same_seed_and_commands_give_identical_state() -> void:

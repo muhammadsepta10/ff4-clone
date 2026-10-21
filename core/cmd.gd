@@ -18,7 +18,11 @@ static func load_truck(product: String, qty: int) -> Dictionary: return {"type":
 static func unload_truck(product: String, qty: int) -> Dictionary: return {"type": "unload_truck", "product": product, "qty": qty}
 static func send_truck() -> Dictionary: return {"type": "send_truck"}
 static func upgrade_truck() -> Dictionary: return {"type": "upgrade_truck"}
-static func buy_from_city(product: String, qty: int) -> Dictionary: return {"type": "buy_from_city", "product": product, "qty": qty}
+static func upgrade_well() -> Dictionary: return {"type": "upgrade_well"}
+## qty > 0 adds goods to the plane's shopping list, qty < 0 removes them.
+static func order_plane(product: String, qty: int) -> Dictionary: return {"type": "order_plane", "product": product, "qty": qty}
+static func send_plane() -> Dictionary: return {"type": "send_plane"}
+static func upgrade_plane() -> Dictionary: return {"type": "upgrade_plane"}
 static func tap_predator(uid: int) -> Dictionary: return {"type": "tap_predator", "uid": uid}
 static func tap() -> Dictionary: return {"type": "tap"}
 static func find_hidden_item(id: String) -> Dictionary: return {"type": "find_hidden_item", "id": id}

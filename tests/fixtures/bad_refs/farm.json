@@ -1,14 +1,139 @@
 {
-  "field": {"cols": 16, "rows": 9, "cell": 100},
-  "grass": {"max": 3},
-  "well": {"capacity": 6, "refill_ticks": 40, "refill_price": 20},
-  "warehouse": {"levels": [{"capacity": 15, "price": 0}, {"capacity": 30, "price": 300}, {"capacity": 50, "price": 800}]},
-  "truck": {"levels": [{"capacity": 10, "trip_ticks": 200, "price": 0}, {"capacity": 20, "trip_ticks": 160, "price": 400}, {"capacity": 35, "trip_ticks": 120, "price": 900}]},
-  "city": {"delivery_ticks": 120},
-  "click_meter": {"max": 100, "per_tap": 4, "per_tap_per_hidden_item": 2, "reward": 30},
-  "predator_warning_ticks": 50,
-  "predators": {
-    "bear": {"hits": 8, "hit_decay_ticks": 8, "life_ticks": 600, "attack_ticks": 60, "attack_range": 80, "speed": 4, "cage_product": "caged_bear"},
-    "mole": {"hits": 3, "hit_decay_ticks": 20, "life_ticks": 400, "eat_every_ticks": 40, "eat_range": 100, "speed": 2}
+ "field": {
+  "cols": 16,
+  "rows": 9,
+  "cell": 100
+ },
+ "grass": {
+  "max": 3
+ },
+ "well": {
+  "refill_price": 15,
+  "levels": [
+   {
+    "water": 5,
+    "refill_ticks": 50,
+    "price": 0
+   },
+   {
+    "water": 7,
+    "refill_ticks": 40,
+    "price": 150
+   },
+   {
+    "water": 10,
+    "refill_ticks": 30,
+    "price": 500
+   },
+   {
+    "water": 14,
+    "refill_ticks": 20,
+    "price": 1000
+   }
+  ]
+ },
+ "warehouse": {
+  "levels": [
+   {
+    "capacity": 100,
+    "price": 0
+   },
+   {
+    "capacity": 250,
+    "price": 300
+   },
+   {
+    "capacity": 600,
+    "price": 1200
+   },
+   {
+    "capacity": 1000,
+    "price": 5000
+   }
+  ]
+ },
+ "truck": {
+  "levels": [
+   {
+    "capacity": 40,
+    "trip_ticks": 200,
+    "price": 0
+   },
+   {
+    "capacity": 80,
+    "trip_ticks": 180,
+    "price": 300
+   },
+   {
+    "capacity": 140,
+    "trip_ticks": 160,
+    "price": 800
+   },
+   {
+    "capacity": 220,
+    "trip_ticks": 140,
+    "price": 1500
+   }
+  ]
+ },
+ "plane": {
+  "levels": [
+   {
+    "capacity": 20,
+    "trip_ticks": 150,
+    "price": 0
+   },
+   {
+    "capacity": 40,
+    "trip_ticks": 130,
+    "price": 300
+   },
+   {
+    "capacity": 70,
+    "trip_ticks": 110,
+    "price": 800
+   },
+   {
+    "capacity": 110,
+    "trip_ticks": 90,
+    "price": 1500
+   }
+  ]
+ },
+ "click_meter": {
+  "max": 100,
+  "per_tap": 4,
+  "per_tap_per_hidden_item": 2,
+  "reward": 30
+ },
+ "predator_warning_ticks": 50,
+ "predators": {
+  "bear": {
+   "hits": 6,
+   "hit_decay_ticks": 8,
+   "speed": 6,
+   "scare_range": 220,
+   "cage_product": "caged_bear"
+  },
+  "mole": {
+   "hits": {
+    "beginner": 2,
+    "mature": 3,
+    "veteran": 4
+   },
+   "hit_decay_ticks": 20,
+   "life_ticks": 300,
+   "eat_every_ticks": 40,
+   "eat_range": 100,
+   "speed": 3
   }
+ },
+ "helpers": {
+  "cat": {
+   "pick_range": 40
+  },
+  "dog": {
+   "catch_range": 60
+  }
+ }
 }

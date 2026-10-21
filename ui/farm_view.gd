@@ -10,9 +10,13 @@ signal command(cmd: Dictionary)
 const SCALE := 0.75
 
 const PRODUCT_COLORS := {
-	"egg": Color("#fff8e7"), "milk": Color("#e8f4ff"), "wool": Color("#f4f4f4"), "fluff_egg": Color("#ffb6d9"),
-	"caged_bear": Color("#8b5a2b"), "pastry": Color("#e3a857"), "butter": Color("#ffe066"), "cloth": Color("#7fb3d5"),
-	"cake": Color("#f5a3c7"), "coat": Color("#a0522d"),
+	"egg": Color("#fff8e7"), "milk": Color("#e8f4ff"), "wool": Color("#f4f4f4"), "caged_bear": Color("#8b5a2b"),
+	"butter": Color("#ffe066"), "cloth": Color("#7fb3d5"), "egg_mix": Color("#ffe9a8"), "egg_powder": Color("#f7e7b4"),
+	"pancake": Color("#e3a857"), "sweet_roll": Color("#d9895b"), "sugar": Color("#ffffff"), "meat": Color("#e57373"),
+	"steak": Color("#b5533c"), "sausage": Color("#c0603a"), "smoked_sausage": Color("#8d4a2b"), "grilled_sausage": Color("#6d3a20"),
+	"coal": Color("#424242"), "cream": Color("#fff6e0"), "ferment": Color("#d7c49e"), "cheese": Color("#ffd54f"),
+	"thread": Color("#f8bbd0"), "paint": Color("#7e57c2"), "coloured_cloth": Color("#ec407a"), "chalk": Color("#eeeeee"),
+	"dress": Color("#ab47bc"),
 }
 
 var _prev := {}   # uid -> Vector2 (field units) from the previous tick
@@ -32,7 +36,7 @@ var _flying: Array = []  # collected products flying to the warehouse: {product,
 var warehouse_pos := Vector2(-130, 700)  # warehouse in this view's local px; set by the screen
 
 # Fraction of each sprite's height that is legs, swung while walking.
-const LEGS := {"chicken": 0.24, "sheep": 0.2, "cow": 0.22, "bear": 0.22, "fluffhen": 0.24}
+const LEGS := {"chicken": 0.24, "sheep": 0.2, "cow": 0.22, "bear": 0.22, "pig": 0.2, "cat": 0.22, "dog": 0.24}
 
 
 func _init() -> void:
@@ -198,13 +202,33 @@ func _draw_animal(a: Dictionary) -> void:
 			draw_circle(Vector2(18, -32), 6, Color("#e53935"))
 			draw_colored_polygon(PackedVector2Array([Vector2(30, -20), Vector2(40, -16), Vector2(30, -12)]), Color("#ffb300"))
 			draw_circle(Vector2(22, -21), 2.5, Color.BLACK)
-		"sheep", "fluffhen":
-			var wool := Color.WHITE if a.type == "sheep" else Color("#ffc1e3")
+		"sheep":
 			for k in 6:
-				draw_circle(Vector2(cos(k) * 18, sin(k) * 10 - 4), 17, wool)
-			var head := Color("#3e2723") if a.type == "sheep" else Color("#ff8a80")
-			draw_circle(Vector2(30, -12), 12, head)
+				draw_circle(Vector2(cos(k) * 18, sin(k) * 10 - 4), 17, Color.WHITE)
+			draw_circle(Vector2(30, -12), 12, Color("#3e2723"))
 			draw_circle(Vector2(34, -15), 2.5, Color.WHITE)
+		"pig":
+			draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash * 1.3, 2.0 - squash))
+			draw_circle(Vector2.ZERO, 24, Color("#f8a5c2"))
+			draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
+			draw_circle(Vector2(30, -8), 15, Color("#f8a5c2"))
+			draw_circle(Vector2(42, -6), 7, Color("#f48fb1"))
+			draw_circle(Vector2(30, -14), 2.5, Color.BLACK)
+			draw_colored_polygon(PackedVector2Array([Vector2(22, -20), Vector2(26, -32), Vector2(32, -20)]), Color("#f48fb1"))
+		"cat":
+			draw_circle(Vector2.ZERO, 18, Color("#ffb74d"))
+			draw_circle(Vector2(18, -16), 13, Color("#ffb74d"))
+			draw_colored_polygon(PackedVector2Array([Vector2(10, -24), Vector2(12, -38), Vector2(20, -27)]), Color("#ffb74d"))
+			draw_colored_polygon(PackedVector2Array([Vector2(20, -27), Vector2(28, -38), Vector2(28, -22)]), Color("#ffb74d"))
+			draw_line(Vector2(-16, -4), Vector2(-30, -26), Color("#ffb74d"), 6)
+			draw_circle(Vector2(22, -18), 2.5, Color.BLACK)
+		"dog":
+			draw_circle(Vector2.ZERO, 22, Color("#a1887f"))
+			draw_circle(Vector2(24, -18), 15, Color("#a1887f"))
+			draw_circle(Vector2(18, -22), 7, Color("#6d4c41"))
+			draw_circle(Vector2(36, -16), 4, Color.BLACK)
+			draw_circle(Vector2(26, -22), 2.5, Color.BLACK)
+			draw_line(Vector2(-20, -6), Vector2(-32, -20), Color("#a1887f"), 6)
 		"cow":
 			draw_rect(Rect2(-34, -22, 68, 40), Color.WHITE)
 			draw_circle(Vector2(-14, -8), 9, Color.BLACK)
@@ -225,6 +249,15 @@ func _draw_sprite(type: String, feet: Vector2) -> void:
 
 
 func _draw_hungry(a: Dictionary, p: Vector2) -> void:
+	if a.get("asleep", false):
+		var zp := p + Vector2(18, -70 - fmod(_time * 20, 24))
+		draw_string_outline(get_theme_default_font(), zp, "z Z", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, 5, Color(0, 0, 0, 0.4))
+		draw_string(get_theme_default_font(), zp, "z Z", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color("#e1f5fe"))
+		return
+	if a.get("scared", false):
+		draw_string_outline(get_theme_default_font(), p + Vector2(-8, -64), "!!", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, 6, Color.BLACK)
+		draw_string(get_theme_default_font(), p + Vector2(-8, -64), "!!", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, Color("#ffeb3b"))
+		return
 	if a.hungry:
 		var bp := p + Vector2(0, -70 - absf(sin(_time * 5)) * 6)
 		draw_circle(bp, 22, Color.WHITE)
@@ -241,7 +274,7 @@ func _draw_product(product: String, p: Vector2, life: int) -> void:
 		_draw_sprite(product, p + Vector2(0, 18))
 		return
 	match product:
-		"egg", "fluff_egg":
+		"egg":
 			draw_set_transform(p, 0, Vector2(0.8, 1.0))
 			draw_circle(Vector2.ZERO, 20, c)
 			draw_circle(Vector2(-6, -6), 6, Color(1, 1, 1, 0.7))
@@ -267,7 +300,7 @@ func _draw_predator(pr: Dictionary) -> void:
 	var p := _pos(pr) * SCALE
 	var shake := Vector2(sin(_time * 40) * 3, 0) if pr.hits > 0 else Vector2.ZERO
 	p += shake
-	var needed: int = App.core.catalog().farm.predators[pr.type].hits
+	var needed: int = pr.needed
 	if Art.tex(pr.type) != null:
 		var feet := 34.0 if pr.type == "bear" else 24.0
 		draw_set_transform(p + Vector2(0, feet - 4), 0, Vector2(1, 0.4))

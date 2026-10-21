@@ -10,7 +10,10 @@
     {"id": "click_meter", "text_key": "tut_click_meter"},
     {"id": "mole",        "text_key": "tut_mole"},
     {"id": "bear",        "text_key": "tut_bear"},
-    {"id": "hybrid",      "text_key": "tut_hybrid"},
-    {"id": "city",        "text_key": "tut_city"}
+    {"id": "city",        "text_key": "tut_city"},
+    {"id": "plane",       "text_key": "tut_plane"},
+    {"id": "cat",         "text_key": "tut_cat"},
+    {"id": "dog",         "text_key": "tut_dog"},
+    {"id": "upgrade",     "text_key": "tut_upgrade"}
   ]
 }

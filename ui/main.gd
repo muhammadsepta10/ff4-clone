@@ -31,4 +31,4 @@ func goto(screen: String, args := {}) -> void:
 	s.set("args", args)
 	add_child(s)
 	_current = s
-	App.play_music("menu" if screen != "game" else App.core.get_level(args.get("level_id", "w1_l1")).world)
+	App.play_music("menu" if screen != "game" else App.core.get_level(args.get("level_id", "l1")).world)
