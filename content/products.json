@@ -1,14 +1,204 @@
 {
-  "products": [
-    {"id": "egg",        "kind": "raw",     "size": 1, "sell_price": 12,  "buy_price": 25,  "ground_ticks": 200},
-    {"id": "milk",       "kind": "raw",     "size": 1, "sell_price": 60,  "buy_price": 120, "ground_ticks": 200},
-    {"id": "wool",       "kind": "raw",     "size": 1, "sell_price": 35,  "buy_price": 70,  "ground_ticks": 200},
-    {"id": "fluff_egg",  "kind": "raw",     "size": 1, "sell_price": 250, "buy_price": 0,   "ground_ticks": 250},
-    {"id": "caged_bear", "kind": "raw",     "size": 5, "sell_price": 400, "buy_price": 0,   "ground_ticks": 400},
-    {"id": "pastry",     "kind": "crafted", "size": 1, "sell_price": 50,  "buy_price": 0,   "ground_ticks": 300},
-    {"id": "butter",     "kind": "crafted", "size": 1, "sell_price": 150, "buy_price": 0,   "ground_ticks": 300},
-    {"id": "cloth",      "kind": "crafted", "size": 1, "sell_price": 90,  "buy_price": 0,   "ground_ticks": 300},
-    {"id": "cake",       "kind": "crafted", "size": 2, "sell_price": 420, "buy_price": 0,   "ground_ticks": 300},
-    {"id": "coat",       "kind": "crafted", "size": 2, "sell_price": 320, "buy_price": 0,   "ground_ticks": 300}
-  ]
+ "products": [
+  {
+   "id": "egg",
+   "kind": "raw",
+   "size": 1,
+   "sell_price": 10,
+   "buy_price": 0,
+   "ground_ticks": 200
+  },
+  {
+   "id": "egg_mix",
+   "kind": "crafted",
+   "size": 2,
+   "sell_price": 40,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "milk",
+   "kind": "raw",
+   "size": 4,
+   "sell_price": 1000,
+   "buy_price": 0,
+   "ground_ticks": 200
+  },
+  {
+   "id": "cream",
+   "kind": "crafted",
+   "size": 4,
+   "sell_price": 1500,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "wool",
+   "kind": "raw",
+   "size": 2,
+   "sell_price": 2500,
+   "buy_price": 0,
+   "ground_ticks": 200
+  },
+  {
+   "id": "pancake",
+   "kind": "crafted",
+   "size": 2,
+   "sell_price": 150,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "sugar",
+   "kind": "bought",
+   "size": 5,
+   "sell_price": 25,
+   "buy_price": 25,
+   "ground_ticks": 200
+  },
+  {
+   "id": "meat",
+   "kind": "raw",
+   "size": 3,
+   "sell_price": 200,
+   "buy_price": 0,
+   "ground_ticks": 200
+  },
+  {
+   "id": "steak",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 250,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "thread",
+   "kind": "crafted",
+   "size": 1,
+   "sell_price": 4500,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "sweet_roll",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 300,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "ferment",
+   "kind": "bought",
+   "size": 2,
+   "sell_price": 75,
+   "buy_price": 75,
+   "ground_ticks": 200
+  },
+  {
+   "id": "egg_powder",
+   "kind": "crafted",
+   "size": 2,
+   "sell_price": 80,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "butter",
+   "kind": "crafted",
+   "size": 2,
+   "sell_price": 2500,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "sausage",
+   "kind": "crafted",
+   "size": 4,
+   "sell_price": 350,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "smoked_sausage",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 450,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "coal",
+   "kind": "bought",
+   "size": 5,
+   "sell_price": 50,
+   "buy_price": 50,
+   "ground_ticks": 200
+  },
+  {
+   "id": "cloth",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 8000,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "paint",
+   "kind": "bought",
+   "size": 3,
+   "sell_price": 100,
+   "buy_price": 100,
+   "ground_ticks": 200
+  },
+  {
+   "id": "coloured_cloth",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 14000,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "chalk",
+   "kind": "bought",
+   "size": 1,
+   "sell_price": 30,
+   "buy_price": 30,
+   "ground_ticks": 200
+  },
+  {
+   "id": "dress",
+   "kind": "crafted",
+   "size": 4,
+   "sell_price": 30000,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "cheese",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 5000,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "grilled_sausage",
+   "kind": "crafted",
+   "size": 3,
+   "sell_price": 600,
+   "buy_price": 0,
+   "ground_ticks": 300
+  },
+  {
+   "id": "caged_bear",
+   "kind": "raw",
+   "size": 10,
+   "sell_price": 80,
+   "buy_price": 0,
+   "ground_ticks": 400
+  }
+ ]
 }

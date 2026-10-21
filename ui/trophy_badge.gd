@@ -24,3 +24,9 @@ func _draw() -> void:
 		draw_arc(c, r, 0, TAU, 32, COLORS[trophy].darkened(0.3), 3)
 	else:
 		draw_arc(c, r, 0, TAU, 32, Color(0, 0, 0, 0.25), 3)
+
+
+func set_trophy(t: String) -> void:
+	if t != trophy:
+		trophy = t
+		queue_redraw()

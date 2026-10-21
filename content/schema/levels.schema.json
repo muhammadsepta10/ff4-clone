@@ -14,6 +14,19 @@
       "type": "string",
       "minLength": 1
      },
+     "scene": {
+      "type": "string",
+      "enum": [
+       "grand_farm",
+       "player_farm",
+       "village",
+       "town"
+      ]
+     },
+     "giver": {
+      "type": "string",
+      "minLength": 1
+     },
      "story_key": {
       "type": "string",
       "minLength": 1
@@ -52,21 +65,57 @@
       },
       "minItems": 0
      },
-     "available_workshops": {
+     "well_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+     },
+     "warehouse_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+     },
+     "slots": {
       "type": "array",
       "items": {
-       "type": "string",
-       "minLength": 1
+       "type": "array",
+       "items": {
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "minLength": 1
+         },
+         "level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+         }
+        },
+        "required": [
+         "type",
+         "level"
+        ],
+        "additionalProperties": false
+       },
+       "minItems": 0
       },
-      "minItems": 0
+      "minItems": 6,
+      "maxItems": 6
      },
-     "workshop_slots": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 6
-     },
-     "allow_hybrids": {
+     "truck": {
       "type": "boolean"
+     },
+     "plane": {
+      "type": "boolean"
+     },
+     "max_level": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 4
+      }
      },
      "goals": {
       "type": "array",
@@ -120,11 +169,24 @@
         "tick": {
          "type": "integer",
          "minimum": 0
+        },
+        "count": {
+         "type": "integer",
+         "minimum": 1
+        },
+        "tier": {
+         "type": "string",
+         "enum": [
+          "beginner",
+          "mature",
+          "veteran"
+         ]
         }
        },
        "required": [
         "type",
-        "tick"
+        "tick",
+        "count"
        ],
        "additionalProperties": false
       },
@@ -187,12 +249,18 @@
     "required": [
      "id",
      "world",
+     "scene",
+     "giver",
+     "story_key",
      "start_money",
      "start_animals",
      "available_animals",
-     "available_workshops",
-     "workshop_slots",
-     "allow_hybrids",
+     "well_level",
+     "warehouse_level",
+     "slots",
+     "truck",
+     "plane",
+     "max_level",
      "goals",
      "predators",
      "hidden_items",

@@ -1,14 +1,444 @@
 {
-  "workshops": [
-    {"id": "bakery",     "build_price": 300, "sell_price": 150, "inputs": {"egg": 2},                  "output": "pastry", "duration_ticks": 100,
-     "upgrades": [{"price": 200, "duration_pct": 75}, {"price": 400, "duration_pct": 50}]},
-    {"id": "dairy",      "build_price": 600, "sell_price": 300, "inputs": {"milk": 1},                 "output": "butter", "duration_ticks": 120,
-     "upgrades": [{"price": 300, "duration_pct": 75}, {"price": 600, "duration_pct": 50}]},
-    {"id": "loom",       "build_price": 500, "sell_price": 250, "inputs": {"wool": 1},                 "output": "cloth",  "duration_ticks": 120,
-     "upgrades": [{"price": 250, "duration_pct": 75}, {"price": 500, "duration_pct": 50}]},
-    {"id": "patisserie", "build_price": 900, "sell_price": 450, "inputs": {"pastry": 1, "butter": 1},  "output": "cake",   "duration_ticks": 150,
-     "upgrades": [{"price": 450, "duration_pct": 75}, {"price": 900, "duration_pct": 50}]},
-    {"id": "tailor",     "build_price": 800, "sell_price": 400, "inputs": {"cloth": 2},                "output": "coat",   "duration_ticks": 150,
-     "upgrades": [{"price": 400, "duration_pct": 75}, {"price": 800, "duration_pct": 50}]}
-  ]
+ "workshops": [
+  {
+   "id": "mixer",
+   "inputs": {
+    "egg": 1
+   },
+   "output": "egg_mix",
+   "levels": [
+    {
+     "price": 150,
+     "duration_ticks": 200,
+     "queue": 1
+    },
+    {
+     "price": 200,
+     "duration_ticks": 150,
+     "queue": 2
+    },
+    {
+     "price": 250,
+     "duration_ticks": 150,
+     "queue": 3
+    },
+    {
+     "price": 300,
+     "duration_ticks": 100,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "dryer",
+   "inputs": {
+    "egg_mix": 1
+   },
+   "output": "egg_powder",
+   "levels": [
+    {
+     "price": 200,
+     "duration_ticks": 200,
+     "queue": 1
+    },
+    {
+     "price": 300,
+     "duration_ticks": 180,
+     "queue": 2
+    },
+    {
+     "price": 400,
+     "duration_ticks": 160,
+     "queue": 3
+    },
+    {
+     "price": 500,
+     "duration_ticks": 140,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "bakery",
+   "inputs": {
+    "egg_powder": 1
+   },
+   "output": "pancake",
+   "levels": [
+    {
+     "price": 400,
+     "duration_ticks": 200,
+     "queue": 1
+    },
+    {
+     "price": 500,
+     "duration_ticks": 180,
+     "queue": 2
+    },
+    {
+     "price": 600,
+     "duration_ticks": 160,
+     "queue": 3
+    },
+    {
+     "price": 700,
+     "duration_ticks": 150,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "confectory",
+   "inputs": {
+    "pancake": 1,
+    "sugar": 1
+   },
+   "output": "sweet_roll",
+   "levels": [
+    {
+     "price": 750,
+     "duration_ticks": 220,
+     "queue": 1
+    },
+    {
+     "price": 1400,
+     "duration_ticks": 200,
+     "queue": 2
+    },
+    {
+     "price": 2200,
+     "duration_ticks": 180,
+     "queue": 3
+    },
+    {
+     "price": 3500,
+     "duration_ticks": 160,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "butchery",
+   "inputs": {
+    "meat": 1
+   },
+   "output": "steak",
+   "levels": [
+    {
+     "price": 800,
+     "duration_ticks": 280,
+     "queue": 1
+    },
+    {
+     "price": 1500,
+     "duration_ticks": 240,
+     "queue": 2
+    },
+    {
+     "price": 2300,
+     "duration_ticks": 220,
+     "queue": 3
+    },
+    {
+     "price": 3000,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "separator",
+   "inputs": {
+    "milk": 1
+   },
+   "output": "cream",
+   "levels": [
+    {
+     "price": 5000,
+     "duration_ticks": 250,
+     "queue": 1
+    },
+    {
+     "price": 7000,
+     "duration_ticks": 220,
+     "queue": 2
+    },
+    {
+     "price": 9500,
+     "duration_ticks": 220,
+     "queue": 3
+    },
+    {
+     "price": 14000,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "churn",
+   "inputs": {
+    "cream": 1
+   },
+   "output": "butter",
+   "levels": [
+    {
+     "price": 7500,
+     "duration_ticks": 260,
+     "queue": 1
+    },
+    {
+     "price": 10000,
+     "duration_ticks": 230,
+     "queue": 2
+    },
+    {
+     "price": 12500,
+     "duration_ticks": 210,
+     "queue": 3
+    },
+    {
+     "price": 15000,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "spinner",
+   "inputs": {
+    "wool": 1
+   },
+   "output": "thread",
+   "levels": [
+    {
+     "price": 8500,
+     "duration_ticks": 300,
+     "queue": 1
+    },
+    {
+     "price": 13000,
+     "duration_ticks": 260,
+     "queue": 2
+    },
+    {
+     "price": 17500,
+     "duration_ticks": 220,
+     "queue": 3
+    },
+    {
+     "price": 23000,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "cheese_maker",
+   "inputs": {
+    "butter": 1,
+    "ferment": 1
+   },
+   "output": "cheese",
+   "levels": [
+    {
+     "price": 9000,
+     "duration_ticks": 280,
+     "queue": 1
+    },
+    {
+     "price": 13500,
+     "duration_ticks": 240,
+     "queue": 2
+    },
+    {
+     "price": 16000,
+     "duration_ticks": 220,
+     "queue": 3
+    },
+    {
+     "price": 19000,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "sausage_maker",
+   "inputs": {
+    "steak": 1
+   },
+   "output": "sausage",
+   "levels": [
+    {
+     "price": 1200,
+     "duration_ticks": 280,
+     "queue": 1
+    },
+    {
+     "price": 1800,
+     "duration_ticks": 240,
+     "queue": 2
+    },
+    {
+     "price": 2600,
+     "duration_ticks": 220,
+     "queue": 3
+    },
+    {
+     "price": 3400,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "dye_works",
+   "inputs": {
+    "cloth": 1,
+    "paint": 1
+   },
+   "output": "coloured_cloth",
+   "levels": [
+    {
+     "price": 15000,
+     "duration_ticks": 300,
+     "queue": 1
+    },
+    {
+     "price": 20000,
+     "duration_ticks": 280,
+     "queue": 2
+    },
+    {
+     "price": 25000,
+     "duration_ticks": 260,
+     "queue": 3
+    },
+    {
+     "price": 30000,
+     "duration_ticks": 240,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "weaver",
+   "inputs": {
+    "thread": 1
+   },
+   "output": "cloth",
+   "levels": [
+    {
+     "price": 12000,
+     "duration_ticks": 300,
+     "queue": 1
+    },
+    {
+     "price": 16000,
+     "duration_ticks": 260,
+     "queue": 2
+    },
+    {
+     "price": 21500,
+     "duration_ticks": 220,
+     "queue": 3
+    },
+    {
+     "price": 27000,
+     "duration_ticks": 200,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "studio",
+   "inputs": {
+    "coloured_cloth": 1,
+    "chalk": 1
+   },
+   "output": "dress",
+   "levels": [
+    {
+     "price": 20000,
+     "duration_ticks": 300,
+     "queue": 1
+    },
+    {
+     "price": 25000,
+     "duration_ticks": 280,
+     "queue": 2
+    },
+    {
+     "price": 30000,
+     "duration_ticks": 260,
+     "queue": 3
+    },
+    {
+     "price": 35000,
+     "duration_ticks": 240,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "smokehouse",
+   "inputs": {
+    "sausage": 1
+   },
+   "output": "smoked_sausage",
+   "levels": [
+    {
+     "price": 2000,
+     "duration_ticks": 280,
+     "queue": 1
+    },
+    {
+     "price": 3300,
+     "duration_ticks": 260,
+     "queue": 2
+    },
+    {
+     "price": 4400,
+     "duration_ticks": 240,
+     "queue": 3
+    },
+    {
+     "price": 6500,
+     "duration_ticks": 220,
+     "queue": 4
+    }
+   ]
+  },
+  {
+   "id": "grill",
+   "inputs": {
+    "smoked_sausage": 1,
+    "coal": 1
+   },
+   "output": "grilled_sausage",
+   "levels": [
+    {
+     "price": 4000,
+     "duration_ticks": 280,
+     "queue": 1
+    },
+    {
+     "price": 7500,
+     "duration_ticks": 260,
+     "queue": 2
+    },
+    {
+     "price": 11000,
+     "duration_ticks": 240,
+     "queue": 3
+    },
+    {
+     "price": 15000,
+     "duration_ticks": 220,
+     "queue": 4
+    }
+   ]
+  }
+ ]
 }

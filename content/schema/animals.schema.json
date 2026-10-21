@@ -10,6 +10,14 @@
       "type": "string",
       "minLength": 1
      },
+     "role": {
+      "type": "string",
+      "enum": [
+       "producer",
+       "cat",
+       "dog"
+      ]
+     },
      "price": {
       "type": "integer",
       "minimum": 0
@@ -18,31 +26,34 @@
       "type": "integer",
       "minimum": 0
      },
+     "size": {
+      "type": "integer",
+      "minimum": 1
+     },
      "product": {
-      "type": "string",
-      "minLength": 1
+      "type": "string"
      },
      "produce_ticks": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 0
      },
-     "food_max": {
-      "type": "integer",
-      "minimum": 1
-     },
-     "hungry_below": {
+     "food_ticks": {
       "type": "integer",
       "minimum": 0
      },
-     "bite_food": {
+     "bites": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 0
      },
-     "starve_ticks": {
+     "sleep_after_ticks": {
       "type": "integer",
       "minimum": 1
      },
      "speed": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "run_speed": {
       "type": "integer",
       "minimum": 1
      },
@@ -52,67 +63,26 @@
     },
     "required": [
      "id",
+     "role",
      "price",
      "sell_price",
+     "size",
      "product",
      "produce_ticks",
-     "food_max",
-     "hungry_below",
-     "bite_food",
-     "starve_ticks",
+     "food_ticks",
+     "bites",
+     "sleep_after_ticks",
      "speed",
+     "run_speed",
      "buyable"
     ],
     "additionalProperties": false
    },
    "minItems": 1
-  },
-  "hybrids": {
-   "type": "array",
-   "items": {
-    "type": "object",
-    "properties": {
-     "parents": {
-      "type": "array",
-      "items": {
-       "type": "string",
-       "minLength": 1
-      },
-      "minItems": 2,
-      "maxItems": 2
-     },
-     "result": {
-      "type": "string",
-      "minLength": 1
-     },
-     "range": {
-      "type": "integer",
-      "minimum": 1
-     },
-     "breed_ticks": {
-      "type": "integer",
-      "minimum": 1
-     },
-     "cooldown_ticks": {
-      "type": "integer",
-      "minimum": 0
-     }
-    },
-    "required": [
-     "parents",
-     "result",
-     "range",
-     "breed_ticks",
-     "cooldown_ticks"
-    ],
-    "additionalProperties": false
-   },
-   "minItems": 0
   }
  },
  "required": [
-  "animals",
-  "hybrids"
+  "animals"
  ],
  "additionalProperties": false
 }

@@ -142,7 +142,7 @@ static func format_time(ticks: int) -> String:
 const MUSIC_FADE := 0.6
 ## Effect ids the game plays (docs/style-bible.md). Files live in audio/sfx/<id>.ogg.
 const SFX_IDS := ["click", "collect", "coins", "error", "warning", "cage", "sparkle", "goal",
-	"achievement", "win", "animal_lost", "hybrid"]
+	"achievement", "win", "animal_lost"]
 
 var _music := AudioStreamPlayer.new()
 var _music_id := ""
@@ -238,45 +238,45 @@ const COLOR_WARN := Color("#cc4125")
 func _build_theme() -> Theme:
 	var th := Theme.new()
 	th.default_font_size = 36
-	var btn := StyleBoxFlat.new()
-	btn.bg_color = COLOR_ACCENT
-	btn.set_corner_radius_all(22)
-	btn.set_content_margin_all(18)
-	btn.shadow_color = Color(0, 0, 0, 0.25)
-	btn.shadow_offset = Vector2(0, 5)
-	btn.shadow_size = 2
-	var hover := btn.duplicate()
-	hover.bg_color = COLOR_ACCENT.lightened(0.1)
-	var pressed := btn.duplicate()
-	pressed.bg_color = COLOR_ACCENT_DARK
-	pressed.shadow_offset = Vector2(0, 1)
-	var disabled := btn.duplicate()
-	disabled.bg_color = Color("#b7b7b7")
-	th.set_stylebox("normal", "Button", btn)
-	th.set_stylebox("hover", "Button", hover)
-	th.set_stylebox("pressed", "Button", pressed)
-	th.set_stylebox("disabled", "Button", disabled)
+	# Chunky game buttons: rounded, a thick darker bottom edge that flattens when
+	# pressed, and outlined white text.
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		var c: Color = {"normal": COLOR_ACCENT, "hover": COLOR_ACCENT.lightened(0.12),
+			"pressed": COLOR_ACCENT.darkened(0.12), "disabled": Color("#a9a49a")}[state]
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = c
+		sb.border_color = c.darkened(0.42)
+		sb.set_border_width_all(5)
+		sb.border_width_bottom = 5 if state == "pressed" else 11
+		sb.set_corner_radius_all(30)
+		sb.content_margin_left = 30
+		sb.content_margin_right = 30
+		sb.content_margin_top = 12
+		sb.content_margin_bottom = 16
+		th.set_stylebox(state, "Button", sb)
 	th.set_stylebox("focus", "Button", StyleBoxEmpty.new())
 	th.set_color("font_color", "Button", Color.WHITE)
 	th.set_color("font_hover_color", "Button", Color.WHITE)
 	th.set_color("font_pressed_color", "Button", Color.WHITE)
-	th.set_color("font_disabled_color", "Button", Color("#efefef"))
+	th.set_color("font_disabled_color", "Button", Color("#f2efe8"))
+	th.set_color("font_outline_color", "Button", COLOR_ACCENT_DARK.darkened(0.45))
+	th.set_constant("outline_size", "Button", 8)
 	th.set_color("font_color", "Label", COLOR_INK)
 	var panel := StyleBoxFlat.new()
-	panel.bg_color = COLOR_PANEL
-	panel.set_corner_radius_all(28)
-	panel.set_content_margin_all(28)
-	panel.border_color = Color("#c9a66b")
-	panel.set_border_width_all(5)
+	panel.bg_color = Color("#fdf1d4")
+	panel.set_corner_radius_all(34)
+	panel.set_content_margin_all(32)
+	panel.border_color = Color("#8d5a2b")
+	panel.set_border_width_all(10)
 	panel.shadow_color = Color(0, 0, 0, 0.3)
 	panel.shadow_size = 12
 	th.set_stylebox("panel", "PanelContainer", panel)
 	var edit := StyleBoxFlat.new()
-	edit.bg_color = Color.WHITE
-	edit.set_corner_radius_all(14)
-	edit.set_content_margin_all(16)
-	edit.border_color = Color("#c9a66b")
-	edit.set_border_width_all(3)
+	edit.bg_color = Color("#fffaf0")
+	edit.set_corner_radius_all(24)
+	edit.set_content_margin_all(18)
+	edit.border_color = Color("#8d5a2b")
+	edit.set_border_width_all(5)
 	th.set_stylebox("normal", "LineEdit", edit)
 	th.set_color("font_color", "LineEdit", COLOR_INK)
 	th.set_constant("separation", "VBoxContainer", 16)

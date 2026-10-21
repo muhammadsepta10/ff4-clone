@@ -10,9 +10,13 @@ signal command(cmd: Dictionary)
 const SCALE := 0.75
 
 const PRODUCT_COLORS := {
-	"egg": Color("#fff8e7"), "milk": Color("#e8f4ff"), "wool": Color("#f4f4f4"), "fluff_egg": Color("#ffb6d9"),
-	"caged_bear": Color("#8b5a2b"), "pastry": Color("#e3a857"), "butter": Color("#ffe066"), "cloth": Color("#7fb3d5"),
-	"cake": Color("#f5a3c7"), "coat": Color("#a0522d"),
+	"egg": Color("#fff8e7"), "milk": Color("#e8f4ff"), "wool": Color("#f4f4f4"), "caged_bear": Color("#8b5a2b"),
+	"butter": Color("#ffe066"), "cloth": Color("#7fb3d5"), "egg_mix": Color("#ffe9a8"), "egg_powder": Color("#f7e7b4"),
+	"pancake": Color("#e3a857"), "sweet_roll": Color("#d9895b"), "sugar": Color("#ffffff"), "meat": Color("#e57373"),
+	"steak": Color("#b5533c"), "sausage": Color("#c0603a"), "smoked_sausage": Color("#8d4a2b"), "grilled_sausage": Color("#6d3a20"),
+	"coal": Color("#424242"), "cream": Color("#fff6e0"), "ferment": Color("#d7c49e"), "cheese": Color("#ffd54f"),
+	"thread": Color("#f8bbd0"), "paint": Color("#7e57c2"), "coloured_cloth": Color("#ec407a"), "chalk": Color("#eeeeee"),
+	"dress": Color("#ab47bc"),
 }
 
 var _prev := {}   # uid -> Vector2 (field units) from the previous tick
@@ -20,20 +24,24 @@ var _cur: Dictionary = {}
 var _alpha := 1.0
 var _time := 0.0
 var _fx: Array = []  # floating texts/pops: {pos, text, color, life, max}
+var _grass_shown := {}  # cell index -> displayed growth, eased toward the sim value
+# Walk animation state per uid (view only).
+var _phase := {}     # step phase, advanced by distance walked
+var _face := {}      # -1 left, +1 right; only flips on clear horizontal movement
+var _last := {}      # last drawn position, to measure walking
+var _moving := {}    # 0..1, eased walking amount
+var _peck := {}      # seconds left of the eating animation
+var _spawned := {}   # ground uid -> seconds since it appeared (pop-in)
+var _flying: Array = []  # collected products flying to the warehouse: {product, from, to, t}
+var warehouse_pos := Vector2(-130, 700)  # warehouse in this view's local px; set by the screen
 
-
-var _ground := Control.new()
+# Fraction of each sprite's height that is legs, swung while walking.
+const LEGS := {"chicken": 0.24, "sheep": 0.2, "cow": 0.22, "bear": 0.22, "pig": 0.2, "cat": 0.22, "dog": 0.24}
 
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = false
-	# Soil and fence never change during a level, so they are drawn once behind the field.
-	_ground.show_behind_parent = true
-	_ground.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ground.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_ground.draw.connect(_draw_ground)
-	add_child(_ground)
 
 
 ## Called after every simulation tick with the new state.
@@ -49,6 +57,17 @@ func set_alpha(a: float) -> void:
 	_alpha = clampf(a, 0.0, 1.0)
 
 
+## Visual reactions to simulation events (called by the game screen).
+func on_event(e: Dictionary) -> void:
+	match e.type:
+		"animal_ate":
+			_peck[e.uid] = 0.7
+		"product_spawned":
+			_spawned[e.uid] = 0.0
+		"product_collected":
+			_flying.append({"product": e.product, "from": Vector2(e.x, e.y) * SCALE, "to": warehouse_pos, "t": 0.0})
+
+
 func pop_text(field_pos: Vector2, text: String, color := Color.WHITE) -> void:
 	_fx.append({"pos": field_pos, "text": text, "color": color, "life": 1.0, "max": 1.0})
 
@@ -59,6 +78,20 @@ func _process(delta: float) -> void:
 		f.life -= delta
 		if f.life <= 0:
 			_fx.erase(f)
+	for k in _peck.keys():
+		_peck[k] -= delta
+		if _peck[k] <= 0:
+			_peck.erase(k)
+	for k in _spawned.keys():
+		_spawned[k] += delta
+		if _spawned[k] > 1.0:
+			_spawned.erase(k)
+	for f in _flying.duplicate():
+		f.t += delta / 0.7
+		if f.t >= 1.0:
+			_flying.erase(f)
+	if not _cur.is_empty():
+		_advance_walk(delta)
 	queue_redraw()
 
 
@@ -104,23 +137,11 @@ func _draw() -> void:
 	if _cur.is_empty():
 		return
 	var f: Dictionary = _cur.field
-	var w: float = f.cols * f.cell * SCALE
-	var h: float = f.rows * f.cell * SCALE
 	var cs: float = f.cell * SCALE
-	for i in _cur.grass.size():
-		var g: int = _cur.grass[i]
-		if g <= 0:
-			continue
-		var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
-		var c := Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33)
-		# A soft clump of blobs reads as grass better than a square tile.
-		draw_circle(o + Vector2(cs * 0.5, cs * 0.55), cs * 0.47, c.darkened(0.25))
-		for k in 4:
-			draw_circle(o + Vector2(cs * (0.32 + 0.36 * (k % 2)), cs * (0.32 + 0.34 * (k / 2))), cs * 0.27, c)
-		for k in g * 3:
-			var t := o + Vector2(10 + (k * 23) % int(cs - 20), 14 + (k * 37) % int(cs - 24))
-			draw_line(t, t + Vector2(-4, -12 - sin(_time * 3 + k) * 2), Color("#aed581"), 3)
-			draw_line(t, t + Vector2(4, -12 + sin(_time * 3 + k) * 2), Color("#aed581"), 3)
+	if Art.tex("grass") == null:
+		_draw_grass_placeholder(f, cs)
+	else:
+		_draw_grass(f, cs)
 	for hi in _cur.hidden_items:
 		if not hi.found:
 			var hp := Vector2(hi.x, hi.y) * SCALE
@@ -139,8 +160,16 @@ func _draw() -> void:
 	for it in items:
 		match it.kind:
 			"animal": _draw_animal(it.e)
-			"ground": _draw_product(it.e.product, Vector2(it.e.x, it.e.y) * SCALE, it.e.life)
+			"ground": _draw_ground(it.e)
 			"predator": _draw_predator(it.e)
+	for fl in _flying:
+		var t: float = fl.t
+		var pos: Vector2 = fl.from.lerp(fl.to, t * t) + Vector2(0, -sin(t * PI) * 160)
+		var sc := 1.0 - 0.5 * t
+		draw_set_transform(pos, 0, Vector2(sc, sc))
+		if Art.tex(fl.product) != null:
+			_draw_sprite(fl.product, Vector2.ZERO)
+		draw_set_transform(Vector2.ZERO)
 	var font := get_theme_default_font()
 	for fx in _fx:
 		var t: float = 1.0 - fx.life / fx.max
@@ -157,15 +186,15 @@ func _draw_animal(a: Dictionary) -> void:
 	var face := -1.0 if a.x < prev.x else 1.0
 	var bob := absf(sin(_time * 9 + a.uid)) * 5.0
 	var squash := 1.0 + sin(_time * 18 + a.uid) * 0.04
-	draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
-	draw_circle(Vector2(0, bob + 26), 26, Color(0, 0, 0, 0.18))
 	if Art.tex(a.type) != null:
-		# Art faces left, so mirror it when the animal walks right.
-		draw_set_transform(p + Vector2(0, -bob), 0, Vector2(-face * squash, 2.0 - squash))
-		_draw_sprite(a.type, Vector2(0, bob + 26))
+		draw_set_transform(p + Vector2(0, 26), 0, Vector2(1, 0.4))
+		draw_circle(Vector2.ZERO, Art.height(a.type) * 0.32, Color(0, 0, 0, 0.18))
 		draw_set_transform(Vector2.ZERO)
+		_draw_walker(a.type, a.uid, p + Vector2(0, 26))
 		_draw_hungry(a, p)
 		return
+	draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
+	draw_circle(Vector2(0, bob + 26), 26, Color(0, 0, 0, 0.18))
 	match a.type:
 		"chicken":
 			draw_circle(Vector2.ZERO, 24, Color.WHITE)
@@ -173,13 +202,33 @@ func _draw_animal(a: Dictionary) -> void:
 			draw_circle(Vector2(18, -32), 6, Color("#e53935"))
 			draw_colored_polygon(PackedVector2Array([Vector2(30, -20), Vector2(40, -16), Vector2(30, -12)]), Color("#ffb300"))
 			draw_circle(Vector2(22, -21), 2.5, Color.BLACK)
-		"sheep", "fluffhen":
-			var wool := Color.WHITE if a.type == "sheep" else Color("#ffc1e3")
+		"sheep":
 			for k in 6:
-				draw_circle(Vector2(cos(k) * 18, sin(k) * 10 - 4), 17, wool)
-			var head := Color("#3e2723") if a.type == "sheep" else Color("#ff8a80")
-			draw_circle(Vector2(30, -12), 12, head)
+				draw_circle(Vector2(cos(k) * 18, sin(k) * 10 - 4), 17, Color.WHITE)
+			draw_circle(Vector2(30, -12), 12, Color("#3e2723"))
 			draw_circle(Vector2(34, -15), 2.5, Color.WHITE)
+		"pig":
+			draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash * 1.3, 2.0 - squash))
+			draw_circle(Vector2.ZERO, 24, Color("#f8a5c2"))
+			draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
+			draw_circle(Vector2(30, -8), 15, Color("#f8a5c2"))
+			draw_circle(Vector2(42, -6), 7, Color("#f48fb1"))
+			draw_circle(Vector2(30, -14), 2.5, Color.BLACK)
+			draw_colored_polygon(PackedVector2Array([Vector2(22, -20), Vector2(26, -32), Vector2(32, -20)]), Color("#f48fb1"))
+		"cat":
+			draw_circle(Vector2.ZERO, 18, Color("#ffb74d"))
+			draw_circle(Vector2(18, -16), 13, Color("#ffb74d"))
+			draw_colored_polygon(PackedVector2Array([Vector2(10, -24), Vector2(12, -38), Vector2(20, -27)]), Color("#ffb74d"))
+			draw_colored_polygon(PackedVector2Array([Vector2(20, -27), Vector2(28, -38), Vector2(28, -22)]), Color("#ffb74d"))
+			draw_line(Vector2(-16, -4), Vector2(-30, -26), Color("#ffb74d"), 6)
+			draw_circle(Vector2(22, -18), 2.5, Color.BLACK)
+		"dog":
+			draw_circle(Vector2.ZERO, 22, Color("#a1887f"))
+			draw_circle(Vector2(24, -18), 15, Color("#a1887f"))
+			draw_circle(Vector2(18, -22), 7, Color("#6d4c41"))
+			draw_circle(Vector2(36, -16), 4, Color.BLACK)
+			draw_circle(Vector2(26, -22), 2.5, Color.BLACK)
+			draw_line(Vector2(-20, -6), Vector2(-32, -20), Color("#a1887f"), 6)
 		"cow":
 			draw_rect(Rect2(-34, -22, 68, 40), Color.WHITE)
 			draw_circle(Vector2(-14, -8), 9, Color.BLACK)
@@ -191,55 +240,24 @@ func _draw_animal(a: Dictionary) -> void:
 	_draw_hungry(a, p)
 
 
-## Soil with furrows and pebbles, framed by a wooden fence. Positions come from a
-## fixed hash so the field looks the same every frame and every level.
-func _draw_ground() -> void:
-	var w := size.x
-	var h := size.y
-	var ink := Color("#3b2a1a")
-	var wood := Color("#8b6b3d")
-	var wood_light := Color("#a9834f")
-	_ground.draw_rect(Rect2(Vector2(-22, -22), Vector2(w + 44, h + 44)), Color(0, 0, 0, 0.18))
-	_ground.draw_rect(Rect2(Vector2.ZERO, Vector2(w, h)), Color("#c8a96a"))
-	var row := 0.0
-	while row < h:
-		_ground.draw_rect(Rect2(Vector2(0, row + 34), Vector2(w, 6)), Color("#bb9a5c"))
-		row += 60.0
-	for k in 220:
-		var px := fmod(k * 137.5 + (k * k) % 53, w)
-		var py := fmod(k * 89.3 + (k * 7) % 31, h)
-		var light := k % 3 == 0
-		_ground.draw_circle(Vector2(px, py), 2.5 + k % 3, Color("#dcc28f") if light else Color("#a88a52"))
-	# Fence: two rails all round, posts every ~90 px.
-	for r in [-16.0, -6.0]:
-		_ground.draw_rect(Rect2(Vector2(r, r), Vector2(w - 2 * r, 8)), wood)
-		_ground.draw_rect(Rect2(Vector2(r, h - r - 8), Vector2(w - 2 * r, 8)), wood)
-		_ground.draw_rect(Rect2(Vector2(r, r), Vector2(8, h - 2 * r)), wood)
-		_ground.draw_rect(Rect2(Vector2(w - r - 8, r), Vector2(8, h - 2 * r)), wood)
-	var posts: Array[Vector2] = []
-	var nx := int(w / 90.0)
-	var ny := int(h / 90.0)
-	for i in nx + 1:
-		posts.append(Vector2(w * i / nx, -12))
-		posts.append(Vector2(w * i / nx, h + 12))
-	for j in range(1, ny):
-		posts.append(Vector2(-12, h * j / ny))
-		posts.append(Vector2(w + 12, h * j / ny))
-	for p in posts:
-		var r := Rect2(p - Vector2(9, 14), Vector2(18, 26))
-		_ground.draw_rect(r, wood_light)
-		_ground.draw_rect(r, ink, false, 3.0)
-
-
-## Draws a sprite centred on x with its feet at `feet`, in the current draw transform.
+## Draws a sprite centred on x with its bottom edge at `feet`, in the current draw transform.
 func _draw_sprite(type: String, feet: Vector2) -> void:
 	var tex := Art.tex(type)
 	var hgt := Art.height(type)
 	var sz := Vector2(hgt * tex.get_width() / tex.get_height(), hgt)
-	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2, sz.y * 0.8), sz), false)
+	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2, sz.y), sz), false)
 
 
 func _draw_hungry(a: Dictionary, p: Vector2) -> void:
+	if a.get("asleep", false):
+		var zp := p + Vector2(18, -70 - fmod(_time * 20, 24))
+		draw_string_outline(get_theme_default_font(), zp, "z Z", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, 5, Color(0, 0, 0, 0.4))
+		draw_string(get_theme_default_font(), zp, "z Z", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color("#e1f5fe"))
+		return
+	if a.get("scared", false):
+		draw_string_outline(get_theme_default_font(), p + Vector2(-8, -64), "!!", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, 6, Color.BLACK)
+		draw_string(get_theme_default_font(), p + Vector2(-8, -64), "!!", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, Color("#ffeb3b"))
+		return
 	if a.hungry:
 		var bp := p + Vector2(0, -70 - absf(sin(_time * 5)) * 6)
 		draw_circle(bp, 22, Color.WHITE)
@@ -256,7 +274,7 @@ func _draw_product(product: String, p: Vector2, life: int) -> void:
 		_draw_sprite(product, p + Vector2(0, 18))
 		return
 	match product:
-		"egg", "fluff_egg":
+		"egg":
 			draw_set_transform(p, 0, Vector2(0.8, 1.0))
 			draw_circle(Vector2.ZERO, 20, c)
 			draw_circle(Vector2(-6, -6), 6, Color(1, 1, 1, 0.7))
@@ -282,11 +300,22 @@ func _draw_predator(pr: Dictionary) -> void:
 	var p := _pos(pr) * SCALE
 	var shake := Vector2(sin(_time * 40) * 3, 0) if pr.hits > 0 else Vector2.ZERO
 	p += shake
-	var needed: int = App.core.catalog().farm.predators[pr.type].hits
+	var needed: int = pr.needed
 	if Art.tex(pr.type) != null:
 		var feet := 34.0 if pr.type == "bear" else 24.0
-		draw_circle(p + Vector2(0, feet * 0.6), 40 if pr.type == "bear" else 28, Color(0, 0, 0, 0.2))
-		_draw_sprite(pr.type, p + Vector2(0, feet))
+		draw_set_transform(p + Vector2(0, feet - 4), 0, Vector2(1, 0.4))
+		draw_circle(Vector2.ZERO, Art.height(pr.type) * 0.4, Color(0, 0, 0, 0.2))
+		draw_set_transform(Vector2.ZERO)
+		if LEGS.has(pr.type):
+			_draw_walker(pr.type, pr.uid, p + Vector2(0, feet))
+		else:
+			# Mole: stretches up out of its hole and ducks back.
+			var t := Art.tex(pr.type)
+			var hgt := Art.height(pr.type)
+			var sz := Vector2(hgt * t.get_width() / t.get_height(), hgt)
+			var up := 0.9 + 0.12 * absf(sin(_time * 3 + pr.uid))
+			var foot := p + Vector2(0, feet)
+			draw_texture_rect(t, Rect2(foot - Vector2(sz.x / 2 * (2 - up), sz.y * up), Vector2(sz.x * (2 - up), sz.y * up)), false)
 	elif pr.type == "bear":
 		draw_circle(p + Vector2(0, 34), 40, Color(0, 0, 0, 0.2))
 		draw_circle(p, 42, Color("#795548"))
@@ -303,3 +332,115 @@ func _draw_predator(pr: Dictionary) -> void:
 		draw_circle(p + Vector2(8, -4), 3, Color.BLACK)
 	if pr.hits > 0:
 		draw_arc(p, 58, -PI / 2, -PI / 2 + TAU * pr.hits / needed, 32, Color("#ffeb3b"), 8)
+
+
+## Grass as overlapping tufts with jittered positions, so planted cells read as an
+## organic patch. Growth eases in and out instead of popping.
+func _draw_grass(f: Dictionary, cs: float) -> void:
+	var tex := Art.tex("grass")
+	var k := 1.0 - exp(-get_process_delta_time() * 6.0)
+	for i in _cur.grass.size():
+		var target: float = _cur.grass[i]
+		var shown: float = _grass_shown.get(i, 0.0)
+		shown = lerpf(shown, target, k)
+		if absf(shown - target) < 0.01:
+			shown = target
+		if shown <= 0.02:
+			_grass_shown.erase(i)
+			continue
+		_grass_shown[i] = shown
+		var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
+		for t in 4:
+			var h := hash(i * 7 + t)
+			var j := Vector2((h % 1000) / 1000.0, ((h / 1000) % 1000) / 1000.0)
+			var foot := o + Vector2(cs * (0.15 + 0.7 * j.x), cs * (0.35 + 0.6 * j.y))
+			var hgt := 30.0 + 16.0 * shown * (0.85 + 0.3 * j.x)
+			var sz := Vector2(hgt * tex.get_width() / tex.get_height(), hgt)
+			var sway := sin(_time * 2.0 + i * 0.7 + t) * 0.04
+			draw_set_transform(foot, sway, Vector2.ONE)
+			draw_texture_rect(tex, Rect2(Vector2(-sz.x / 2, -sz.y), sz), false)
+	draw_set_transform(Vector2.ZERO)
+
+
+func _draw_grass_placeholder(f: Dictionary, cs: float) -> void:
+	for i in _cur.grass.size():
+		var g: int = _cur.grass[i]
+		if g > 0:
+			var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
+			draw_rect(Rect2(o + Vector2(2, 2), Vector2(cs - 4, cs - 4)), Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33))
+
+
+func _draw_ground(g: Dictionary) -> void:
+	var p := Vector2(g.x, g.y) * SCALE
+	if _spawned.has(g.uid):
+		# Pop out of the animal with a small arc and an overshooting scale.
+		var t: float = minf(_spawned[g.uid] / 0.35, 1.0)
+		var sc := 1.0 + sin(t * PI) * 0.35 if t < 1.0 else 1.0
+		sc *= t
+		var lift := sin(t * PI) * 30.0
+		draw_set_transform(p + Vector2(0, -lift), 0, Vector2(sc, sc))
+		_draw_product(g.product, Vector2.ZERO, g.life)
+		draw_set_transform(Vector2.ZERO)
+	else:
+		_draw_product(g.product, p, g.life)
+
+
+func _advance_walk(delta: float) -> void:
+	var seen := {}
+	for e in _cur.animals + _cur.predators:
+		var uid: int = e.uid
+		seen[uid] = true
+		var now := _pos(e)
+		var last: Vector2 = _last.get(uid, now)
+		var moved := now.distance_to(last)
+		_last[uid] = now
+		if absf(now.x - last.x) > 0.3:
+			_face[uid] = 1.0 if now.x > last.x else -1.0
+		var target := 1.0 if moved > 0.05 else 0.0
+		_moving[uid] = lerpf(_moving.get(uid, 0.0), target, 1.0 - exp(-delta * 10.0))
+		# About one step per 22 field units walked.
+		_phase[uid] = fmod(_phase.get(uid, randf() * TAU) + moved * TAU / 22.0, TAU * 100)
+	for k in _last.keys():
+		if not seen.has(k):
+			_last.erase(k)
+			_face.erase(k)
+			_moving.erase(k)
+			_phase.erase(k)
+
+
+## Draws a walking sprite with its feet at `foot`: the body bobs and waddles while
+## the leg strip is split in two halves that swing in opposite directions, so the
+## animal visibly steps. Eating tilts the body forward (a peck).
+func _draw_walker(type: String, uid: int, foot: Vector2) -> void:
+	var tex := Art.tex(type)
+	var hgt := Art.height(type)
+	var W := hgt * tex.get_width() / tex.get_height()
+	var tw := float(tex.get_width())
+	var th := float(tex.get_height())
+	var lf: float = LEGS.get(type, 0.2)
+	var ph: float = _phase.get(uid, 0.0)
+	var mv: float = _moving.get(uid, 0.0)
+	var face: float = _face.get(uid, 1.0)
+	var idle := sin(_time * 2.5 + uid) * 0.015
+	var bob := absf(sin(ph)) * 3.0 * mv
+	var waddle := sin(ph) * 0.07 * mv + idle
+	var peck := 0.0
+	if _peck.has(uid):
+		var t: float = 1.0 - _peck[uid] / 0.7
+		peck = absf(sin(t * PI * 3)) * 0.35
+	# Art faces left; mirror to face the walking direction. Origin at the feet.
+	var base := Transform2D(waddle, Vector2(-face, 1), 0, foot + Vector2(0, -bob))
+	var hip := -hgt * lf
+	# Legs: two halves swinging opposite ways around the hip line.
+	var swing := sin(ph) * 0.45 * mv
+	for half in 2:
+		var sk := swing if half == 0 else -swing
+		draw_set_transform_matrix(base * Transform2D(0, Vector2.ONE, sk, Vector2(0, hip)))
+		var sx := 0.0 if half == 0 else tw / 2
+		draw_texture_rect_region(tex, Rect2(-W / 2 + half * W / 2, 0, W / 2, hgt * lf),
+			Rect2(sx, th * (1 - lf), tw / 2, th * lf))
+	# Body, pivoting at the hip for the peck (forward is -x in art space).
+	draw_set_transform_matrix(base * Transform2D(-peck, Vector2(1, 1 + sin(ph * 2) * 0.02 * mv), 0, Vector2(0, hip)))
+	draw_texture_rect_region(tex, Rect2(-W / 2, -hgt * (1 - lf), W, hgt * (1 - lf) + 1),
+		Rect2(0, 0, tw, th * (1 - lf) + 1))
+	draw_set_transform(Vector2.ZERO)

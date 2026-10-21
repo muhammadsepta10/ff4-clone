@@ -1,18 +1,11 @@
 extends TestCase
 
 
-func _buy_and_collect(s: LevelSession, product: String, n: int) -> void:
-	s.apply(Cmd.buy_from_city(product, n))
-	s.advance(120)
-	for g in s.state().ground:
-		s.apply(Cmd.collect(g.uid))
-
-
 func test_level_won_when_all_goals_met_with_gold_trophy() -> void:
 	var lvl := level({"start_animals": [{"type": "chicken", "count": 1}],
 		"goals": [{"type": "collect", "product": "egg", "count": 1}, {"type": "animal", "animal": "chicken", "count": 2}]})
 	var s := core().start_session(lvl, 5)
-	s.advance(150)
+	s.advance(95)
 	s.apply(Cmd.collect(s.state().ground[0].uid))
 	var evts := s.poll_events()
 	check_eq(events_of(evts, "goal_reached").size(), 1)
@@ -24,14 +17,14 @@ func test_level_won_when_all_goals_met_with_gold_trophy() -> void:
 	check(s.is_won())
 	var r := s.result()
 	check_eq(r.trophy, "gold")
-	check_eq(r.ticks, 150)
+	check_eq(r.ticks, 95)
 	check_eq(r.level_id, "test_level")
 
 
 func test_products_bought_in_town_do_not_count_for_collect_goals() -> void:
-	var s := core().start_session(level({"goals": [{"type": "collect", "product": "egg", "count": 2}]}), 1)
-	_buy_and_collect(s, "egg", 2)
-	check_eq(s.state().warehouse.items.get("egg", 0), 2, "stored")
+	var s := core().start_session(level({"goals": [{"type": "collect", "product": "sugar", "count": 2}]}), 1)
+	fly_in(s, "sugar", 2)
+	check_eq(s.state().warehouse.items.get("sugar", 0), 2, "stored")
 	check_eq(s.state().goals[0].progress, 0, "not counted")
 
 
@@ -74,13 +67,13 @@ func test_boost_start_money_and_fast_production_expires() -> void:
 	check_eq(s.state().money, 1300)
 	check_eq(s.state().boosts.size(), 1, "only timed boosts listed")
 	check_eq(s.state().boosts[0].left, 1200)
-	s.advance(101)
+	s.advance(64)
 	check_eq(events_of(s.poll_events(), "product_spawned").size(), 1, "egg at 1.5x speed")
-	s.advance(1100)
+	s.advance(1136)
 	check_eq(events_of(s.poll_events(), "boost_expired").size(), 1)
 	check_eq(s.state().boosts.size(), 0)
 
 
 func test_big_warehouse_boost() -> void:
 	var s := core().start_session(level(), 1, ["big_warehouse"])
-	check_eq(s.state().warehouse.capacity, 30)
+	check_eq(s.state().warehouse.capacity, 200)

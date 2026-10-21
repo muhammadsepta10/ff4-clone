@@ -1,0 +1,5059 @@
+{
+ "levels": [
+  {
+   "id": "l51",
+   "world": "w3",
+   "scene": "town",
+   "giver": "tari",
+   "story_key": "story_l51",
+   "start_money": 1000,
+   "start_animals": [],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 2
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 1
+     },
+     {
+      "type": "bakery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 2
+     }
+    ],
+    [],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     },
+     {
+      "type": "sausage_maker",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": false,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "pancake",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "butter",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "steak",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 18
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 3050,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 4800,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 6250,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 8680,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 747,
+     "y": 481
+    },
+    {
+     "id": "h2",
+     "x": 1360,
+     "y": 812
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 9600,
+    "silver_ticks": 9850
+   }
+  },
+  {
+   "id": "l52",
+   "world": "w3",
+   "scene": "town",
+   "giver": "tari",
+   "story_key": "story_l52",
+   "start_money": 0,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 6
+    },
+    {
+     "type": "pig",
+     "count": 3
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 4
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 2
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 1
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 2
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 1
+    },
+    {
+     "type": "collect",
+     "product": "grilled_sausage",
+     "count": 50
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 20
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 250,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 850,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2750,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 3960,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 5500,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 7800,
+     "count": 3
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1144,
+     "y": 692
+    },
+    {
+     "id": "h2",
+     "x": 357,
+     "y": 283
+    },
+    {
+     "id": "h3",
+     "x": 970,
+     "y": 614
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 8250,
+    "silver_ticks": 9450
+   }
+  },
+  {
+   "id": "l53",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "tari",
+   "story_key": "story_l53",
+   "start_money": 1200,
+   "start_animals": [],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": false,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "pancake",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 5
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 100,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 450,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2450,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "mole",
+     "tick": 4900,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 6050,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 7350,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 8640,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 141,
+     "y": 163
+    },
+    {
+     "id": "h2",
+     "x": 754,
+     "y": 494
+    },
+    {
+     "id": "h3",
+     "x": 1367,
+     "y": 85
+    },
+    {
+     "id": "h4",
+     "x": 580,
+     "y": 416
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 9800,
+    "silver_ticks": 10100
+   }
+  },
+  {
+   "id": "l54",
+   "world": "w3",
+   "scene": "village",
+   "giver": "tari",
+   "story_key": "story_l54",
+   "start_money": 3000,
+   "start_animals": [
+    {
+     "type": "cow",
+     "count": 2
+    },
+    {
+     "type": "dog",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "separator",
+      "level": 1
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [],
+    [
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [],
+    [
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "thread",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cloth",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 2
+    }
+   ],
+   "predators": [
+    {
+     "type": "mole",
+     "tick": 1300,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 1500,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2600,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 3000,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 3900,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 4200,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 538,
+     "y": 374
+    },
+    {
+     "id": "h2",
+     "x": 1151,
+     "y": 705
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 5200,
+    "silver_ticks": 6300
+   }
+  },
+  {
+   "id": "l55",
+   "world": "w3",
+   "scene": "player_farm",
+   "giver": "tari",
+   "story_key": "story_l55",
+   "start_money": 6000,
+   "start_animals": [],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "spinner",
+      "level": 0
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 2
+     },
+     {
+      "type": "sausage_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 3
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 3
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "pancake",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 10
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 1250,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 1875,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "mole",
+     "tick": 3750,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 5100,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 5625,
+     "count": 1,
+     "tier": "veteran"
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 935,
+     "y": 585
+    },
+    {
+     "id": "h2",
+     "x": 148,
+     "y": 176
+    },
+    {
+     "id": "h3",
+     "x": 761,
+     "y": 507
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7500,
+    "silver_ticks": 7750
+   }
+  },
+  {
+   "id": "l56",
+   "world": "w3",
+   "scene": "village",
+   "giver": "tari",
+   "story_key": "story_l56",
+   "start_money": 11000,
+   "start_animals": [],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "spinner",
+      "level": 1
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 2
+     },
+     {
+      "type": "grill",
+      "level": 0
+     }
+    ],
+    [],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 2
+     }
+    ],
+    [],
+    [
+     {
+      "type": "smokehouse",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "meat",
+     "count": 50
+    },
+    {
+     "type": "collect",
+     "product": "steak",
+     "count": 40
+    },
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 35
+    },
+    {
+     "type": "collect",
+     "product": "smoked_sausage",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "grilled_sausage",
+     "count": 20
+    }
+   ],
+   "predators": [
+    {
+     "type": "mole",
+     "tick": 1350,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "mole",
+     "tick": 2700,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "mole",
+     "tick": 4050,
+     "count": 1,
+     "tier": "veteran"
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1332,
+     "y": 796
+    },
+    {
+     "id": "h2",
+     "x": 545,
+     "y": 387
+    },
+    {
+     "id": "h3",
+     "x": 1158,
+     "y": 718
+    },
+    {
+     "id": "h4",
+     "x": 371,
+     "y": 309
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 5400,
+    "silver_ticks": 6150
+   }
+  },
+  {
+   "id": "l57",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "tari",
+   "story_key": "story_l57",
+   "start_money": 2500,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 5
+    },
+    {
+     "type": "cat",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "confectory",
+      "level": 3
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 2
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 2
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "egg_powder",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 5
+    },
+    {
+     "type": "collect",
+     "product": "sweet_roll",
+     "count": 60
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 200,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 1200,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2012,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "mole",
+     "tick": 4025,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "mole",
+     "tick": 6037,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 7350,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 329,
+     "y": 267
+    },
+    {
+     "id": "h2",
+     "x": 942,
+     "y": 598
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 8050,
+    "silver_ticks": 8400
+   }
+  },
+  {
+   "id": "l58",
+   "world": "w3",
+   "scene": "village",
+   "giver": "tari",
+   "story_key": "story_l58",
+   "start_money": 1000,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 3
+    },
+    {
+     "type": "pig",
+     "count": 2
+    },
+    {
+     "type": "cat",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 3
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 0
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 2
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 3
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "butter",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "egg",
+     "count": 40
+    },
+    {
+     "type": "collect",
+     "product": "meat",
+     "count": 30
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 100,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 2850,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 3660,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 5700,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 8280,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 9140,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 726,
+     "y": 478
+    },
+    {
+     "id": "h2",
+     "x": 1339,
+     "y": 809
+    },
+    {
+     "id": "h3",
+     "x": 552,
+     "y": 400
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 8550,
+    "silver_ticks": 9250
+   }
+  },
+  {
+   "id": "l59",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "tari",
+   "story_key": "story_l59",
+   "start_money": 0,
+   "start_animals": [
+    {
+     "type": "pig",
+     "count": 6
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 3
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 4
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 3
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 3
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 3,
+    "studio": 2
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 20
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 300,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 1400,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 1725,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "mole",
+     "tick": 3450,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "mole",
+     "tick": 5175,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 5750,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1123,
+     "y": 689
+    },
+    {
+     "id": "h2",
+     "x": 336,
+     "y": 280
+    },
+    {
+     "id": "h3",
+     "x": 949,
+     "y": 611
+    },
+    {
+     "id": "h4",
+     "x": 162,
+     "y": 202
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 6900,
+    "silver_ticks": 7350
+   }
+  },
+  {
+   "id": "l60",
+   "world": "w3",
+   "scene": "town",
+   "giver": "tari",
+   "story_key": "story_l60",
+   "start_money": 0,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 15
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 0
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 3
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 4
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 3
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 3,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "grilled_sausage",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "smoked_sausage",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 15
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 350,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 1400,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 2675,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "mole",
+     "tick": 5350,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 7050,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 8025,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 9690,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 120,
+     "y": 160
+    },
+    {
+     "id": "h2",
+     "x": 733,
+     "y": 491
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 10700,
+    "silver_ticks": 11000
+   }
+  },
+  {
+   "id": "l61",
+   "world": "w3",
+   "scene": "village",
+   "giver": "tari",
+   "story_key": "story_l61",
+   "start_money": 2000,
+   "start_animals": [
+    {
+     "type": "cow",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "separator",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "confectory",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "sweet_roll",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 15
+    },
+    {
+     "type": "animal",
+     "animal": "sheep",
+     "count": 2
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 250,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 1025,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "mole",
+     "tick": 2050,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 2400,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 3075,
+     "count": 1,
+     "tier": "mature"
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 517,
+     "y": 371
+    },
+    {
+     "id": "h2",
+     "x": 1130,
+     "y": 702
+    },
+    {
+     "id": "h3",
+     "x": 343,
+     "y": 293
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 4100,
+    "silver_ticks": 4300
+   }
+  },
+  {
+   "id": "l62",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "tari",
+   "story_key": "story_l62",
+   "start_money": 12000,
+   "start_animals": [],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "spinner",
+      "level": 1
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [],
+    [],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [],
+    [
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": false,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "steak",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "butter",
+     "count": 10
+    },
+    {
+     "type": "animal",
+     "animal": "chicken",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "egg",
+     "count": 30
+    }
+   ],
+   "predators": [
+    {
+     "type": "mole",
+     "tick": 1050,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 2000,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 2100,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "mole",
+     "tick": 3150,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 3400,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 914,
+     "y": 582
+    },
+    {
+     "id": "h2",
+     "x": 127,
+     "y": 173
+    },
+    {
+     "id": "h3",
+     "x": 740,
+     "y": 504
+    },
+    {
+     "id": "h4",
+     "x": 1353,
+     "y": 95
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 4200,
+    "silver_ticks": 5300
+   }
+  },
+  {
+   "id": "l63",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "tari",
+   "story_key": "story_l63",
+   "start_money": 4000,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 10
+    },
+    {
+     "type": "pig",
+     "count": 3
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 0
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 4
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dye_works",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 5
+    },
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 5
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 300,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 1916,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 2840,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 3833,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 4670,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1311,
+     "y": 793
+    },
+    {
+     "id": "h2",
+     "x": 524,
+     "y": 384
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 5750,
+    "silver_ticks": 6500
+   }
+  },
+  {
+   "id": "l64",
+   "world": "w3",
+   "scene": "town",
+   "giver": "tari",
+   "story_key": "story_l64",
+   "start_money": 1000,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 5
+    },
+    {
+     "type": "pig",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "dryer",
+      "level": 4
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 0
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "cheese_maker",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     },
+     {
+      "type": "smokehouse",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 2
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 2
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 950,
+     "count": 3
+    },
+    {
+     "type": "bear",
+     "tick": 3100,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 3625,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 6250,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 308,
+     "y": 264
+    },
+    {
+     "id": "h2",
+     "x": 921,
+     "y": 595
+    },
+    {
+     "id": "h3",
+     "x": 134,
+     "y": 186
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7250,
+    "silver_ticks": 7750
+   }
+  },
+  {
+   "id": "l65",
+   "world": "w3",
+   "scene": "town",
+   "giver": "tari",
+   "story_key": "story_l65",
+   "start_money": 6000,
+   "start_animals": [
+    {
+     "type": "sheep",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "spinner",
+      "level": 0
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "confectory",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 2
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "egg_mix",
+     "count": 50
+    },
+    {
+     "type": "collect",
+     "product": "egg_powder",
+     "count": 40
+    },
+    {
+     "type": "collect",
+     "product": "pancake",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "sweet_roll",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 20
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 250,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 650,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 1066,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "mole",
+     "tick": 2133,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 3250,
+     "count": 3
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 705,
+     "y": 475
+    },
+    {
+     "id": "h2",
+     "x": 1318,
+     "y": 806
+    },
+    {
+     "id": "h3",
+     "x": 531,
+     "y": 397
+    },
+    {
+     "id": "h4",
+     "x": 1144,
+     "y": 728
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 3200,
+    "silver_ticks": 3700
+   }
+  },
+  {
+   "id": "l66",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "karto",
+   "story_key": "story_l66",
+   "start_money": 500,
+   "start_animals": [
+    {
+     "type": "cow",
+     "count": 1
+    },
+    {
+     "type": "chicken",
+     "count": 6
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "separator",
+      "level": 4
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 1
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 1
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 4
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 4
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 3,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "smoked_sausage",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "grilled_sausage",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 1
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 15
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 250,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 1850,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2200,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "mole",
+     "tick": 4400,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 5620,
+     "count": 3
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1102,
+     "y": 686
+    },
+    {
+     "id": "h2",
+     "x": 315,
+     "y": 277
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 6600,
+    "silver_ticks": 6900
+   }
+  },
+  {
+   "id": "l67",
+   "world": "w3",
+   "scene": "player_farm",
+   "giver": "karto",
+   "story_key": "story_l67",
+   "start_money": 800,
+   "start_animals": [
+    {
+     "type": "pig",
+     "count": 6
+    },
+    {
+     "type": "chicken",
+     "count": 3
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "separator",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 4
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 4
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 3
+     },
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 3
+     },
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "thread",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "cloth",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "egg_mix",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "egg_powder",
+     "count": 30
+    },
+    {
+     "type": "animal",
+     "animal": "cow",
+     "count": 5
+    }
+   ],
+   "predators": [
+    {
+     "type": "mole",
+     "tick": 1966,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 2000,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 3933,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 4400,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1499,
+     "y": 157
+    },
+    {
+     "id": "h2",
+     "x": 712,
+     "y": 488
+    },
+    {
+     "id": "h3",
+     "x": 1325,
+     "y": 819
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 5900,
+    "silver_ticks": 6200
+   }
+  },
+  {
+   "id": "l68",
+   "world": "w3",
+   "scene": "village",
+   "giver": "karto",
+   "story_key": "story_l68",
+   "start_money": 1000,
+   "start_animals": [
+    {
+     "type": "dog",
+     "count": 1
+    },
+    {
+     "type": "cat",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 2
+     },
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 4
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 2
+     },
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ],
+    [],
+    [
+     {
+      "type": "smokehouse",
+      "level": 3
+     },
+     {
+      "type": "bakery",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 3
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "egg",
+     "count": 50
+    },
+    {
+     "type": "collect",
+     "product": "meat",
+     "count": 40
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "butter",
+     "count": 10
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 850,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 2800,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 3150,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 5380,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 496,
+     "y": 368
+    },
+    {
+     "id": "h2",
+     "x": 1109,
+     "y": 699
+    },
+    {
+     "id": "h3",
+     "x": 322,
+     "y": 290
+    },
+    {
+     "id": "h4",
+     "x": 935,
+     "y": 621
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 6300,
+    "silver_ticks": 6800
+   }
+  },
+  {
+   "id": "l69",
+   "world": "w3",
+   "scene": "town",
+   "giver": "karto",
+   "story_key": "story_l69",
+   "start_money": 600,
+   "start_animals": [
+    {
+     "type": "sheep",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "spinner",
+      "level": 2
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "studio",
+      "level": 0
+     },
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 2
+     },
+     {
+      "type": "sausage_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     },
+     {
+      "type": "confectory",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dye_works",
+      "level": 1
+     },
+     {
+      "type": "smokehouse",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "smoked_sausage",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "pancake",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "sweet_roll",
+     "count": 15
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 700,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 1650,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 2366,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 2400,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 4733,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 6250,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 893,
+     "y": 579
+    },
+    {
+     "id": "h2",
+     "x": 106,
+     "y": 170
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7100,
+    "silver_ticks": 7500
+   }
+  },
+  {
+   "id": "l70",
+   "world": "w3",
+   "scene": "grand_farm",
+   "giver": "karto",
+   "story_key": "story_l70",
+   "start_money": 0,
+   "start_animals": [
+    {
+     "type": "sheep",
+     "count": 1
+    },
+    {
+     "type": "cow",
+     "count": 1
+    },
+    {
+     "type": "pig",
+     "count": 3
+    },
+    {
+     "type": "chicken",
+     "count": 6
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 3
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 4
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dye_works",
+      "level": 2
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 0
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "money",
+     "amount": 300000
+    },
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 16
+    },
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 20
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 200,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 800,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 1837,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "mole",
+     "tick": 3675,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 3850,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 5512,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 7050,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1290,
+     "y": 790
+    },
+    {
+     "id": "h2",
+     "x": 503,
+     "y": 381
+    },
+    {
+     "id": "h3",
+     "x": 1116,
+     "y": 712
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7350,
+    "silver_ticks": 7700
+   }
+  },
+  {
+   "id": "l71",
+   "world": "w3",
+   "scene": "village",
+   "giver": "karto",
+   "story_key": "story_l71",
+   "start_money": 3500,
+   "start_animals": [
+    {
+     "type": "cat",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 0
+     },
+     {
+      "type": "sausage_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 0
+     },
+     {
+      "type": "smokehouse",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "pancake",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "smoked_sausage",
+     "count": 15
+    },
+    {
+     "type": "animal",
+     "animal": "dog",
+     "count": 2
+    }
+   ],
+   "predators": [
+    {
+     "type": "mole",
+     "tick": 4125,
+     "count": 1,
+     "tier": "veteran"
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 287,
+     "y": 261
+    },
+    {
+     "id": "h2",
+     "x": 900,
+     "y": 592
+    },
+    {
+     "id": "h3",
+     "x": 113,
+     "y": 183
+    },
+    {
+     "id": "h4",
+     "x": 726,
+     "y": 514
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 8250,
+    "silver_ticks": 8600
+   }
+  },
+  {
+   "id": "l72",
+   "world": "w3",
+   "scene": "village",
+   "giver": "karto",
+   "story_key": "story_l72",
+   "start_money": 200,
+   "start_animals": [
+    {
+     "type": "pig",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 0
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [],
+    [],
+    [
+     {
+      "type": "dryer",
+      "level": 1
+     }
+    ],
+    [],
+    [
+     {
+      "type": "separator",
+      "level": 1
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": false,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "egg_powder",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "steak",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 10
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 150,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 500,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 1600,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 3700,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 4620,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 684,
+     "y": 472
+    },
+    {
+     "id": "h2",
+     "x": 1297,
+     "y": 803
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7400,
+    "silver_ticks": 8050
+   }
+  },
+  {
+   "id": "l73",
+   "world": "w3",
+   "scene": "player_farm",
+   "giver": "karto",
+   "story_key": "story_l73",
+   "start_money": 500,
+   "start_animals": [
+    {
+     "type": "pig",
+     "count": 3
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 0
+     },
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 3
+     },
+     {
+      "type": "confectory",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 4
+     },
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 1
+     },
+     {
+      "type": "bakery",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "sweet_roll",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "butter",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 5
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 300,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2000,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 3700,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 4000,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 5400,
+     "count": 3
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1081,
+     "y": 683
+    },
+    {
+     "id": "h2",
+     "x": 294,
+     "y": 274
+    },
+    {
+     "id": "h3",
+     "x": 907,
+     "y": 605
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 6000,
+    "silver_ticks": 6650
+   }
+  },
+  {
+   "id": "l74",
+   "world": "w3",
+   "scene": "player_farm",
+   "giver": "karto",
+   "story_key": "story_l74",
+   "start_money": 200,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 8
+    },
+    {
+     "type": "cat",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 4
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "spinner",
+      "level": 1
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 4
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 4
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 3,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 15
+    },
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "meat",
+     "count": 30
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 150,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 450,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 4650,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 5300,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 9100,
+     "count": 2
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1478,
+     "y": 154
+    },
+    {
+     "id": "h2",
+     "x": 691,
+     "y": 485
+    },
+    {
+     "id": "h3",
+     "x": 1304,
+     "y": 816
+    },
+    {
+     "id": "h4",
+     "x": 517,
+     "y": 407
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 9300,
+    "silver_ticks": 9800
+   }
+  },
+  {
+   "id": "l75",
+   "world": "w3",
+   "scene": "town",
+   "giver": "karto",
+   "story_key": "story_l75",
+   "start_money": 500,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 10
+    },
+    {
+     "type": "dog",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 2
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "confectory",
+      "level": 3
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 2
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 3
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 4
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 4,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "steak",
+     "count": 50
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 25
+    },
+    {
+     "type": "collect",
+     "product": "dress",
+     "count": 3
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 650,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 2233,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 2840,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 4466,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 4700,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 475,
+     "y": 365
+    },
+    {
+     "id": "h2",
+     "x": 1088,
+     "y": 696
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 6700,
+    "silver_ticks": 7700
+   }
+  },
+  {
+   "id": "l76",
+   "world": "w3",
+   "scene": "town",
+   "giver": "karto",
+   "story_key": "story_l76",
+   "start_money": 4200,
+   "start_animals": [
+    {
+     "type": "pig",
+     "count": 4
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 1
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 4,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "sausage",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "thread",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 25
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 1550,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 3500,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 5290,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 6570,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 872,
+     "y": 576
+    },
+    {
+     "id": "h2",
+     "x": 1485,
+     "y": 167
+    },
+    {
+     "id": "h3",
+     "x": 698,
+     "y": 498
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7000,
+    "silver_ticks": 7950
+   }
+  },
+  {
+   "id": "l77",
+   "world": "w3",
+   "scene": "player_farm",
+   "giver": "karto",
+   "story_key": "story_l77",
+   "start_money": 0,
+   "start_animals": [
+    {
+     "type": "sheep",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 4
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 4
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 4
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 4,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "smoked_sausage",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cream",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "coloured_cloth",
+     "count": 8
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 550,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 2100,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 5090,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1269,
+     "y": 787
+    },
+    {
+     "id": "h2",
+     "x": 482,
+     "y": 378
+    },
+    {
+     "id": "h3",
+     "x": 1095,
+     "y": 709
+    },
+    {
+     "id": "h4",
+     "x": 308,
+     "y": 300
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 5400,
+    "silver_ticks": 6250
+   }
+  },
+  {
+   "id": "l78",
+   "world": "w3",
+   "scene": "village",
+   "giver": "karto",
+   "story_key": "story_l78",
+   "start_money": 1400,
+   "start_animals": [
+    {
+     "type": "cow",
+     "count": 1
+    },
+    {
+     "type": "dog",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "separator",
+      "level": 3
+     },
+     {
+      "type": "mixer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 0
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 0
+     },
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 1
+     },
+     {
+      "type": "dryer",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "cheese_maker",
+      "level": 0
+     },
+     {
+      "type": "butchery",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 4,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "egg_powder",
+     "count": 35
+    },
+    {
+     "type": "collect",
+     "product": "grilled_sausage",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "cloth",
+     "count": 12
+    }
+   ],
+   "predators": [
+    {
+     "type": "mole",
+     "tick": 4125,
+     "count": 1,
+     "tier": "beginner"
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 266,
+     "y": 258
+    },
+    {
+     "id": "h2",
+     "x": 879,
+     "y": 589
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 8250,
+    "silver_ticks": 8600
+   }
+  },
+  {
+   "id": "l79",
+   "world": "w3",
+   "scene": "village",
+   "giver": "karto",
+   "story_key": "story_l79",
+   "start_money": 0,
+   "start_animals": [
+    {
+     "type": "chicken",
+     "count": 2
+    },
+    {
+     "type": "pig",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "mixer",
+      "level": 2
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "butchery",
+      "level": 4
+     },
+     {
+      "type": "confectory",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "spinner",
+      "level": 3
+     }
+    ],
+    [
+     {
+      "type": "dryer",
+      "level": 2
+     },
+     {
+      "type": "churn",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "bakery",
+      "level": 1
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 4,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "collect",
+     "product": "sweet_roll",
+     "count": 20
+    },
+    {
+     "type": "collect",
+     "product": "cheese",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "thread",
+     "count": 10
+    },
+    {
+     "type": "collect",
+     "product": "cloth",
+     "count": 6
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 900,
+     "count": 1
+    },
+    {
+     "type": "mole",
+     "tick": 3016,
+     "count": 1,
+     "tier": "beginner"
+    },
+    {
+     "type": "bear",
+     "tick": 3300,
+     "count": 2
+    },
+    {
+     "type": "mole",
+     "tick": 6033,
+     "count": 1,
+     "tier": "mature"
+    },
+    {
+     "type": "bear",
+     "tick": 7560,
+     "count": 3
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 663,
+     "y": 469
+    },
+    {
+     "id": "h2",
+     "x": 1276,
+     "y": 800
+    },
+    {
+     "id": "h3",
+     "x": 489,
+     "y": 391
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 9050,
+    "silver_ticks": 9800
+   }
+  },
+  {
+   "id": "l80",
+   "world": "w3",
+   "scene": "player_farm",
+   "giver": "karto",
+   "story_key": "story_l80",
+   "start_money": 15000,
+   "start_animals": [
+    {
+     "type": "cat",
+     "count": 1
+    }
+   ],
+   "available_animals": [
+    "chicken",
+    "pig",
+    "sheep",
+    "cow",
+    "cat",
+    "dog"
+   ],
+   "well_level": 1,
+   "warehouse_level": 1,
+   "slots": [
+    [
+     {
+      "type": "butchery",
+      "level": 3
+     },
+     {
+      "type": "separator",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "weaver",
+      "level": 1
+     }
+    ],
+    [
+     {
+      "type": "smokehouse",
+      "level": 4
+     },
+     {
+      "type": "dye_works",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "churn",
+      "level": 2
+     },
+     {
+      "type": "spinner",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "grill",
+      "level": 0
+     },
+     {
+      "type": "studio",
+      "level": 0
+     }
+    ],
+    [
+     {
+      "type": "sausage_maker",
+      "level": 4
+     },
+     {
+      "type": "cheese_maker",
+      "level": 0
+     }
+    ]
+   ],
+   "truck": true,
+   "plane": true,
+   "max_level": {
+    "mixer": 4,
+    "well": 4,
+    "truck": 4,
+    "warehouse": 4,
+    "dryer": 4,
+    "bakery": 4,
+    "confectory": 4,
+    "sausage_maker": 4,
+    "butchery": 4,
+    "plane": 3,
+    "separator": 4,
+    "smokehouse": 4,
+    "grill": 4,
+    "churn": 4,
+    "spinner": 4,
+    "cheese_maker": 4,
+    "weaver": 4,
+    "dye_works": 4,
+    "studio": 4
+   },
+   "goals": [
+    {
+     "type": "money",
+     "amount": 500000
+    },
+    {
+     "type": "collect",
+     "product": "egg",
+     "count": 50
+    },
+    {
+     "type": "collect",
+     "product": "meat",
+     "count": 40
+    },
+    {
+     "type": "collect",
+     "product": "milk",
+     "count": 30
+    },
+    {
+     "type": "collect",
+     "product": "wool",
+     "count": 20
+    }
+   ],
+   "predators": [
+    {
+     "type": "bear",
+     "tick": 100,
+     "count": 1
+    },
+    {
+     "type": "bear",
+     "tick": 600,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 2400,
+     "count": 3
+    },
+    {
+     "type": "mole",
+     "tick": 2400,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "mole",
+     "tick": 4800,
+     "count": 1,
+     "tier": "veteran"
+    },
+    {
+     "type": "bear",
+     "tick": 5500,
+     "count": 2
+    },
+    {
+     "type": "bear",
+     "tick": 6980,
+     "count": 1
+    }
+   ],
+   "hidden_items": [
+    {
+     "id": "h1",
+     "x": 1060,
+     "y": 680
+    },
+    {
+     "id": "h2",
+     "x": 273,
+     "y": 271
+    },
+    {
+     "id": "h3",
+     "x": 886,
+     "y": 602
+    },
+    {
+     "id": "h4",
+     "x": 1499,
+     "y": 193
+    }
+   ],
+   "trophy": {
+    "gold_ticks": 7200,
+    "silver_ticks": 10800
+   }
+  }
+ ]
+}

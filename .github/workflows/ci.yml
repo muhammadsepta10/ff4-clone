@@ -26,8 +26,8 @@ jobs:
       - name: Content schema + GameCore tests (includes bot on every level)
         run: tests/run.sh
 
-      - name: Bot validation and trophy limits up to date
-        run: godot --headless --path . -s tools/balance.gd -- --check
+      - name: Bot wins every level
+        run: godot --headless --path . -s tools/balance.gd
 
       - name: Install export templates
         run: |

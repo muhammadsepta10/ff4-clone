@@ -14,7 +14,8 @@
       "type": "string",
       "enum": [
        "raw",
-       "crafted"
+       "crafted",
+       "bought"
       ]
      },
      "size": {

@@ -8,7 +8,6 @@ const FILES := ["products", "animals", "workshops", "farm", "items", "outfits", 
 var errors: Array[String] = []
 var products := {}      # id -> def
 var animals := {}       # id -> def
-var hybrids: Array = []
 var workshops := {}     # id -> def
 var farm := {}
 var items: Array = []
@@ -85,7 +84,6 @@ static func _ints(v):
 func _index(raw: Dictionary) -> void:
 	for p in raw.products.products: products[p.id] = p
 	for a in raw.animals.animals: animals[a.id] = a
-	hybrids = raw.animals.hybrids
 	for w in raw.workshops.workshops: workshops[w.id] = w
 	farm = raw.farm
 	items = raw.items.items
@@ -100,10 +98,10 @@ func _index(raw: Dictionary) -> void:
 func _check_references() -> void:
 	var item_ids := items.map(func(i): return i.id)
 	for a in animals.values():
-		_ref(products, a.product, "animal %s: unknown product" % a.id)
-	for h in hybrids:
-		for p in h.parents: _ref(animals, p, "hybrid: unknown animal")
-		_ref(animals, h.result, "hybrid: unknown animal")
+		if a.role == "producer":
+			_ref(products, a.product, "animal %s: unknown product" % a.id)
+			if a.produce_ticks <= 0 or a.food_ticks <= 0 or a.bites <= 0:
+				errors.append("animal %s: producer needs produce_ticks, food_ticks and bites" % a.id)
 	for w in workshops.values():
 		_ref(products, w.output, "workshop %s: unknown product" % w.id)
 		for p in w.inputs: _ref(products, p, "workshop %s: unknown product" % w.id)
@@ -124,7 +122,12 @@ func _check_references() -> void:
 			errors.append("%s: gold_ticks > silver_ticks" % tag)
 		for a in l.start_animals: _ref(animals, a.type, tag + ": unknown animal")
 		for a in l.available_animals: _ref(animals, a, tag + ": unknown animal")
-		for w in l.available_workshops: _ref(workshops, w, tag + ": unknown workshop")
+		for slot in l.slots:
+			for o in slot: _ref(workshops, o.type, tag + ": unknown workshop")
+		for k in l.max_level:
+			if not ["well", "warehouse", "truck", "plane"].has(k): _ref(workshops, k, tag + ": unknown max_level key")
+		for p in l.predators:
+			if p.type == "mole" and not p.has("tier"): errors.append(tag + ": mole needs a tier")
 		for t in l.get("tutorials", []): _ref(tutorials, t, tag + ": unknown tutorial")
 		for g in l.goals:
 			match g.type:

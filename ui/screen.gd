@@ -20,8 +20,10 @@ func safe_root() -> MarginContainer:
 func title_bar(title: String, back_to := "") -> HBoxContainer:
 	var h := UI.hbox()
 	if back_to != "":
-		h.add_child(UI.button("◀ " + tr("back"), func(): main.goto(back_to)))
-	var l := UI.label(title, 56)
+		h.add_child(GamePopup.big_button("◀", func(): main.goto(back_to), Color("#a0522d"), 40))
+	var l := UI.label(title, 60, Color("#fff3d6"))
+	l.add_theme_color_override("font_outline_color", Color("#5d3a1a"))
+	l.add_theme_constant_override("outline_size", 16)
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(l)
 	return h
