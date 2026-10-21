@@ -20,5 +20,6 @@ static func build(outfit: Dictionary, on_change: Callable, is_allowed: Callable)
 			outfit[slot.id] = ids[(i + d + ids.size()) % ids.size()]
 			show.call()
 			on_change.call(slot.id, outfit[slot.id])
-		v.add_child(UI.hbox([UI.button("◀", func(): step.call(-1)), lbl, UI.button("▶", func(): step.call(1))]))
+		v.add_child(UI.hbox([GamePopup.big_button("◀", func(): step.call(-1), Color("#a0522d"), 34), lbl,
+			GamePopup.big_button("▶", func(): step.call(1), Color("#a0522d"), 34)]))
 	return v

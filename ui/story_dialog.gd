@@ -32,6 +32,11 @@ static func show_keys(parent: Node, keys: Array) -> StoryDialog:
 		var s := App.tr(k)
 		if k != "" and s != k:
 			lines.append(parse(s))
+	return show_lines(parent, lines)
+
+
+## Shows already-parsed lines ({speaker, sprite, text}); null when empty.
+static func show_lines(parent: Node, lines: Array) -> StoryDialog:
 	if lines.is_empty():
 		return null
 	var d := StoryDialog.new()

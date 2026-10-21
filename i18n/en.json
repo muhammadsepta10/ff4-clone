@@ -186,10 +186,11 @@
  "world_w4": "Snowcap Peak",
  "tap_to_continue": "Tap to continue",
  "skip": "Skip",
- "story_replay": "📖 Story",
  "story_w1_l1_end": "Mr. Darto: \"Such fresh eggs! The shop will love them.\"",
  "story_w1_l2_end": "Mrs. Wulan: \"The coop is lively now. Grandma would be proud.\"",
  "story_w1_l3_end": "Mr. Darto: \"The pastries sold out! The queue reached the road.\"",
  "story_w1_l4_end": "Mrs. Wulan: \"The bear ran off and the milk keeps flowing. Great work!\"",
- "story_w1_l5_end": "Grandma Sari: \"Dewdrop Valley lives again thanks to you. Windy Hills is waiting!\""
+ "story_w1_l5_end": "Grandma Sari: \"Dewdrop Valley lives again thanks to you. Windy Hills is waiting!\"",
+ "warehouse_empty": "The warehouse is empty. Collect goods from the field.",
+ "truck_empty": "Tap goods in the warehouse to load them onto the truck."
 }

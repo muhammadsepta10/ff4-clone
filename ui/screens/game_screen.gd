@@ -34,6 +34,8 @@ var _buy_btns := {}  # animal id -> Button
 var _well_b: Building
 var _wh_b: Building
 var _truck_b: Building
+var _truck_home := Vector2.ZERO
+var _road: TransportBar
 var _ws_b: Array[Building] = []
 var _meter: ProgressBar
 var _hidden: Label
@@ -59,7 +61,15 @@ func _ready() -> void:
 	_farm.push_state(_st)
 	_refresh_hud()
 	_handle_events.call_deferred(session.poll_events())
-	_queue_tutorial_trigger.call_deferred("start", {})
+	if args.has("snapshot") or args.get("intro_done", false) or _benchmark():
+		_queue_tutorial_trigger.call_deferred("start", {})
+	else:
+		_start_intro.call_deferred()
+
+
+func _start_intro() -> void:
+	await _intro()
+	_queue_tutorial_trigger("start", {})
 
 
 func _benchmark() -> bool:
@@ -112,20 +122,8 @@ func _send(cmd: Dictionary) -> bool:
 	_farm.set_alpha(1.0)
 	_handle_events(session.poll_events())
 	if _panel != null and cmd.type != "tap":
-		_open_panel(_panel_kind, _panel_arg)
+		_fill_panel()
 	return ok
-
-
-func _finish() -> void:
-	_ended = true
-	if _benchmark():
-		return
-	var result := session.result()
-	var out := App.campaign.apply_result(result)
-	App.save_campaign()
-	App.clear_session()
-	await get_tree().create_timer(1.2).timeout
-	main.goto("results", {"result": result, "out": out})
 
 
 # ---------------------------------------------------------------- events
@@ -143,8 +141,11 @@ func _handle_events(evts: Array) -> void:
 			"click_reward":
 				_farm.pop_text(Vector2(800, 850), "+%d" % e.money, Color("#ffd54f"))
 				App.play_sfx("coins")
+			"truck_sent":
+				_drive_truck(false)
 			"truck_returned":
-				_show_toast("+%d" % e.money)
+				_drive_truck(true)
+				_farm.pop_text((_truck_home - FIELD_POS + Vector2(80, -60)) / FarmView.SCALE, "+%d" % e.money, Color("#ffd54f"))
 				App.play_sfx("coins")
 			"predator_warning":
 				_show_toast(tr("predator_warning_" + e.predator))
@@ -164,6 +165,24 @@ func _handle_events(evts: Array) -> void:
 			"goal_reached":
 				App.play_sfx("goal")
 		_queue_tutorial_trigger(e.type, e)
+
+
+## The truck drives off the left edge towards town, and back in when it returns.
+func _drive_truck(back: bool) -> void:
+	var off := _truck_home - Vector2(700, 0)
+	_truck_b.pivot_offset = _truck_b.size / 2
+	var tw := create_tween()
+	if back:
+		_truck_b.visible = true
+		_truck_b.position = off
+		_truck_b.scale = Vector2(-1, 1)  # art faces left; drive in facing right
+		tw.tween_property(_truck_b, "position", _truck_home, 1.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_callback(func(): _truck_b.scale = Vector2.ONE)
+	else:
+		_truck_b.scale = Vector2.ONE
+		tw.tween_property(_truck_b, "position", _truck_home + Vector2(20, 0), 0.15)
+		tw.tween_property(_truck_b, "position", off, 1.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.tween_callback(func(): _truck_b.visible = false)
 
 
 # ---------------------------------------------------------------- tutorials
@@ -232,8 +251,9 @@ func _build() -> void:
 	_well_b = _building("well", WELL_FOOT, 180, func():
 		if not _send(Cmd.refill_well()):
 			App.play_sfx("error"))
-	_wh_b = _building("warehouse", WAREHOUSE_FOOT, 210, func(): _open_panel("warehouse", null))
-	_truck_b = _building("truck", TRUCK_FOOT, 120, func(): _open_panel("truck", null))
+	_wh_b = _building("warehouse", WAREHOUSE_FOOT, 210, func(): _open_panel("market", null))
+	_truck_b = _building("truck", TRUCK_FOOT, 120, _on_truck_tapped)
+	_truck_home = _truck_b.position
 	_building("plane", PLANE_FOOT, 120, func(): _open_panel("city", null)).set_badge(tr("city"))
 	_meter = ProgressBar.new()
 	_meter.show_percentage = false
@@ -288,6 +308,10 @@ func _build_hud() -> void:
 	mp.position = Vector2(810, 6)
 	mp.custom_minimum_size = Vector2(300, 0)
 	_stage.add_child(mp)
+	# Road to town under the coins: the truck icon drives it while away.
+	_road = TransportBar.new()
+	_road.position = Vector2(STAGE.x / 2 - _road.size.x / 2, 58)
+	_stage.add_child(_road)
 	# Animal shop column
 	var col := UI.vbox([], 10)
 	col.position = Vector2(10, 110)
@@ -308,13 +332,18 @@ func _build_hud() -> void:
 				App.play_sfx("error")
 			else:
 				App.play_sfx("coins"))
+		_hud_style(b)
 		col.add_child(b)
 		_buy_btns[id] = b
-	col.add_child(UI.button("⇄", func(): _open_panel("animals", null), 34))
+	var shop := UI.button("⇄", func(): _open_panel("animals", null), 34)
+	shop.custom_minimum_size = Vector2(120, 80)
+	_hud_style(shop)
+	col.add_child(shop)
 	# Pause + timer, bottom-left
 	var pause := UI.button("❚❚", _show_pause, 34)
 	pause.custom_minimum_size = Vector2(84, 72)
 	pause.position = Vector2(12, 996)
+	_hud_style(pause)
 	_stage.add_child(pause)
 	_timer = UI.label("", 34, HUD_FG)
 	_trophy_dot = TrophyBadge.make("gold")
@@ -341,6 +370,23 @@ func _build_hud() -> void:
 	gp.resized.connect(func(): gp.position = Vector2(STAGE.x - 12 - gp.size.x, STAGE.y - 8 - gp.size.y))
 
 
+## Wooden HUD button, matching the coin and timer plaques.
+func _hud_style(b: Button) -> void:
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = {"normal": Color("#7a4a22"), "hover": Color("#8d5a2b"), "pressed": Color("#5d3a1a"), "disabled": Color("#6b5a4a")}[state]
+		sb.border_color = Color("#3e2410")
+		sb.set_border_width_all(4)
+		sb.border_width_bottom = 4 if state == "pressed" else 9
+		sb.set_corner_radius_all(22)
+		sb.content_margin_bottom = 8
+		b.add_theme_stylebox_override(state, sb)
+	b.add_theme_color_override("font_color", HUD_FG)
+	b.add_theme_color_override("font_hover_color", HUD_FG)
+	b.add_theme_color_override("font_outline_color", Color("#3e2410"))
+	b.add_theme_constant_override("outline_size", 6)
+
+
 func _st_avail_animals() -> Array:
 	return session.state().available_animals
 
@@ -365,16 +411,6 @@ func _wood(child: Control) -> PanelContainer:
 func _building(id: String, foot: Vector2, height: float, cb: Callable) -> Building:
 	var b := Building.new().setup(id, foot, height)
 	b.tapped.connect(cb)
-	_stage.add_child(b)
-	return b
-
-
-func _stage_button(text: String, pos: Vector2, sz: Vector2, cb: Callable) -> Button:
-	var b := UI.button(text, cb, 30)
-	b.position = pos
-	b.size = sz
-	b.custom_minimum_size = sz
-	b.clip_text = true
 	_stage.add_child(b)
 	return b
 
@@ -414,7 +450,7 @@ func _refresh_hud() -> void:
 	_wh_b.set_tag("⬆ %d" % _cat.farm.warehouse.levels[wh.level + 1].price if wh.can_upgrade else "")
 	var tr_: Dictionary = _st.truck
 	_truck_b.set_badge(("…%ds" % ceili(tr_.left / 10.0)) if tr_.away else "%d/%d" % [tr_.used, tr_.capacity])
-	_truck_b.modulate.a = 0.35 if tr_.away else 1.0
+	_road.set_trip(tr_.left, tr_.trip_ticks)
 	_truck_b.set_tag("⬆ %d" % _cat.farm.truck.levels[tr_.level + 1].price if tr_.can_upgrade and not tr_.away else "")
 	for i in _ws_b.size():
 		var ws = _st.workshops[i]
@@ -456,38 +492,209 @@ func _show_pause() -> void:
 	if _pause_overlay != null or _ended:
 		return
 	_paused = true
-	var box := UI.vbox([UI.label(tr("paused"), 56)])
-	box.add_child(UI.button(tr("resume"), func():
-		_pause_overlay.queue_free()
+	var p := GamePopup.open(self, tr("paused"), false)
+	_pause_overlay = p
+	p.body.custom_minimum_size.x = 560
+	p.body.add_child(GamePopup.big_button(tr("resume"), func():
+		p.close()
 		_pause_overlay = null
 		_paused = false))
-	box.add_child(UI.button(tr("restart"), func():
+	p.body.add_child(GamePopup.big_button(tr("restart"), func():
 		App.clear_session()
-		main.goto("game", {"level_id": session.level_id()})))
-	box.add_child(UI.button(tr("quit_level"), func():
+		main.goto("game", {"level_id": session.level_id(), "intro_done": true}), Color("#e69138")))
+	p.body.add_child(GamePopup.big_button(tr("quit_level"), func():
 		App.clear_session()
-		main.goto("map")))
-	_pause_overlay = UI.modal(self, box)
+		main.goto("map"), Color("#a0522d")))
+
+
+# ---------------------------------------------------------------- level start / end
+
+## Story (first time only), then the giver's goal popup over the farm. The level
+## stays paused until the player presses Start.
+func _intro() -> void:
+	var lid := session.level_id()
+	var lvl := App.core.get_level(lid)
+	_paused = true
+	var story_id := "story_" + lid
+	if not App.campaign.is_tutorial_done(story_id):
+		var keys := []
+		if App.core.level_ids_in_world(lvl.world).find(lid) == 0:
+			for w in _cat.worlds:
+				if w.id == lvl.world:
+					keys.append(w.story_key)
+		keys.append(lvl.get("story_key", ""))
+		var d := StoryDialog.show_keys(self, keys)
+		if d != null:
+			await d.finished
+		App.campaign.mark_tutorial_done(story_id)
+		App.save_campaign()
+	_goals_popup(lvl)
+
+
+func _goals_popup(lvl: Dictionary) -> void:
+	var lid := session.level_id()
+	var n := App.core.level_ids_in_world(lvl.world).find(lid) + 1
+	var p := GamePopup.open(self, App.t("level_n", {"n": n}), false)
+	p.body.custom_minimum_size.x = 980
+	p.body.add_child(_giver_row(tr(lvl.get("story_key", ""))))
+	p.body.add_child(UI.label(tr("briefing"), 36, GamePopup.WOOD_DARK))
+	var goals := UI.hbox([], 18)
+	goals.alignment = BoxContainer.ALIGNMENT_CENTER
+	for g in session.state().goals:
+		var id: String = g.get("product", g.get("animal", ""))
+		goals.add_child(GamePopup.tile(id if id != "" else "coin", "%d" % g.target, "", func(): pass, true, 120))
+	p.body.add_child(goals)
+	p.body.add_child(UI.hbox([TrophyBadge.make("gold"), UI.label(App.format_time(lvl.trophy.gold_ticks), 32),
+		TrophyBadge.make("silver"), UI.label(App.format_time(lvl.trophy.silver_ticks), 32)], 14))
+	# Boosts bought with items found on earlier levels.
+	var boosts := UI.hbox([], 12)
+	var items := App.campaign.items()
+	for b in _cat.boosts.values():
+		var affordable := true
+		for i in b.cost:
+			affordable = affordable and items.get(i, 0) >= b.cost[i]
+		var prepared := App.campaign.prepared_boosts().has(b.id)
+		if not affordable and not prepared:
+			continue
+		var bb := GamePopup.big_button(("✔ " if prepared else "+ ") + tr("boost_" + b.id), func(): pass, Color("#8e7cc3"), 26)
+		bb.disabled = prepared
+		bb.pressed.connect(func():
+			if App.campaign.prepare_boost(b.id):
+				App.save_campaign()
+				bb.text = "✔ " + tr("boost_" + b.id)
+				bb.disabled = true)
+		boosts.add_child(bb)
+	if boosts.get_child_count() > 0:
+		p.body.add_child(UI.label(tr("boosts"), 30, GamePopup.WOOD_DARK))
+		p.body.add_child(boosts)
+	var go := GamePopup.big_button(tr("start") + "!", func():
+		var chosen := App.campaign.take_prepared_boosts()
+		App.save_campaign()
+		if not chosen.is_empty():
+			# Boosts change the level's start state, so start it again with them.
+			main.goto("game", {"level_id": lid, "boosts": chosen, "intro_done": true})
+			return
+		p.close()
+		_paused = false, GamePopup.RIBBON, 48)
+	go.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	go.custom_minimum_size = Vector2(380, 110)
+	p.body.add_child(go)
+
+
+## Portrait of whoever speaks the line, next to the line in a bubble.
+func _giver_row(line: String) -> HBoxContainer:
+	var l := StoryDialog.parse(line)
+	var pic := TextureRect.new()
+	pic.texture = Art.tex(l.sprite)
+	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pic.custom_minimum_size = Vector2(190, 230)
+	var bubble := PanelContainer.new()
+	var sb := GamePopup.frame_style(Color("#fffaf0"), Color("#c9a66b"), 24, 4)
+	sb.content_margin_top = 16
+	sb.content_margin_bottom = 16
+	sb.content_margin_left = 24
+	sb.content_margin_right = 24
+	sb.shadow_size = 0
+	bubble.add_theme_stylebox_override("panel", sb)
+	var v := UI.vbox([], 4)
+	if l.speaker != "":
+		v.add_child(UI.label(l.speaker, 30, Color("#b45f06")))
+	v.add_child(UI.para(l.text, 640, 32))
+	bubble.add_child(v)
+	bubble.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return UI.hbox([pic, bubble], 16)
+
+
+func _finish() -> void:
+	_ended = true
+	if _benchmark():
+		return
+	_close_panel()
+	var result := session.result()
+	var out := App.campaign.apply_result(result)
+	App.save_campaign()
+	App.clear_session()
+	App.play_sfx("goal")
+	await get_tree().create_timer(1.0).timeout
+	_results_popup(result, out)
+
+
+## Level complete, over the farm: giver's closing line, trophy, time, rewards.
+func _results_popup(r: Dictionary, out: Dictionary) -> void:
+	var lvl := App.core.get_level(r.level_id)
+	var p := GamePopup.open(self, tr("level_complete"), false, 0.45)
+	p.body.custom_minimum_size.x = 980
+	var end_key: String = lvl.get("story_key", "") + "_end"
+	if tr(end_key) != end_key:
+		p.body.add_child(_giver_row(tr(end_key)))
+	var badge := TrophyBadge.make(r.trophy, 150)
+	badge.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	badge.pivot_offset = Vector2(75, 75)
+	badge.scale = Vector2.ZERO
+	create_tween().tween_property(badge, "scale", Vector2.ONE, 0.6).set_delay(0.2).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	var stats := UI.vbox([UI.label(App.t("result_trophy", {"t": tr(r.trophy)}), 36),
+		UI.label(App.t("result_time", {"t": App.format_time(r.ticks)}), 34),
+		UI.label(App.t("result_money", {"m": r.money}), 34)], 6)
+	var items := []
+	for i in out.items_gained:
+		items.append("%d %s" % [out.items_gained[i], tr("item_" + i)])
+	if not items.is_empty():
+		stats.add_child(UI.label(App.t("result_items", {"i": ", ".join(items)}), 30))
+	for a in out.new_achievements:
+		stats.add_child(UI.label("★ " + App.t("achievement_unlocked", {"name": tr(a)}), 30, Color("#b45f06")))
+		App.play_sfx("achievement")
+	var row := UI.hbox([badge, stats], 40)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	p.body.add_child(row)
+	var ids := App.core.all_level_ids()
+	var next_i := ids.find(r.level_id) + 1
+	var buttons := UI.hbox([
+		GamePopup.big_button(tr("map"), func(): main.goto("map"), Color("#a0522d")),
+		GamePopup.big_button(tr("restart"), func(): main.goto("game", {"level_id": r.level_id, "intro_done": true}), Color("#e69138")),
+	], 20)
+	if next_i < ids.size() and App.campaign.is_level_unlocked(ids[next_i]):
+		buttons.add_child(GamePopup.big_button(tr("next") + " ▶", func(): main.goto("game", {"level_id": ids[next_i]})))
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	p.body.add_child(buttons)
+	App.play_sfx("win")
 
 
 # ---------------------------------------------------------------- panels
 
+const PANEL_TITLES := {"market": "truck", "city": "city", "animals": "shop"}
+
+
 func _open_panel(kind: String, arg) -> void:
-	if _panel != null:
-		_panel.queue_free()
+	_close_panel()
 	_panel_kind = kind
 	_panel_arg = arg
-	var box := UI.vbox([], 12)
-	box.custom_minimum_size.x = 980
-	match kind:
-		"warehouse": _warehouse_panel(box)
-		"truck": _truck_panel(box)
-		"city": _city_panel(box)
-		"animals": _animals_panel(box)
-		"workshop": _workshop_panel(box, arg)
-	box.add_child(UI.button(tr("close"), _close_panel))
-	_panel = UI.modal(self, box)
-	_panel.get_child(0).get_child(0).get_child(0).scale = Vector2.ONE
+	var title: String
+	if kind == "workshop":
+		var ws = _st.workshops[arg]
+		title = tr("build") if ws == null else "%s ★%d" % [tr(ws.type), ws.level + 1]
+	else:
+		title = tr(PANEL_TITLES[kind])
+	var p := GamePopup.open(self, title)
+	p.closed.connect(func():
+		if _panel == p:
+			_panel = null
+			_panel_kind = "")
+	_panel = p
+	_fill_panel()
+
+
+## Rebuilds the open window's content from the current state (after a command).
+func _fill_panel() -> void:
+	var p := _panel as GamePopup
+	if p == null:
+		return
+	p.clear()
+	match _panel_kind:
+		"market": _market_panel(p.body)
+		"city": _city_panel(p.body)
+		"animals": _animals_panel(p.body)
+		"workshop": _workshop_panel(p.body, _panel_arg)
 
 
 func _close_panel() -> void:
@@ -497,103 +704,186 @@ func _close_panel() -> void:
 	_panel_kind = ""
 
 
-func _row(text: String, buttons: Array, icon_id := "") -> HBoxContainer:
-	var l := UI.label(text, 32)
-	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var lead: Array = [Art.icon(icon_id)] if icon_id != "" and Art.tex(icon_id) != null else []
-	return UI.hbox(lead + [l] + buttons)
+## Truck tapped: load goods and send in one window, as in the original. While the
+## truck is on the road the tap only reports when it comes back.
+func _on_truck_tapped() -> void:
+	if _st.truck.away:
+		_truck_b.bounce()
+		_show_toast(App.t("truck_away", {"s": ceili(_st.truck.left / 10.0)}))
+		return
+	_open_panel("market", null)
 
 
-func _small(text: String, cmd: Dictionary, enabled := true) -> Button:
-	var b := UI.button(text, func():
+func _cmd_button(text: String, cmd: Dictionary, enabled := true, color := GamePopup.RIBBON, size := 30) -> Button:
+	var b := GamePopup.big_button(text, func():
 		if not _send(cmd):
-			App.play_sfx("error"), 28)
+			App.play_sfx("error"), color, size)
 	b.disabled = not enabled
 	return b
 
 
-func _warehouse_panel(box: VBoxContainer) -> void:
+func _try(cmd: Dictionary) -> void:
+	if not _send(cmd):
+		App.play_sfx("error")
+
+
+func _grid(cols: int) -> GridContainer:
+	var g := GridContainer.new()
+	g.columns = cols
+	g.add_theme_constant_override("h_separation", 14)
+	g.add_theme_constant_override("v_separation", 14)
+	return g
+
+
+func _market_panel(box: VBoxContainer) -> void:
 	var wh: Dictionary = _st.warehouse
-	box.add_child(UI.label("%s — %s" % [tr("warehouse"), App.t("capacity", {"used": wh.used, "cap": wh.capacity})], 40))
-	for p in wh.items:
-		var n: int = wh.items[p]
-		var price: int = _cat.products[p].sell_price
-		box.add_child(_row("%s ×%d  (%s)" % [tr(p), n, App.t("price_each", {"p": price})], [
-			_small(tr("load"), Cmd.load_truck(p, 1), not _st.truck.away),
-			_small(tr("load_all"), Cmd.load_truck(p, mini(n, (_st.truck.capacity - _st.truck.used) / _cat.products[p].size)), not _st.truck.away),
-		], p))
+	var t: Dictionary = _st.truck
+	var cols := UI.hbox([], 36)
+	box.add_child(cols)
+	# Left: the warehouse; tap a good to put one on the truck.
+	var left := UI.vbox([], 10)
+	left.custom_minimum_size.x = 600
+	cols.add_child(left)
+	left.add_child(UI.label("%s  %d/%d" % [tr("warehouse"), wh.used, wh.capacity], 32, GamePopup.WOOD_DARK))
+	var grid := _grid(4)
+	left.add_child(grid)
+	for prod in wh.items:
+		var sz: int = _cat.products[prod].size
+		grid.add_child(GamePopup.tile(prod, "×%d" % wh.items[prod], "◉ %d" % _cat.products[prod].sell_price,
+			func(): _try(Cmd.load_truck(prod, 1)), t.used + sz <= t.capacity))
+	if wh.items.is_empty():
+		left.add_child(UI.para(tr("warehouse_empty"), 580, 30, Color(App.COLOR_INK, 0.7)))
+	var lower := UI.hbox([], 12)
+	if not wh.items.is_empty():
+		lower.add_child(GamePopup.big_button(tr("load_all"), _load_all, Color("#3d85c6"), 28))
 	if wh.can_upgrade:
 		var next: Dictionary = _cat.farm.warehouse.levels[wh.level + 1]
-		box.add_child(_small("%s → %d (◉ %d)" % [tr("upgrade"), next.capacity + wh.bonus, next.price], Cmd.upgrade_warehouse(), _st.money >= next.price))
-
-
-func _truck_panel(box: VBoxContainer) -> void:
-	var t: Dictionary = _st.truck
-	box.add_child(UI.label("%s — %s" % [tr("truck"), App.t("capacity", {"used": t.used, "cap": t.capacity})], 40))
-	if t.away:
-		box.add_child(UI.label(App.t("truck_away", {"s": ceili(t.left / 10.0)}), 32))
-		return
+		lower.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("warehouse"), next.price], Cmd.upgrade_warehouse(), _st.money >= next.price, Color("#e69138"), 26))
+	left.add_child(lower)
+	# Right: the truck's load, total and Send.
+	var right := UI.vbox([], 10)
+	right.custom_minimum_size.x = 440
+	cols.add_child(right)
+	right.add_child(UI.label("%s  %d/%d" % [tr("truck"), t.used, t.capacity], 32, GamePopup.WOOD_DARK))
+	var bar := ProgressBar.new()
+	bar.show_percentage = false
+	bar.max_value = t.capacity
+	bar.value = t.used
+	bar.custom_minimum_size = Vector2(420, 26)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color("#6aa84f")
+	fill.set_corner_radius_all(12)
+	bar.add_theme_stylebox_override("fill", fill)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color("#e9dfc8")
+	bg.border_color = Color("#c9a66b")
+	bg.set_border_width_all(3)
+	bg.set_corner_radius_all(12)
+	bar.add_theme_stylebox_override("background", bg)
+	right.add_child(bar)
+	var cargo := _grid(3)
+	right.add_child(cargo)
 	var total := 0
-	for p in t.cargo:
-		var price: int = _cat.products[p].sell_price
-		total += price * t.cargo[p]
-		box.add_child(_row("%s ×%d  (%s)" % [tr(p), t.cargo[p], App.t("price_each", {"p": price})], [_small(tr("unload"), Cmd.unload_truck(p, 1))], p))
-	box.add_child(_small("%s  (◉ %d)" % [tr("send"), total], Cmd.send_truck(), total > 0 or not t.cargo.is_empty()))
+	for prod in t.cargo:
+		total += _cat.products[prod].sell_price * t.cargo[prod]
+		cargo.add_child(GamePopup.tile(prod, "×%d" % t.cargo[prod], "", func(): _try(Cmd.unload_truck(prod, 1)), true, 112))
+	if t.cargo.is_empty():
+		right.add_child(UI.para(tr("truck_empty"), 420, 28, Color(App.COLOR_INK, 0.7)))
+	right.add_child(UI.label("◉ %d" % total, 40, Color("#b8860b")))
+	var send := GamePopup.big_button("🚚 " + tr("send"), func():
+		if _send(Cmd.send_truck()):
+			_close_panel()
+		else:
+			App.play_sfx("error"), GamePopup.RIBBON, 40)
+	send.disabled = t.cargo.is_empty()
+	right.add_child(send)
 	if t.can_upgrade:
-		var next: Dictionary = _cat.farm.truck.levels[t.level + 1]
-		box.add_child(_small("%s → %d (◉ %d)" % [tr("upgrade"), next.capacity, next.price], Cmd.upgrade_truck(), _st.money >= next.price))
+		var tn: Dictionary = _cat.farm.truck.levels[t.level + 1]
+		right.add_child(_cmd_button("⬆ %s ◉ %d" % [tr("truck"), tn.price], Cmd.upgrade_truck(), _st.money >= tn.price, Color("#e69138"), 26))
+
+
+## Loads as much of every good as still fits.
+func _load_all() -> void:
+	var loaded := false
+	for prod in _st.warehouse.items.keys():
+		var sz: int = _cat.products[prod].size
+		var room: int = (_st.truck.capacity - _st.truck.used) / sz
+		var n := mini(room, _st.warehouse.items.get(prod, 0))
+		if n > 0 and session.apply(Cmd.load_truck(prod, n)):
+			loaded = true
+			_st = session.state()
+	if not loaded:
+		App.play_sfx("error")
+	_st = session.state()
+	_farm.push_state(_st)
+	_handle_events(session.poll_events())
+	_fill_panel()
 
 
 func _city_panel(box: VBoxContainer) -> void:
-	box.add_child(UI.label(tr("city"), 40))
-	for p in _cat.products.values():
-		if p.buy_price <= 0:
+	var grid := _grid(5)
+	box.add_child(grid)
+	for prod in _cat.products.values():
+		if prod.buy_price <= 0:
 			continue
-		box.add_child(_row("%s  (%s)" % [tr(p.id), App.t("price_each", {"p": p.buy_price})], [
-			_small(tr("buy") + " 1", Cmd.buy_from_city(p.id, 1), _st.money >= p.buy_price),
-			_small(tr("buy") + " 5", Cmd.buy_from_city(p.id, 5), _st.money >= p.buy_price * 5),
-		], p.id))
+		grid.add_child(GamePopup.tile(prod.id, "", "◉ %d" % prod.buy_price, func(): _try(Cmd.buy_from_city(prod.id, 1)),
+			_st.money >= prod.buy_price))
 
 
 func _animals_panel(box: VBoxContainer) -> void:
-	box.add_child(UI.label(tr("shop"), 40))
 	var owned := {}
 	for a in _st.animals:
 		owned[a.type] = owned.get(a.type, []) + [a]
-	for id in _st.available_animals:
+	var ids: Array = _st.available_animals.duplicate()
+	for id in owned:
+		if not ids.has(id):
+			ids.append(id)
+	var grid := _grid(2)
+	grid.add_theme_constant_override("h_separation", 40)
+	box.add_child(grid)
+	for id in ids:
 		var d: Dictionary = _cat.animals[id]
 		var mine: Array = owned.get(id, [])
-		var sell_btn := _small("%s (◉ %d)" % [tr("sell"), d.sell_price], Cmd.sell_animal(mine[0].uid if not mine.is_empty() else -1), not mine.is_empty())
-		box.add_child(_row("%s ×%d" % [tr(id), mine.size()], [_small("%s (◉ %d)" % [tr("buy"), d.price], Cmd.buy_animal(id), _st.money >= d.price), sell_btn], id))
-	for id in owned:
-		if not _st.available_animals.has(id):
-			var d: Dictionary = _cat.animals[id]
-			box.add_child(_row("%s ×%d" % [tr(id), owned[id].size()], [_small("%s (◉ %d)" % [tr("sell"), d.sell_price], Cmd.sell_animal(owned[id][0].uid))], id))
+		var can_buy: bool = _st.available_animals.has(id) and _st.money >= d.price
+		var buttons := UI.vbox([], 8)
+		if _st.available_animals.has(id):
+			buttons.add_child(_cmd_button("%s ◉ %d" % [tr("buy"), d.price], Cmd.buy_animal(id), can_buy, GamePopup.RIBBON, 26))
+		buttons.add_child(_cmd_button("%s ◉ %d" % [tr("sell"), d.sell_price], Cmd.sell_animal(mine[0].uid if not mine.is_empty() else -1),
+			not mine.is_empty(), Color("#e69138"), 26))
+		grid.add_child(UI.hbox([GamePopup.tile(id, "×%d" % mine.size(), "", func(): pass, true, 120), buttons], 12))
 
 
 func _workshop_panel(box: VBoxContainer, slot: int) -> void:
 	var ws = _st.workshops[slot]
 	if ws == null:
-		box.add_child(UI.label(tr("build"), 40))
+		var grid := _grid(4)
+		box.add_child(grid)
 		for id in _st.available_workshops:
 			var d: Dictionary = _cat.workshops[id]
-			box.add_child(_row("%s: %s → %s" % [tr(id), _recipe(d.inputs), tr(d.output)],
-				[_small("◉ %d" % d.build_price, Cmd.build_workshop(slot, id), _st.money >= d.build_price)], id))
+			var v := UI.vbox([GamePopup.tile(id, "", "◉ %d" % d.build_price, func(): _try(Cmd.build_workshop(slot, id)),
+				_st.money >= d.build_price, 150), _recipe_row(d.inputs, d.output, 44)], 6)
+			grid.add_child(v)
 		return
-	box.add_child(UI.label("%s ★%d" % [tr(ws.type), ws.level + 1], 40))
-	box.add_child(UI.label("%s → %s  (%ds)" % [_recipe(ws.inputs), tr(ws.output), ceili(ws.duration / 10.0)], 32))
+	box.add_child(_recipe_row(ws.inputs, ws.output, 72))
+	var status := "%d dtk" % ceili(ws.duration / 10.0)
 	if ws.left > 0:
-		box.add_child(UI.label("…%ds" % ceili(ws.left / 10.0), 32))
-	box.add_child(_small(tr("produce"), Cmd.start_workshop(slot), ws.left == 0))
+		status = "… %d dtk" % ceili(ws.left / 10.0)
+	box.add_child(UI.label(status, 32, GamePopup.WOOD_DARK))
+	var row := UI.hbox([_cmd_button("▶ " + tr("produce"), Cmd.start_workshop(slot), ws.left == 0, GamePopup.RIBBON, 34)], 12)
 	var d: Dictionary = _cat.workshops[ws.type]
 	if ws.can_upgrade:
 		var up: Dictionary = d.upgrades[ws.level]
-		box.add_child(_small("%s (◉ %d)" % [tr("upgrade"), up.price], Cmd.upgrade_workshop(slot), _st.money >= up.price))
-	box.add_child(_small("%s (◉ %d)" % [tr("sell"), d.sell_price], Cmd.sell_workshop(slot), ws.left == 0))
+		row.add_child(_cmd_button("⬆ ◉ %d" % up.price, Cmd.upgrade_workshop(slot), _st.money >= up.price, Color("#e69138"), 28))
+	row.add_child(_cmd_button("%s ◉ %d" % [tr("sell"), d.sell_price], Cmd.sell_workshop(slot), ws.left == 0, Color("#a0522d"), 26))
+	box.add_child(row)
 
 
-func _recipe(inputs: Dictionary) -> String:
-	var parts := []
+## Inputs → output drawn with icons, e.g. [egg] 2 → [pastry].
+func _recipe_row(inputs: Dictionary, output: String, px: int) -> HBoxContainer:
+	var h := UI.hbox([], 8)
 	for p in inputs:
-		parts.append("%d %s" % [inputs[p], tr(p)])
-	return " + ".join(parts)
+		h.add_child(Art.icon(p, px))
+		h.add_child(UI.label("×%d" % inputs[p], int(px * 0.5), GamePopup.WOOD_DARK))
+	h.add_child(UI.label("→", int(px * 0.6), GamePopup.WOOD_DARK))
+	h.add_child(Art.icon(output, px))
+	return h
