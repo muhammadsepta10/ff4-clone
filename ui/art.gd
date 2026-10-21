@@ -24,6 +24,11 @@ const SPRITES := {
 	"cake": ["res://art/batch2/cake.png", 58.0],
 	"cloth": ["res://art/batch2/cloth.png", 56.0],
 	"coat": ["res://art/batch2/coat.png", 66.0],
+	# batch 3: hybrid, its product, the last workshop, caged bear (cropped)
+	"fluffhen": ["res://art/batch3/fluffhen.png", 92.0],
+	"fluff_egg": ["res://art/batch3/fluff_egg.png", 62.0],
+	"patisserie": ["res://art/batch3/patisserie.png", 130.0],
+	"caged_bear": ["res://art/batch3/caged_bear.png", 110.0],
 	# scene: buildings and decoration (cropped to content)
 	"well": ["res://art/scene/well.png", 200.0],
 	"warehouse": ["res://art/scene/warehouse.png", 220.0],

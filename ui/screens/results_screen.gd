@@ -23,7 +23,9 @@ func _ready() -> void:
 	box.add_child(UI.label(App.t("result_items", {"i": ", ".join(items) if not items.is_empty() else tr("none")}), 40))
 	for a in out.new_achievements:
 		box.add_child(UI.label("★ " + App.t("achievement_unlocked", {"name": tr(a)}), 34, Color("#b45f06")))
-		App.play_sfx("achievement")
+	App.play_sfx("win")
+	if not out.new_achievements.is_empty():
+		get_tree().create_timer(1.4).timeout.connect(func(): App.play_sfx("achievement"))
 	var ids := App.core.all_level_ids()
 	var next_i := ids.find(r.level_id) + 1
 	var buttons := UI.hbox([UI.button(tr("map"), func(): main.goto("map")),

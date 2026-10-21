@@ -19,8 +19,8 @@ var _prev := {}   # uid -> Vector2 (field units) from the previous tick
 var _cur: Dictionary = {}
 var _alpha := 1.0
 var _time := 0.0
-var _fx: Array = []
-var _grass_shown := {}
+var _fx: Array = []  # floating texts/pops: {pos, text, color, life, max}
+var _grass_shown := {}  # cell index -> displayed growth, eased toward the sim value
 # Walk animation state per uid (view only).
 var _phase := {}     # step phase, advanced by distance walked
 var _face := {}      # -1 left, +1 right; only flips on clear horizontal movement
@@ -32,7 +32,7 @@ var _flying: Array = []  # collected products flying to the warehouse: {product,
 var warehouse_pos := Vector2(-130, 700)  # warehouse in this view's local px; set by the screen
 
 # Fraction of each sprite's height that is legs, swung while walking.
-const LEGS := {"chicken": 0.24, "sheep": 0.2, "cow": 0.22, "bear": 0.22, "fluffhen": 0.24}  # cell index -> displayed growth, eased toward the sim value  # floating texts/pops: {pos, text, color, life, max}
+const LEGS := {"chicken": 0.24, "sheep": 0.2, "cow": 0.22, "bear": 0.22, "fluffhen": 0.24}
 
 
 func _init() -> void:

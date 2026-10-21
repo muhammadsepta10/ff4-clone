@@ -154,8 +154,10 @@ func _handle_events(evts: Array) -> void:
 				App.play_sfx("cage")
 			"animal_eaten", "animal_died":
 				_farm.pop_text(Vector2(e.x, e.y), "✖", Color("#ff8a80"))
+				App.play_sfx("animal_lost")
 			"hybrid_born":
 				_farm.pop_text(Vector2(e.x, e.y), "♥ " + tr(e.animal), Color("#f8bbd0"))
+				App.play_sfx("hybrid")
 			"hidden_found":
 				_show_toast(App.t("hidden_left", {"n": _st.hidden_items_left}))
 				App.play_sfx("sparkle")
