@@ -5,12 +5,12 @@ extends RefCounted
 
 # id -> [path, on-screen height in px at 1080p, including the image's padding]
 const SPRITES := {
-	# batch 1: animals and predators (art faces left)
-	"chicken": ["res://art/batch1/chicken.png", 104.0],
-	"sheep": ["res://art/batch1/sheep.png", 120.0],
-	"cow": ["res://art/batch1/cow.png", 150.0],
-	"bear": ["res://art/batch1/bear.png", 180.0],
-	"mole": ["res://art/batch1/mole.png", 130.0],
+	# batch 1: animals and predators (art faces left, cropped to content)
+	"chicken": ["res://art/batch1/chicken.png", 90.0],
+	"sheep": ["res://art/batch1/sheep.png", 100.0],
+	"cow": ["res://art/batch1/cow.png", 125.0],
+	"bear": ["res://art/batch1/bear.png", 140.0],
+	"mole": ["res://art/batch1/mole.png", 90.0],
 	# batch 2: workshops and products (cropped to content)
 	"bakery": ["res://art/batch2/bakery.png", 130.0],
 	"dairy": ["res://art/batch2/dairy.png", 130.0],

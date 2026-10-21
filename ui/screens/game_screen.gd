@@ -128,6 +128,7 @@ func _finish() -> void:
 
 func _handle_events(evts: Array) -> void:
 	for e in evts:
+		_farm.on_event(e)
 		match e.type:
 			"product_collected":
 				_farm.pop_text(Vector2(e.x, e.y), "+1 " + tr(e.product), Color("#fff59d"))
@@ -211,6 +212,7 @@ func _build() -> void:
 	var f: Dictionary = _cat.farm.field
 	_farm.size = Vector2(f.cols, f.rows) * f.cell * FarmView.SCALE
 	_farm.command.connect(func(c): _send(c))
+	_farm.warehouse_pos = WAREHOUSE_FOOT - FIELD_POS - Vector2(0, 90)
 	_stage.add_child(_farm)
 	var slots: int = session.state().workshops.size()
 	for i in slots:

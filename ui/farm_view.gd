@@ -20,7 +20,19 @@ var _cur: Dictionary = {}
 var _alpha := 1.0
 var _time := 0.0
 var _fx: Array = []
-var _grass_shown := {}  # cell index -> displayed growth, eased toward the sim value  # floating texts/pops: {pos, text, color, life, max}
+var _grass_shown := {}
+# Walk animation state per uid (view only).
+var _phase := {}     # step phase, advanced by distance walked
+var _face := {}      # -1 left, +1 right; only flips on clear horizontal movement
+var _last := {}      # last drawn position, to measure walking
+var _moving := {}    # 0..1, eased walking amount
+var _peck := {}      # seconds left of the eating animation
+var _spawned := {}   # ground uid -> seconds since it appeared (pop-in)
+var _flying: Array = []  # collected products flying to the warehouse: {product, from, to, t}
+var warehouse_pos := Vector2(-130, 700)  # warehouse in this view's local px; set by the screen
+
+# Fraction of each sprite's height that is legs, swung while walking.
+const LEGS := {"chicken": 0.24, "sheep": 0.2, "cow": 0.22, "bear": 0.22, "fluffhen": 0.24}  # cell index -> displayed growth, eased toward the sim value  # floating texts/pops: {pos, text, color, life, max}
 
 
 func _init() -> void:
@@ -41,6 +53,17 @@ func set_alpha(a: float) -> void:
 	_alpha = clampf(a, 0.0, 1.0)
 
 
+## Visual reactions to simulation events (called by the game screen).
+func on_event(e: Dictionary) -> void:
+	match e.type:
+		"animal_ate":
+			_peck[e.uid] = 0.7
+		"product_spawned":
+			_spawned[e.uid] = 0.0
+		"product_collected":
+			_flying.append({"product": e.product, "from": Vector2(e.x, e.y) * SCALE, "to": warehouse_pos, "t": 0.0})
+
+
 func pop_text(field_pos: Vector2, text: String, color := Color.WHITE) -> void:
 	_fx.append({"pos": field_pos, "text": text, "color": color, "life": 1.0, "max": 1.0})
 
@@ -51,6 +74,20 @@ func _process(delta: float) -> void:
 		f.life -= delta
 		if f.life <= 0:
 			_fx.erase(f)
+	for k in _peck.keys():
+		_peck[k] -= delta
+		if _peck[k] <= 0:
+			_peck.erase(k)
+	for k in _spawned.keys():
+		_spawned[k] += delta
+		if _spawned[k] > 1.0:
+			_spawned.erase(k)
+	for f in _flying.duplicate():
+		f.t += delta / 0.7
+		if f.t >= 1.0:
+			_flying.erase(f)
+	if not _cur.is_empty():
+		_advance_walk(delta)
 	queue_redraw()
 
 
@@ -119,8 +156,16 @@ func _draw() -> void:
 	for it in items:
 		match it.kind:
 			"animal": _draw_animal(it.e)
-			"ground": _draw_product(it.e.product, Vector2(it.e.x, it.e.y) * SCALE, it.e.life)
+			"ground": _draw_ground(it.e)
 			"predator": _draw_predator(it.e)
+	for fl in _flying:
+		var t: float = fl.t
+		var pos: Vector2 = fl.from.lerp(fl.to, t * t) + Vector2(0, -sin(t * PI) * 160)
+		var sc := 1.0 - 0.5 * t
+		draw_set_transform(pos, 0, Vector2(sc, sc))
+		if Art.tex(fl.product) != null:
+			_draw_sprite(fl.product, Vector2.ZERO)
+		draw_set_transform(Vector2.ZERO)
 	var font := get_theme_default_font()
 	for fx in _fx:
 		var t: float = 1.0 - fx.life / fx.max
@@ -137,15 +182,15 @@ func _draw_animal(a: Dictionary) -> void:
 	var face := -1.0 if a.x < prev.x else 1.0
 	var bob := absf(sin(_time * 9 + a.uid)) * 5.0
 	var squash := 1.0 + sin(_time * 18 + a.uid) * 0.04
-	draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
-	draw_circle(Vector2(0, bob + 26), 26, Color(0, 0, 0, 0.18))
 	if Art.tex(a.type) != null:
-		# Art faces left, so mirror it when the animal walks right.
-		draw_set_transform(p + Vector2(0, -bob), 0, Vector2(-face * squash, 2.0 - squash))
-		_draw_sprite(a.type, Vector2(0, bob + 26))
+		draw_set_transform(p + Vector2(0, 26), 0, Vector2(1, 0.4))
+		draw_circle(Vector2.ZERO, Art.height(a.type) * 0.32, Color(0, 0, 0, 0.18))
 		draw_set_transform(Vector2.ZERO)
+		_draw_walker(a.type, a.uid, p + Vector2(0, 26))
 		_draw_hungry(a, p)
 		return
+	draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
+	draw_circle(Vector2(0, bob + 26), 26, Color(0, 0, 0, 0.18))
 	match a.type:
 		"chicken":
 			draw_circle(Vector2.ZERO, 24, Color.WHITE)
@@ -171,12 +216,12 @@ func _draw_animal(a: Dictionary) -> void:
 	_draw_hungry(a, p)
 
 
-## Draws a sprite centred on x with its feet at `feet`, in the current draw transform.
+## Draws a sprite centred on x with its bottom edge at `feet`, in the current draw transform.
 func _draw_sprite(type: String, feet: Vector2) -> void:
 	var tex := Art.tex(type)
 	var hgt := Art.height(type)
 	var sz := Vector2(hgt * tex.get_width() / tex.get_height(), hgt)
-	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2, sz.y * 0.8), sz), false)
+	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2, sz.y), sz), false)
 
 
 func _draw_hungry(a: Dictionary, p: Vector2) -> void:
@@ -225,8 +270,19 @@ func _draw_predator(pr: Dictionary) -> void:
 	var needed: int = App.core.catalog().farm.predators[pr.type].hits
 	if Art.tex(pr.type) != null:
 		var feet := 34.0 if pr.type == "bear" else 24.0
-		draw_circle(p + Vector2(0, feet * 0.6), 40 if pr.type == "bear" else 28, Color(0, 0, 0, 0.2))
-		_draw_sprite(pr.type, p + Vector2(0, feet))
+		draw_set_transform(p + Vector2(0, feet - 4), 0, Vector2(1, 0.4))
+		draw_circle(Vector2.ZERO, Art.height(pr.type) * 0.4, Color(0, 0, 0, 0.2))
+		draw_set_transform(Vector2.ZERO)
+		if LEGS.has(pr.type):
+			_draw_walker(pr.type, pr.uid, p + Vector2(0, feet))
+		else:
+			# Mole: stretches up out of its hole and ducks back.
+			var t := Art.tex(pr.type)
+			var hgt := Art.height(pr.type)
+			var sz := Vector2(hgt * t.get_width() / t.get_height(), hgt)
+			var up := 0.9 + 0.12 * absf(sin(_time * 3 + pr.uid))
+			var foot := p + Vector2(0, feet)
+			draw_texture_rect(t, Rect2(foot - Vector2(sz.x / 2 * (2 - up), sz.y * up), Vector2(sz.x * (2 - up), sz.y * up)), false)
 	elif pr.type == "bear":
 		draw_circle(p + Vector2(0, 34), 40, Color(0, 0, 0, 0.2))
 		draw_circle(p, 42, Color("#795548"))
@@ -279,3 +335,79 @@ func _draw_grass_placeholder(f: Dictionary, cs: float) -> void:
 		if g > 0:
 			var o := Vector2((i % f.cols) * cs, (i / f.cols) * cs)
 			draw_rect(Rect2(o + Vector2(2, 2), Vector2(cs - 4, cs - 4)), Color("#7cb342").lerp(Color("#33691e"), g / 3.0 - 0.33))
+
+
+func _draw_ground(g: Dictionary) -> void:
+	var p := Vector2(g.x, g.y) * SCALE
+	if _spawned.has(g.uid):
+		# Pop out of the animal with a small arc and an overshooting scale.
+		var t: float = minf(_spawned[g.uid] / 0.35, 1.0)
+		var sc := 1.0 + sin(t * PI) * 0.35 if t < 1.0 else 1.0
+		sc *= t
+		var lift := sin(t * PI) * 30.0
+		draw_set_transform(p + Vector2(0, -lift), 0, Vector2(sc, sc))
+		_draw_product(g.product, Vector2.ZERO, g.life)
+		draw_set_transform(Vector2.ZERO)
+	else:
+		_draw_product(g.product, p, g.life)
+
+
+func _advance_walk(delta: float) -> void:
+	var seen := {}
+	for e in _cur.animals + _cur.predators:
+		var uid: int = e.uid
+		seen[uid] = true
+		var now := _pos(e)
+		var last: Vector2 = _last.get(uid, now)
+		var moved := now.distance_to(last)
+		_last[uid] = now
+		if absf(now.x - last.x) > 0.3:
+			_face[uid] = 1.0 if now.x > last.x else -1.0
+		var target := 1.0 if moved > 0.05 else 0.0
+		_moving[uid] = lerpf(_moving.get(uid, 0.0), target, 1.0 - exp(-delta * 10.0))
+		# About one step per 22 field units walked.
+		_phase[uid] = fmod(_phase.get(uid, randf() * TAU) + moved * TAU / 22.0, TAU * 100)
+	for k in _last.keys():
+		if not seen.has(k):
+			_last.erase(k)
+			_face.erase(k)
+			_moving.erase(k)
+			_phase.erase(k)
+
+
+## Draws a walking sprite with its feet at `foot`: the body bobs and waddles while
+## the leg strip is split in two halves that swing in opposite directions, so the
+## animal visibly steps. Eating tilts the body forward (a peck).
+func _draw_walker(type: String, uid: int, foot: Vector2) -> void:
+	var tex := Art.tex(type)
+	var hgt := Art.height(type)
+	var W := hgt * tex.get_width() / tex.get_height()
+	var tw := float(tex.get_width())
+	var th := float(tex.get_height())
+	var lf: float = LEGS.get(type, 0.2)
+	var ph: float = _phase.get(uid, 0.0)
+	var mv: float = _moving.get(uid, 0.0)
+	var face: float = _face.get(uid, 1.0)
+	var idle := sin(_time * 2.5 + uid) * 0.015
+	var bob := absf(sin(ph)) * 3.0 * mv
+	var waddle := sin(ph) * 0.07 * mv + idle
+	var peck := 0.0
+	if _peck.has(uid):
+		var t: float = 1.0 - _peck[uid] / 0.7
+		peck = absf(sin(t * PI * 3)) * 0.35
+	# Art faces left; mirror to face the walking direction. Origin at the feet.
+	var base := Transform2D(waddle, Vector2(-face, 1), 0, foot + Vector2(0, -bob))
+	var hip := -hgt * lf
+	# Legs: two halves swinging opposite ways around the hip line.
+	var swing := sin(ph) * 0.45 * mv
+	for half in 2:
+		var sk := swing if half == 0 else -swing
+		draw_set_transform_matrix(base * Transform2D(0, Vector2.ONE, sk, Vector2(0, hip)))
+		var sx := 0.0 if half == 0 else tw / 2
+		draw_texture_rect_region(tex, Rect2(-W / 2 + half * W / 2, 0, W / 2, hgt * lf),
+			Rect2(sx, th * (1 - lf), tw / 2, th * lf))
+	# Body, pivoting at the hip for the peck (forward is -x in art space).
+	draw_set_transform_matrix(base * Transform2D(-peck, Vector2(1, 1 + sin(ph * 2) * 0.02 * mv), 0, Vector2(0, hip)))
+	draw_texture_rect_region(tex, Rect2(-W / 2, -hgt * (1 - lf), W, hgt * (1 - lf) + 1),
+		Rect2(0, 0, tw, th * (1 - lf) + 1))
+	draw_set_transform(Vector2.ZERO)
