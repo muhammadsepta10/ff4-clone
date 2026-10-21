@@ -72,13 +72,12 @@ func _outfit_dialog() -> void:
 	var outfit: Dictionary = App.campaign.profile(slot).outfit
 	var preview := CharacterView.new()
 	preview.outfit = outfit
-	var overlay: Control
 	var pickers := OutfitPicker.build(outfit, func(slot_id, opt):
 		App.campaign.set_outfit(slot_id, opt)
 		preview.outfit = App.campaign.profile(slot).outfit, func(slot_id, opt_id, _u): return App.campaign.is_outfit_unlocked(slot_id, opt_id))
-	var box := UI.vbox([UI.label(tr("outfit"), 48), UI.hbox([preview, pickers]),
-		UI.button(tr("close"), func():
-			App.save_campaign()
-			overlay.queue_free()
-			main.goto("map", {"world": _world}))])
-	overlay = UI.modal(self, box)
+	var box := UI.vbox([UI.label(tr("outfit"), 48), UI.hbox([preview, pickers])])
+	box.add_child(UI.button(tr("close"), func():
+		App.save_campaign()
+		UI.close(box)
+		main.goto("map", {"world": _world})))
+	UI.modal(self, box)

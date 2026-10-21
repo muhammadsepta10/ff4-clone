@@ -69,7 +69,6 @@ func _create_dialog(slot: int) -> void:
 		outfit[s.id] = s.options[0].id
 	var box := UI.vbox()
 	box.custom_minimum_size.x = 1000
-	var overlay: Control
 	box.add_child(UI.label(tr("profile_new"), 48))
 	var name_edit := LineEdit.new()
 	name_edit.placeholder_text = tr("profile_name")
@@ -83,12 +82,15 @@ func _create_dialog(slot: int) -> void:
 		preview.outfit = outfit.duplicate(), func(_slot_id, _opt_id, unlock): return unlock == "")
 	box.add_child(UI.hbox([preview, pickers]))
 	box.add_child(UI.hbox([
-		UI.button(tr("cancel"), func(): overlay.queue_free()),
+		UI.button(tr("cancel"), func(): UI.close(box)),
 		UI.button(tr("profile_create"), func():
 			if App.campaign.create_profile(slot, name_edit.text, outfit):
 				App.save_campaign()
-				overlay.queue_free()
-				main.goto("profiles")),
+				UI.close(box)
+				main.goto("profiles")
+			else:
+				App.play_sfx("error")
+				name_edit.grab_focus()),
 	]))
-	overlay = UI.modal(self, box)
+	UI.modal(self, box)
 

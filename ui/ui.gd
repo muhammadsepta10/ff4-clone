@@ -61,9 +61,11 @@ static func centered(child: Control) -> CenterContainer:
 	return c
 
 
-## Full-screen dimmed modal with a centered panel. Returns the overlay; free it to close.
+## Full-screen dimmed modal with a centered panel. Returns the overlay; free it
+## or call close() with any node inside it to close.
 static func modal(parent: Node, content: Control) -> Control:
 	var overlay := ColorRect.new()
+	overlay.set_meta("ui_modal", true)
 	overlay.color = Color(0, 0, 0, 0.45)
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -75,18 +77,27 @@ static func modal(parent: Node, content: Control) -> Control:
 	return overlay
 
 
+## Closes the modal that contains `node`. Button callbacks use this because a
+## lambda captures a local's value when it is created, so an `overlay` variable
+## assigned after the buttons are built is still null inside them.
+static func close(node: Node) -> void:
+	while node != null and not node.has_meta("ui_modal"):
+		node = node.get_parent()
+	if node != null:
+		node.queue_free()
+
+
 static func confirm(parent: Node, text: String, on_yes: Callable) -> void:
 	var box := vbox()
-	var overlay: Control
 	box.add_child(para(text, 800))
 	box.add_child(hbox([
-		button(App.tr("cancel"), func(): overlay.queue_free()),
+		button(App.tr("cancel"), func(): close(box)),
 		button(App.tr("ok"), func():
-			overlay.queue_free()
+			close(box)
 			on_yes.call()),
 	]))
 	box.custom_minimum_size.x = 800
-	overlay = modal(parent, box)
+	modal(parent, box)
 
 
 ## Margins that keep content out of camera cut-outs and rounded corners.
