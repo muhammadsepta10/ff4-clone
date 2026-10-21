@@ -1,6 +1,7 @@
 ## Draws the farm field from LevelSession state (fixed camera, Y-sorted, ADR 0002)
 ## and turns taps into commands. Never mutates simulation state except via commands.
-## Art is procedural placeholder until the approved asset batch lands.
+## Sprites come from approved asset batches in art/ (style bible); anything without
+## an approved sprite yet falls back to procedural placeholder art.
 class_name FarmView
 extends Control
 
@@ -147,6 +148,13 @@ func _draw_animal(a: Dictionary) -> void:
 	var squash := 1.0 + sin(_time * 18 + a.uid) * 0.04
 	draw_set_transform(p + Vector2(0, -bob), 0, Vector2(face * squash, 2.0 - squash))
 	draw_circle(Vector2(0, bob + 26), 26, Color(0, 0, 0, 0.18))
+	if Art.tex(a.type) != null:
+		# Art faces left, so mirror it when the animal walks right.
+		draw_set_transform(p + Vector2(0, -bob), 0, Vector2(-face * squash, 2.0 - squash))
+		_draw_sprite(a.type, Vector2(0, bob + 26))
+		draw_set_transform(Vector2.ZERO)
+		_draw_hungry(a, p)
+		return
 	match a.type:
 		"chicken":
 			draw_circle(Vector2.ZERO, 24, Color.WHITE)
@@ -169,6 +177,18 @@ func _draw_animal(a: Dictionary) -> void:
 			draw_circle(Vector2(44, -16), 7, Color("#f8bbd0"))
 			draw_circle(Vector2(40, -25), 2.5, Color.BLACK)
 	draw_set_transform(Vector2.ZERO)
+	_draw_hungry(a, p)
+
+
+## Draws a sprite centred on x with its feet at `feet`, in the current draw transform.
+func _draw_sprite(type: String, feet: Vector2) -> void:
+	var tex := Art.tex(type)
+	var hgt := Art.height(type)
+	var sz := Vector2(hgt * tex.get_width() / tex.get_height(), hgt)
+	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2, sz.y * 0.8), sz), false)
+
+
+func _draw_hungry(a: Dictionary, p: Vector2) -> void:
 	if a.hungry:
 		var bp := p + Vector2(0, -70 - absf(sin(_time * 5)) * 6)
 		draw_circle(bp, 22, Color.WHITE)
@@ -181,6 +201,9 @@ func _draw_product(product: String, p: Vector2, life: int) -> void:
 		return
 	var c: Color = PRODUCT_COLORS.get(product, Color.WHITE)
 	draw_circle(p + Vector2(0, 14), 18, Color(0, 0, 0, 0.2))
+	if Art.tex(product) != null:
+		_draw_sprite(product, p + Vector2(0, 18))
+		return
 	match product:
 		"egg", "fluff_egg":
 			draw_set_transform(p, 0, Vector2(0.8, 1.0))
@@ -209,7 +232,11 @@ func _draw_predator(pr: Dictionary) -> void:
 	var shake := Vector2(sin(_time * 40) * 3, 0) if pr.hits > 0 else Vector2.ZERO
 	p += shake
 	var needed: int = App.core.catalog().farm.predators[pr.type].hits
-	if pr.type == "bear":
+	if Art.tex(pr.type) != null:
+		var feet := 34.0 if pr.type == "bear" else 24.0
+		draw_circle(p + Vector2(0, feet * 0.6), 40 if pr.type == "bear" else 28, Color(0, 0, 0, 0.2))
+		_draw_sprite(pr.type, p + Vector2(0, feet))
+	elif pr.type == "bear":
 		draw_circle(p + Vector2(0, 34), 40, Color(0, 0, 0, 0.2))
 		draw_circle(p, 42, Color("#795548"))
 		draw_circle(p + Vector2(-26, -34), 14, Color("#795548"))
